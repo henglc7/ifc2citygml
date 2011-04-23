@@ -107,6 +107,22 @@ public class LeerPisos {
                         indice[0] = "IfcSlab";
                         IDispatch planchas = (IDispatch) relatedElementsValue.method("FindObjects", indice);
                         
+                        //Se leen las planchas del piso
+                        String nPlanchas = String.valueOf(planchas.get("Count"));
+                        for(int p = 1; p<=Integer.valueOf(nPlanchas);p++){
+                        	obj[0] = new Integer(p);
+                            IDispatch plancha = (IDispatch) planchas.method("Item", obj);
+                            //IDispatch planchaValue = (IDispatch) plancha.get("Value");
+                            IDispatch planchaAtributos = (IDispatch) plancha.get("Attributes");
+                            
+                            indice[0] = "ObjectPlacement";
+                            IDispatch objectPlacement = (IDispatch) planchaAtributos.method("Item", indice);
+                            IDispatch objectPlacementValor = (IDispatch) objectPlacement.get("Value");
+                            IDispatch objectPlacementAtributos = (IDispatch) objectPlacementValor.get("Attributes");
+                            
+                            System.out.println(objectPlacement.get("Type"));
+                            
+                        }
 
 
                         
