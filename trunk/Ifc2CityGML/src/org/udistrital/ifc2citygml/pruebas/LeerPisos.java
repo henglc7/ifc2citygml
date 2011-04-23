@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.udistrital.ifc2citygml.ifc.Piso;
+import org.udistrital.ifc2citygml.ifc.Plancha;
 
 import jp.ne.so_net.ga2.no_ji.jcom.IDispatch;
 import jp.ne.so_net.ga2.no_ji.jcom.ReleaseManager;
@@ -83,8 +84,8 @@ public class LeerPisos {
                     IDispatch globalId = (IDispatch) relatingStructureAtributos.method("Item", indice);
                     String globalIdValor = (String) globalId.get("value");
                     
-                    //no se tienen en cuenta los pisos subterraneoa
-                    if(elevationValor>=0){
+                    //no se tienen en cuenta los pisos subterraneos ni el piso base (elevation = 0)
+                    if(elevationValor>0){
                     	//System.out.println(nameValor + " = " + elevationValor + " (" + globalIdValor + ")");
                     	
                     	Piso pisoActual = new Piso();
@@ -93,8 +94,6 @@ public class LeerPisos {
                     	pisoActual.setNombre(nameValor);
                     	
                     	pisos.add(pisoActual);
-                    	
-                    	pisoActual.imprimir();
                     	
                     	indice = new Object[1];
                         indice[0] = "RelatedElements";
@@ -115,18 +114,26 @@ public class LeerPisos {
                             //IDispatch planchaValue = (IDispatch) plancha.get("Value");
                             IDispatch planchaAtributos = (IDispatch) plancha.get("Attributes");
                             
+                            indice[0] = "GlobalId";
+                            IDispatch planchaGlobalId = (IDispatch) planchaAtributos.method("Item", indice);
+                            String planchaGlobalIdValor = (String) planchaGlobalId.get("value");
+                            
+                            Plancha planchaActual = new Plancha();
+                            planchaActual.setId(planchaGlobalIdValor);
+                            
+                            pisoActual.getPlanchas().add(planchaActual);
+                            
+                            /*
                             indice[0] = "ObjectPlacement";
                             IDispatch objectPlacement = (IDispatch) planchaAtributos.method("Item", indice);
                             IDispatch objectPlacementValor = (IDispatch) objectPlacement.get("Value");
                             IDispatch objectPlacementAtributos = (IDispatch) objectPlacementValor.get("Attributes");
+                            */
                             
-                            System.out.println(objectPlacement.get("Type"));
                             
                         }
 
-
-                        
-                        System.out.println(planchas.get("Count") + " planchas");
+                        //pisoActual.imprimir();
                     }
                 }
                                 
@@ -142,7 +149,27 @@ public class LeerPisos {
             rm.release();
         }
 
-
+        int posA = 0;
+        int posB = 0;
+        
+        for (posA = 0; posA < (pisos.size()-1); posA++) {
+        	for (posB = posA+1; posB < pisos.size(); posB++) {
+        		Piso pisoA = pisos.get(posA);
+        		Piso pisoB = pisos.get(posB);
+        		if (pisoA.getElevacion()>pisoB.getElevacion()){
+        			Piso aux = pisoA;
+        			pisos.set(posA, pisos.get(posB));
+        			pisos.set(posB, aux);
+        		}
+    			
+    		}	
+		}
+        
+        for (Piso pisoA : pisos) {
+        		
+    		pisoA.imprimir();	
+		}
+        
 
 	}
 

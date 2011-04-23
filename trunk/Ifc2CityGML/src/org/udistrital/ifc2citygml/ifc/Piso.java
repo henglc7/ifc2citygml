@@ -1,6 +1,7 @@
 package org.udistrital.ifc2citygml.ifc;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Piso {
@@ -51,6 +52,11 @@ public class Piso {
 	public void imprimir(){
 		String cadena = "";
 		cadena += "\nPiso \"" + getNombre() + "\"  ( id = " + getId() + " , elevacion = " + getElevacion() + " )";
+		
+		for (Plancha planchaActual : getPlanchas()) {
+			cadena += "\n  |__ Plancha ( id = " + planchaActual.getId() + " )";
+			
+		}
 		System.out.println(cadena);
 	}
 
