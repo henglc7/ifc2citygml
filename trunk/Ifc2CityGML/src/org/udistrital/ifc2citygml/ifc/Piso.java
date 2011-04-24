@@ -53,6 +53,7 @@ public class Piso {
 		String cadena = "";
 		cadena += "\nPiso \"" + getNombre() + "\"  ( id = " + getId() + " , elevacion = " + getElevacion() + " )";
 		
+		cadena += "\n  " + getPlanchas().size() + " Planchas:";
 		for (Plancha planchaActual : getPlanchas()) {
 			cadena += "\n  |__ Plancha ( id = " + planchaActual.getId() + " )";
 			

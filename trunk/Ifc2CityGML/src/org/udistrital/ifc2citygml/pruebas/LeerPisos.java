@@ -19,17 +19,16 @@ public class LeerPisos {
 
 		List<Piso> pisos = new ArrayList();;
         ReleaseManager rm = new ReleaseManager();
+      
+        //String rutaArchivo = "C:\\Documents and Settings\\Administrator\\Desktop\\escritorio\\modelos\\casa\\IFC\\AC11-FZK-Haus-IFC.ifc";
+        String rutaArchivo = "C:\\Documents and Settings\\Administrator\\Desktop\\escritorio\\modelos\\sabio caldas\\SabioCaldasSimplificado.ifc";
+        //String rutaArchivo = "C:\\Documents and Settings\\Administrator\\Desktop\\escritorio\\modelos\\muro y ventana\\miniExample20080731-CoordView-SweptSolid.ifc";
+        
         try {
 
             //Se declara una instancia del componente ActiveX pasando el nombre como parametro
             IDispatch object = new IDispatch(rm, "IFCsvr.R300");
-
-            //String rutaArchivo = "C:\\Documents and Settings\\Administrator\\Desktop\\escritorio\\modelos\\casa\\IFC\\AC11-FZK-Haus-IFC.ifc";
-            String rutaArchivo = "C:\\Documents and Settings\\Administrator\\Desktop\\escritorio\\modelos\\sabio caldas\\SabioCaldasSimplificado.ifc";
-            //String rutaArchivo = "C:\\Documents and Settings\\Administrator\\Desktop\\escritorio\\modelos\\muro y ventana\\miniExample20080731-CoordView-SweptSolid.ifc";
             
-            //String tipoEntidad = "IfcBuildingStorey";
-            //String tipoEntidad = "IfcSlab";
             String tipoEntidad = "IfcRelContainedInSpatialStructure";
 
             Object[] obj = new Object[1];
@@ -149,6 +148,8 @@ public class LeerPisos {
             rm.release();
         }
 
+        
+        // para ordenar los pisos de menor a mayor elevacion
         int posA = 0;
         int posB = 0;
         
@@ -164,12 +165,16 @@ public class LeerPisos {
     			
     		}	
 		}
-        
+        /*
         for (Piso pisoA : pisos) {
         		
     		pisoA.imprimir();	
 		}
+        */
         
+        LeerPlanchas leerPlanchas = new LeerPlanchas();
+        
+        leerPlanchas.leerPlanchas(pisos, rutaArchivo);
 
 	}
 
