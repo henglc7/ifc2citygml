@@ -165,16 +165,18 @@ public class LeerPisos {
     			
     		}	
 		}
-        /*
-        for (Piso pisoA : pisos) {
-        		
-    		pisoA.imprimir();	
-		}
-        */
+        
         
         LeerPlanchas leerPlanchas = new LeerPlanchas();
         
         leerPlanchas.leerPlanchas(pisos, rutaArchivo);
+        
+        
+        for (Piso pisoA : pisos) {
+        		
+    		pisoA.imprimir();	
+		}
+        
 
 	}
 

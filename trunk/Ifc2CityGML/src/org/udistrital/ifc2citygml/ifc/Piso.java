@@ -51,13 +51,21 @@ public class Piso {
 	
 	public void imprimir(){
 		String cadena = "";
-		cadena += "\nPiso \"" + getNombre() + "\"  ( id = " + getId() + " , elevacion = " + getElevacion() + " )";
+		cadena += "\nPiso \"" + getNombre() + "\"  ( id=" + getId() + " , elevacion=" + getElevacion() + " )";
 		
 		cadena += "\n  " + getPlanchas().size() + " Planchas:";
 		for (Plancha planchaActual : getPlanchas()) {
-			cadena += "\n  |__ Plancha ( id = " + planchaActual.getId() + " )";
-			
+			cadena += "\n  |__ Plancha ( id=" + planchaActual.getId() + " , ";
+			cadena += "placementRelTo=[ ";
+			for (Double coordenadaActual : planchaActual.getPlacementRelTo()) {
+				cadena += coordenadaActual + " ";
+			}
+			cadena += "]";
+			cadena += " )";	
 		}
+		
+		
+		
 		System.out.println(cadena);
 	}
 
