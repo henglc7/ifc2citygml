@@ -61,7 +61,14 @@ public class Piso {
 				cadena += coordenadaActual + " ";
 			}
 			cadena += "]";
-			cadena += " )";	
+			cadena += " ";	
+			
+			cadena += "relativePlacement=[ ";
+			for (Double coordenadaActual : planchaActual.getRelativePlacement()) {
+				cadena += coordenadaActual + " ";
+			}
+			cadena += "]";
+			cadena += " )";
 		}
 		
 		

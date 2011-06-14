@@ -29,6 +29,7 @@ public class LeerPlanchas {
             	for (Plancha planchaActual : pisoActual.getPlanchas()){
             		
             		planchaActual.setPlacementRelTo(new ArrayList());
+            		planchaActual.setRelativePlacement(new ArrayList());
             		
             		//se cuenta el numero de entidades
                     obj = new Object[4];
@@ -45,6 +46,8 @@ public class LeerPlanchas {
                     obj[0] = new Integer(1);
                     IDispatch plancha = (IDispatch) planchaEncontrada.method("Item", obj);
                     IDispatch planchaAtributos = (IDispatch) plancha.get("Attributes");
+                    
+                    //Se lee PlacementRelTo
                     
                     obj[0] = "ObjectPlacement";
                     IDispatch objectPlacement = (IDispatch) planchaAtributos.method("Item", obj);
@@ -80,6 +83,35 @@ public class LeerPlanchas {
                         posicionVector[0] = n;
                         double valor = (Double) coordinates.method("GetItem", posicionVector);
                         planchaActual.getPlacementRelTo().add(valor);
+                    }
+                    
+                  //Se lee RelativePlacement
+                    
+                    obj[0] = "ObjectPlacement";
+                    objectPlacement = (IDispatch) planchaAtributos.method("Item", obj);
+                    objectPlacementValor = (IDispatch) objectPlacement.get("Value");
+                    objectPlacementAtributos = (IDispatch) objectPlacementValor.get("Attributes");
+                    
+                    obj[0] = "RelativePlacement";
+                    relativePlacement = (IDispatch) objectPlacementAtributos.method("Item", obj);
+                    relativePlacementValor = (IDispatch) relativePlacement.get("Value");
+                    relativePlacementAtributos = (IDispatch) relativePlacementValor.get("Attributes");
+                    
+                    obj[0] = "Location";
+                    location = (IDispatch) relativePlacementAtributos.method("Item", obj);
+                    locationValor = (IDispatch) location.get("Value");
+                    locationAtributos = (IDispatch) locationValor.get("Attributes");
+                    
+                    obj[0] = "Coordinates";
+                    coordinates = (IDispatch) locationAtributos.method("Item", obj);
+                    
+                    coordenadas = Integer.valueOf((coordinates.get("Size").toString()));
+                    
+                    for(int n = 1; n<=Integer.valueOf(coordenadas);n++){
+                    	Object[] posicionVector = new Object[1];
+                        posicionVector[0] = n;
+                        double valor = (Double) coordinates.method("GetItem", posicionVector);
+                        planchaActual.getRelativePlacement().add(valor);
                     }
             	}
 				

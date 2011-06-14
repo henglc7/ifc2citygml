@@ -6,7 +6,21 @@ public class Plancha {
 
 	private String id;
 	
+	// ObjectPlacement
+	
 	private List<Double> placementRelTo;
+	
+	private List<Double> relativePlacement;
+	
+	
+
+	public List<Double> getRelativePlacement() {
+		return relativePlacement;
+	}
+
+	public void setRelativePlacement(List<Double> relativePlacement) {
+		this.relativePlacement = relativePlacement;
+	}
 
 	public List<Double> getPlacementRelTo() {
 		return placementRelTo;
