@@ -28,8 +28,9 @@ public class LeerPlanchas {
             for (Piso pisoActual : pisos) {
             	for (Plancha planchaActual : pisoActual.getPlanchas()){
             		
-            		planchaActual.setPlacementRelTo(new ArrayList());
-            		planchaActual.setRelativePlacement(new ArrayList());
+            		planchaActual.setPlacementRelTo_placementRelTo(new ArrayList());
+            		planchaActual.setPlacementRelTo_relativePlacement(new ArrayList());
+            		planchaActual.setRelativePlacement_location(new ArrayList());
             		
             		//se cuenta el numero de entidades
                     obj = new Object[4];
@@ -82,10 +83,44 @@ public class LeerPlanchas {
                     	Object[] posicionVector = new Object[1];
                         posicionVector[0] = n;
                         double valor = (Double) coordinates.method("GetItem", posicionVector);
-                        planchaActual.getPlacementRelTo().add(valor);
+                        planchaActual.getPlacementRelTo_placementRelTo().add(valor);
                     }
                     
                   //Se lee RelativePlacement
+                    
+                    obj[0] = "ObjectPlacement";
+                    objectPlacement = (IDispatch) planchaAtributos.method("Item", obj);
+                    objectPlacementValor = (IDispatch) objectPlacement.get("Value");
+                    objectPlacementAtributos = (IDispatch) objectPlacementValor.get("Attributes");
+                    
+                    obj[0] = "PlacementRelTo";
+                    placementRelTo = (IDispatch) objectPlacementAtributos.method("Item", obj);
+                    placementRelToValor = (IDispatch) placementRelTo.get("Value");
+                    placementRelToAtributos = (IDispatch) placementRelToValor.get("Attributes");
+                    
+                    obj[0] = "RelativePlacement";
+                    relativePlacement = (IDispatch) placementRelToAtributos.method("Item", obj);
+                    relativePlacementValor = (IDispatch) relativePlacement.get("Value");
+                    relativePlacementAtributos = (IDispatch) relativePlacementValor.get("Attributes");
+                    
+                    obj[0] = "Location";
+                    location = (IDispatch) relativePlacementAtributos.method("Item", obj);
+                    locationValor = (IDispatch) location.get("Value");
+                    locationAtributos = (IDispatch) locationValor.get("Attributes");
+                    
+                    obj[0] = "Coordinates";
+                    coordinates = (IDispatch) locationAtributos.method("Item", obj);
+                    
+                    coordenadas = Integer.valueOf((coordinates.get("Size").toString()));
+                    
+                    for(int n = 1; n<=Integer.valueOf(coordenadas);n++){
+                    	Object[] posicionVector = new Object[1];
+                        posicionVector[0] = n;
+                        double valor = (Double) coordinates.method("GetItem", posicionVector);
+                        planchaActual.getPlacementRelTo_relativePlacement().add(valor);
+                    }
+                    
+                    //Se lee location
                     
                     obj[0] = "ObjectPlacement";
                     objectPlacement = (IDispatch) planchaAtributos.method("Item", obj);
@@ -111,8 +146,16 @@ public class LeerPlanchas {
                     	Object[] posicionVector = new Object[1];
                         posicionVector[0] = n;
                         double valor = (Double) coordinates.method("GetItem", posicionVector);
-                        planchaActual.getRelativePlacement().add(valor);
+                        planchaActual.getRelativePlacement_location().add(valor);
                     }
+                    
+  
+                    //Se lee Representation
+                    
+                    obj[0] = "Representation";
+                    IDispatch representation = (IDispatch) planchaAtributos.method("Item", obj);
+                    IDispatch representationValor = (IDispatch) representation.get("Value");
+                    IDispatch representationAtributos = (IDispatch) representationValor.get("Attributes");
             	}
 				
 			}

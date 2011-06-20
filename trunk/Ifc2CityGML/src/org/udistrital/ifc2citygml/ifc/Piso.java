@@ -55,20 +55,28 @@ public class Piso {
 		
 		cadena += "\n  " + getPlanchas().size() + " Planchas:";
 		for (Plancha planchaActual : getPlanchas()) {
-			cadena += "\n  |__ Plancha ( id=" + planchaActual.getId() + " , ";
-			cadena += "placementRelTo=[ ";
-			for (Double coordenadaActual : planchaActual.getPlacementRelTo()) {
+			cadena += "\n  |__ Plancha";
+			cadena += "\n      id = " + planchaActual.getId();
+			cadena += "\n      placementRelTo";
+			cadena += "\n          placementRelTo = [ ";
+			for (Double coordenadaActual : planchaActual.getPlacementRelTo_placementRelTo()) {
 				cadena += coordenadaActual + " ";
 			}
 			cadena += "]";
-			cadena += " ";	
 			
-			cadena += "relativePlacement=[ ";
-			for (Double coordenadaActual : planchaActual.getRelativePlacement()) {
+			cadena += "\n          relativePlacement = [ ";
+			for (Double coordenadaActual : planchaActual.getPlacementRelTo_relativePlacement()) {
 				cadena += coordenadaActual + " ";
 			}
 			cadena += "]";
-			cadena += " )";
+			
+			cadena += "\n      relativePlacement";
+			cadena += "\n          location = [ ";
+			for (Double coordenadaActual : planchaActual.getRelativePlacement_location()) {
+				cadena += coordenadaActual + " ";
+			}
+			cadena += "]";
+
 		}
 		
 		
