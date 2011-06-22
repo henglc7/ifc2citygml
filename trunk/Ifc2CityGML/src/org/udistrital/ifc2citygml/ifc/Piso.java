@@ -76,6 +76,9 @@ public class Piso {
 				cadena += coordenadaActual + " ";
 			}
 			cadena += "]";
+			
+			cadena += "\n      Representation";
+			cadena += "\n          RepresentationType = " + planchaActual.getRepresentation_representationType();
 
 		}
 		

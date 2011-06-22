@@ -156,6 +156,32 @@ public class LeerPlanchas {
                     IDispatch representation = (IDispatch) planchaAtributos.method("Item", obj);
                     IDispatch representationValor = (IDispatch) representation.get("Value");
                     IDispatch representationAtributos = (IDispatch) representationValor.get("Attributes");
+                    
+                    
+                    obj[0] = "Representations";
+                    IDispatch representations = (IDispatch) representationAtributos.method("Item", obj);
+                  //aca podria ir un FOR
+                    Object[] posicionVector = new Object[1];
+                    posicionVector[0] = 1;
+                    //se asume que siempre va a existir UNA sola representacion (SOLO SE LEE LA POSICION 1)
+                    IDispatch representationsActualValor = (IDispatch) representations.method("GetItem", posicionVector);
+                    IDispatch representationsActualAtributos = (IDispatch) representationsActualValor.get("Attributes");
+
+                    obj[0] = "RepresentationType";
+                    IDispatch representationType = (IDispatch) representationsActualAtributos.method("Item", obj);
+                    String representationTypeValor = (String) representationType.get("Value");
+                    planchaActual.setRepresentation_representationType(representationTypeValor);
+                    
+
+                    obj[0] = "Items";
+                    IDispatch items = (IDispatch) representationsActualAtributos.method("Item", obj);
+                  //aca podria ir un FOR
+                    Object[] posicionVector2 = new Object[1];
+                    posicionVector2[0] = 1;
+                    //se asume que siempre va a existir UNA sola representacion (SOLO SE LEE LA POSICION 1)
+                    IDispatch itemsActualValor = (IDispatch) items.method("GetItem", posicionVector2);
+                    IDispatch itemsActualAtributos = (IDispatch) itemsActualValor.get("Attributes");
+                    
             	}
 				
 			}

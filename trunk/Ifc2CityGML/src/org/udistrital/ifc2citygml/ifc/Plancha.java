@@ -14,6 +14,19 @@ public class Plancha {
 	
 	private List<Double> relativePlacement_location;
 	
+	// Representation
+	
+	private String representation_representationType;
+	
+	public String getRepresentation_representationType() {
+		return representation_representationType;
+	}
+
+	public void setRepresentation_representationType(
+			String representation_representationType) {
+		this.representation_representationType = representation_representationType;
+	}
+
 	public List<Double> getRelativePlacement_location() {
 		return relativePlacement_location;
 	}
