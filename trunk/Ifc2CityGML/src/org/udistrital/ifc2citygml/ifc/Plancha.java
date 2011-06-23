@@ -18,6 +18,40 @@ public class Plancha {
 	
 	private String representation_representationType;
 	
+	private List<Double> representation_position_location;
+	
+	private List<Double> representation_position_axis;
+	
+	private List<Double> representation_position_refDirection;
+	
+
+	public List<Double> getRepresentation_position_location() {
+		return representation_position_location;
+	}
+
+	public void setRepresentation_position_location(
+			List<Double> representation_position_location) {
+		this.representation_position_location = representation_position_location;
+	}
+
+	public List<Double> getRepresentation_position_axis() {
+		return representation_position_axis;
+	}
+
+	public void setRepresentation_position_axis(
+			List<Double> representation_position_axis) {
+		this.representation_position_axis = representation_position_axis;
+	}
+
+	public List<Double> getRepresentation_position_refDirection() {
+		return representation_position_refDirection;
+	}
+
+	public void setRepresentation_position_refDirection(
+			List<Double> representation_position_refDirection) {
+		this.representation_position_refDirection = representation_position_refDirection;
+	}
+
 	public String getRepresentation_representationType() {
 		return representation_representationType;
 	}
