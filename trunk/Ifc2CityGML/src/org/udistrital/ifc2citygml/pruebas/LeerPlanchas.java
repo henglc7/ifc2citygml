@@ -31,6 +31,8 @@ public class LeerPlanchas {
             		planchaActual.setPlacementRelTo_placementRelTo(new ArrayList());
             		planchaActual.setPlacementRelTo_relativePlacement(new ArrayList());
             		planchaActual.setRelativePlacement_location(new ArrayList());
+            		planchaActual.setRepresentation_position_location(new ArrayList());
+            		
             		
             		//se cuenta el numero de entidades
                     obj = new Object[4];
@@ -181,6 +183,28 @@ public class LeerPlanchas {
                     //se asume que siempre va a existir UNA sola representacion (SOLO SE LEE LA POSICION 1)
                     IDispatch itemsActualValor = (IDispatch) items.method("GetItem", posicionVector2);
                     IDispatch itemsActualAtributos = (IDispatch) itemsActualValor.get("Attributes");
+                    
+                    obj[0] = "Position";
+                    IDispatch position = (IDispatch) itemsActualAtributos.method("Item", obj);
+                    IDispatch positionValor = (IDispatch) position.get("Value");
+                    IDispatch positionAtributos = (IDispatch) positionValor.get("Attributes");
+                    
+                    obj[0] = "Location";
+                    location = (IDispatch) positionAtributos.method("Item", obj);
+                    locationValor = (IDispatch) location.get("Value");
+                    locationAtributos = (IDispatch) locationValor.get("Attributes");
+                    
+                    obj[0] = "Coordinates";
+                    coordinates = (IDispatch) locationAtributos.method("Item", obj);
+                    
+                    coordenadas = Integer.valueOf((coordinates.get("Size").toString()));
+                    for(int n = 1; n<=Integer.valueOf(coordenadas);n++){
+                    	posicionVector = new Object[1];
+                        posicionVector[0] = n;
+                        double valor = (Double) coordinates.method("GetItem", posicionVector);
+                        planchaActual.getRepresentation_position_location().add(valor);
+                    }
+                    
                     
             	}
 				

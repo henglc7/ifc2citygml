@@ -79,6 +79,14 @@ public class Piso {
 			
 			cadena += "\n      Representation";
 			cadena += "\n          RepresentationType = " + planchaActual.getRepresentation_representationType();
+			cadena += "\n          Position ";
+			cadena += "\n              Location = [ ";
+			for (Double coordenadaActual : planchaActual.getRepresentation_position_location()) {
+				cadena += coordenadaActual + " ";
+			}
+			cadena += "]";
+			
+			
 
 		}
 		
