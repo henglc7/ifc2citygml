@@ -86,6 +86,17 @@ public class Piso {
 			}
 			cadena += "]";
 			
+			cadena += "\n              Axis = [ ";
+			for (Double coordenadaActual : planchaActual.getRepresentation_position_axis()) {
+				cadena += coordenadaActual + " ";
+			}
+			cadena += "]";
+			
+			cadena += "\n              RefDirection = [ ";
+			for (Double coordenadaActual : planchaActual.getRepresentation_position_refDirection()) {
+				cadena += coordenadaActual + " ";
+			}
+			cadena += "]";
 			
 
 		}

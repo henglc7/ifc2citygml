@@ -32,6 +32,8 @@ public class LeerPlanchas {
             		planchaActual.setPlacementRelTo_relativePlacement(new ArrayList());
             		planchaActual.setRelativePlacement_location(new ArrayList());
             		planchaActual.setRepresentation_position_location(new ArrayList());
+            		planchaActual.setRepresentation_position_axis(new ArrayList());
+            		planchaActual.setRepresentation_position_refDirection(new ArrayList());
             		
             		
             		//se cuenta el numero de entidades
@@ -205,6 +207,37 @@ public class LeerPlanchas {
                         planchaActual.getRepresentation_position_location().add(valor);
                     }
                     
+                    obj[0] = "Axis";
+                    IDispatch axis = (IDispatch) positionAtributos.method("Item", obj);
+                    IDispatch axisValor = (IDispatch) axis.get("Value");
+                    IDispatch axisAtributos = (IDispatch) axisValor.get("Attributes");
+                    
+                    obj[0] = "DirectionRatios";
+                    IDispatch directionRatios = (IDispatch) axisAtributos.method("Item", obj);
+                    
+                    coordenadas = Integer.valueOf((directionRatios.get("Size").toString()));
+                    for(int n = 1; n<=Integer.valueOf(coordenadas);n++){
+                    	posicionVector = new Object[1];
+                        posicionVector[0] = n;
+                        double valor = (Double) directionRatios.method("GetItem", posicionVector);
+                        planchaActual.getRepresentation_position_axis().add(valor);
+                    }
+                    
+                    obj[0] = "RefDirection";
+                    IDispatch refDirection = (IDispatch) positionAtributos.method("Item", obj);
+                    IDispatch refDirectionValor = (IDispatch) refDirection.get("Value");
+                    IDispatch refDirectionAtributos = (IDispatch) refDirectionValor.get("Attributes");
+                    
+                    obj[0] = "DirectionRatios";
+                    directionRatios = (IDispatch) refDirectionAtributos.method("Item", obj);
+                    
+                    coordenadas = Integer.valueOf((directionRatios.get("Size").toString()));
+                    for(int n = 1; n<=Integer.valueOf(coordenadas);n++){
+                    	posicionVector = new Object[1];
+                        posicionVector[0] = n;
+                        double valor = (Double) directionRatios.method("GetItem", posicionVector);
+                        planchaActual.getRepresentation_position_refDirection().add(valor);
+                    }
                     
             	}
 				
