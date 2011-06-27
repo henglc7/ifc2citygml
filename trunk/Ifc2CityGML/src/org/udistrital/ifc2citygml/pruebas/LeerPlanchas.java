@@ -6,6 +6,7 @@ import java.util.List;
 import jp.ne.so_net.ga2.no_ji.jcom.IDispatch;
 import jp.ne.so_net.ga2.no_ji.jcom.ReleaseManager;
 
+import org.udistrital.ifc2citygml.ifc.Coordenada;
 import org.udistrital.ifc2citygml.ifc.Piso;
 import org.udistrital.ifc2citygml.ifc.Plancha;
 
@@ -239,6 +240,97 @@ public class LeerPlanchas {
                         planchaActual.getRepresentation_position_refDirection().add(valor);
                     }
                     
+                    obj[0] = "SweptArea";
+                    IDispatch sweptArea = (IDispatch) itemsActualAtributos.method("Item", obj);
+                    IDispatch sweptAreaValor = (IDispatch) sweptArea.get("Value");
+                    IDispatch sweptAreaAtributos = (IDispatch) sweptAreaValor.get("Attributes");
+                    
+                    int at = (Integer) sweptAreaAtributos.get("Count");
+
+
+
+                    /*
+                    System.out.println(at + " Plancha : " + planchaActual.getId());
+                    System.out.println(at + " Tipo : " + sweptAreaValor.get("Type"));
+                    */
+                    
+                    //No se incluyen planchas de tipo IfcRectangleProfileDef
+                    if(sweptAreaValor.get("Type").equals("IfcArbitraryClosedProfileDef")){
+                        obj[0] = "OuterCurve";
+                        IDispatch outerCurve = (IDispatch) sweptAreaAtributos.method("Item", obj);
+                        IDispatch outerCurveValor = (IDispatch) outerCurve.get("Value");
+                        IDispatch outerCurveAtributos = (IDispatch) outerCurveValor.get("Attributes");
+                        
+                        if(outerCurveValor.get("Type").equals("IfcPolyline")){
+                        	
+                        	planchaActual.setRepresentation_points(new ArrayList());
+                        	
+                        	obj[0] = "Points";
+                            IDispatch points = (IDispatch) outerCurveAtributos.method("Item", obj);
+                            int puntos = Integer.valueOf((points.get("Size").toString()));
+                            
+                            for(int n = 1; n<=Integer.valueOf(puntos);n++){
+                            	posicionVector = new Object[1];
+                                posicionVector[0] = n;
+                                IDispatch pointsActualValor = (IDispatch) points.method("GetItem", posicionVector);
+                                IDispatch pointsActualAtributos = (IDispatch) pointsActualValor.get("Attributes");
+                                
+                                obj[0] = "Coordinates";
+                                coordinates = (IDispatch) pointsActualAtributos.method("Item", obj);
+                                
+                                coordenadas = Integer.valueOf((coordinates.get("Size").toString()));
+                                
+                                Coordenada coordenada = new Coordenada();
+                                
+                                for(int i = 1; i<=Integer.valueOf(coordenadas);i++){
+                                	
+                                	Object[] posicionVectorCoordenadas = new Object[1];
+                                	posicionVectorCoordenadas[0] = i;
+                                    double valor = (Double) coordinates.method("GetItem", posicionVectorCoordenadas);
+                                    switch (i) {
+									case 1: coordenada.setX(valor); break;
+									case 2: coordenada.setY(valor); break;
+									}
+                                }
+                                
+                                planchaActual.getRepresentation_points().add(coordenada);
+                                
+                            }                            
+                        	
+                        }else if(outerCurveValor.get("Type").equals("IfcCompositeCurve")){
+                        	
+                        }
+                        	
+                        	
+                        
+                        
+                        
+                        
+
+                    	
+                    }
+                    
+                    
+                    
+                    
+                    /*
+                    IDispatch outerCurveAtributos = (IDispatch) outerCurveValor.get("Attributes");
+                    */
+                    /*
+                    obj[0] = "Segments";
+                    IDispatch segments = (IDispatch) outerCurveAtributos.method("Item", obj);
+                    */
+                    
+                    //int segmentos = Integer.valueOf((segments.get("Size").toString()));
+                    /*
+                    for(int n = 1; n<=Integer.valueOf(segmentos);n++){
+                    	posicionVector = new Object[1];
+                        posicionVector[0] = n;
+                        IDispatch segmentoActual = (IDispatch) segments.method("GetItem", posicionVector);
+                        
+
+                    }
+                    */
             	}
 				
 			}

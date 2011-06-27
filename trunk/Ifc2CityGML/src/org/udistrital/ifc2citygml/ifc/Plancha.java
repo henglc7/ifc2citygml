@@ -24,6 +24,16 @@ public class Plancha {
 	
 	private List<Double> representation_position_refDirection;
 	
+	private List<Coordenada> representation_points;
+	
+
+	public List<Coordenada> getRepresentation_points() {
+		return representation_points;
+	}
+
+	public void setRepresentation_points(List<Coordenada> representation_points) {
+		this.representation_points = representation_points;
+	}
 
 	public List<Double> getRepresentation_position_location() {
 		return representation_position_location;

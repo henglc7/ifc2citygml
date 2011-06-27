@@ -98,6 +98,16 @@ public class Piso {
 			}
 			cadena += "]";
 			
+			if(planchaActual.getRepresentation_points()!=null){
+				cadena += "\n              Puntos (" + planchaActual.getRepresentation_points().size() + ") = [ ";
+				for (Coordenada coordenadaActual : planchaActual.getRepresentation_points()) {
+					cadena += coordenadaActual.getX() + " " + coordenadaActual.getY() + " , ";
+				}
+				cadena += "]";
+			}else{
+				
+			}
+			
 
 		}
 		
