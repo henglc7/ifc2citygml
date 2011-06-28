@@ -26,6 +26,16 @@ public class Plancha {
 	
 	private List<Coordenada> representation_points;
 	
+	private List<Segmento> representation_segmentos;
+	
+
+	public List<Segmento> getRepresentation_segmentos() {
+		return representation_segmentos;
+	}
+
+	public void setRepresentation_segmentos(List<Segmento> representation_segmentos) {
+		this.representation_segmentos = representation_segmentos;
+	}
 
 	public List<Coordenada> getRepresentation_points() {
 		return representation_points;

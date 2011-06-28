@@ -104,8 +104,15 @@ public class Piso {
 					cadena += coordenadaActual.getX() + " " + coordenadaActual.getY() + " , ";
 				}
 				cadena += "]";
-			}else{
-				
+			}
+			
+			if(planchaActual.getRepresentation_segmentos()!=null){
+				cadena += "\n              Segmentos (" + planchaActual.getRepresentation_segmentos().size() + ") = [ ";
+				for (Segmento segmentoActual : planchaActual.getRepresentation_segmentos()) {
+					cadena += segmentoActual.getP0().getX() + " " + segmentoActual.getP0().getY() + " , ";
+					cadena += segmentoActual.getP1().getX() + " " + segmentoActual.getP1().getY() + " , ";
+				}
+				cadena += "]";
 			}
 			
 
