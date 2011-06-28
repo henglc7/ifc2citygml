@@ -79,6 +79,7 @@ public class Piso {
 			
 			cadena += "\n      Representation";
 			cadena += "\n          RepresentationType = " + planchaActual.getRepresentation_representationType();
+			cadena += "\n          SweptAreaType = " + planchaActual.getRepresentation_representation_SweptAreaType();
 			cadena += "\n          Position ";
 			cadena += "\n              Location = [ ";
 			for (Double coordenadaActual : planchaActual.getRepresentation_position_location()) {
@@ -99,7 +100,7 @@ public class Piso {
 			cadena += "]";
 			
 			if(planchaActual.getRepresentation_points()!=null){
-				cadena += "\n              Puntos (" + planchaActual.getRepresentation_points().size() + ") = [ ";
+				cadena += "\n          Puntos (" + planchaActual.getRepresentation_points().size() + ") = [ ";
 				for (Coordenada coordenadaActual : planchaActual.getRepresentation_points()) {
 					cadena += coordenadaActual.getX() + " " + coordenadaActual.getY() + " , ";
 				}
@@ -107,7 +108,7 @@ public class Piso {
 			}
 			
 			if(planchaActual.getRepresentation_segmentos()!=null){
-				cadena += "\n              Segmentos (" + planchaActual.getRepresentation_segmentos().size() + ") = [ ";
+				cadena += "\n          Segmentos (" + planchaActual.getRepresentation_segmentos().size() + ") = [ ";
 				for (Segmento segmentoActual : planchaActual.getRepresentation_segmentos()) {
 					cadena += segmentoActual.getP0().getX() + " " + segmentoActual.getP0().getY() + " , ";
 					cadena += segmentoActual.getP1().getX() + " " + segmentoActual.getP1().getY() + " , ";
@@ -115,6 +116,14 @@ public class Piso {
 				cadena += "]";
 			}
 			
+			if(planchaActual.getRectangulo()!=null){
+				Rectangulo rec = planchaActual.getRectangulo(); 
+				cadena += "\n          Rectangulo";
+				cadena += "\n              Location = [ " + rec.getPosition_location().getX() + " " + rec.getPosition_location().getY() + " ]";
+				cadena += "\n              RefDirection = [ " + rec.getPosition_refDirection().getX() + " " + rec.getPosition_refDirection().getY() + " ]";
+				cadena += "\n              XDim = " + rec.getXDim();
+				cadena += "\n              YDim = " + rec.getYDim();
+			}
 
 		}
 		

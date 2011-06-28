@@ -18,16 +18,39 @@ public class Plancha {
 	
 	private String representation_representationType;
 	
+	private String representation_representation_SweptAreaType;
+	
+	public String getRepresentation_representation_SweptAreaType() {
+		return representation_representation_SweptAreaType;
+	}
+
+	public void setRepresentation_representation_SweptAreaType(
+			String representation_representation_SweptAreaType) {
+		this.representation_representation_SweptAreaType = representation_representation_SweptAreaType;
+	}
+
 	private List<Double> representation_position_location;
 	
 	private List<Double> representation_position_axis;
 	
 	private List<Double> representation_position_refDirection;
 	
+	// estos 3 atributos son mutuamente excluyentes
+	
 	private List<Coordenada> representation_points;
 	
 	private List<Segmento> representation_segmentos;
 	
+	private Rectangulo rectangulo;
+	
+
+	public Rectangulo getRectangulo() {
+		return rectangulo;
+	}
+
+	public void setRectangulo(Rectangulo rectangulo) {
+		this.rectangulo = rectangulo;
+	}
 
 	public List<Segmento> getRepresentation_segmentos() {
 		return representation_segmentos;

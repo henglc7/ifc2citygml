@@ -9,6 +9,7 @@ import jp.ne.so_net.ga2.no_ji.jcom.ReleaseManager;
 import org.udistrital.ifc2citygml.ifc.Coordenada;
 import org.udistrital.ifc2citygml.ifc.Piso;
 import org.udistrital.ifc2citygml.ifc.Plancha;
+import org.udistrital.ifc2citygml.ifc.Rectangulo;
 import org.udistrital.ifc2citygml.ifc.Segmento;
 
 public class LeerPlanchas {
@@ -256,7 +257,9 @@ public class LeerPlanchas {
                     System.out.println(at + " Tipo : " + sweptAreaValor.get("Type"));
                     */
                     
-                    //No se incluyen planchas de tipo IfcRectangleProfileDef
+                    planchaActual.setRepresentation_representation_SweptAreaType(sweptAreaValor.get("Type").toString());
+                    
+                    
                     if(sweptAreaValor.get("Type").equals("IfcArbitraryClosedProfileDef")){
                         obj[0] = "OuterCurve";
                         IDispatch outerCurve = (IDispatch) sweptAreaAtributos.method("Item", obj);
@@ -383,43 +386,86 @@ public class LeerPlanchas {
                                 	
                                 	
                                 }
-                                
-                                
                             }
                         }
-                        	
-                        	
+                    }
+                    
+                    if(sweptAreaValor.get("Type").equals("IfcRectangleProfileDef")){
                         
-                        
-                        
-                        
-
+                    	Rectangulo rec = new Rectangulo();
                     	
-                    }
-                    
-                    
-                    
-                    
-                    /*
-                    IDispatch outerCurveAtributos = (IDispatch) outerCurveValor.get("Attributes");
-                    */
-                    /*
-                    obj[0] = "Segments";
-                    IDispatch segments = (IDispatch) outerCurveAtributos.method("Item", obj);
-                    */
-                    
-                    //int segmentos = Integer.valueOf((segments.get("Size").toString()));
-                    /*
-                    for(int n = 1; n<=Integer.valueOf(segmentos);n++){
-                    	posicionVector = new Object[1];
-                        posicionVector[0] = n;
-                        IDispatch segmentoActual = (IDispatch) segments.method("GetItem", posicionVector);
+                    	obj[0] = "XDim";
+                        IDispatch xdim = (IDispatch) sweptAreaAtributos.method("Item", obj);
+                        double xdimValor = (Double) xdim.get("Value");
+                        rec.setXDim(xdimValor);
                         
+                        obj[0] = "YDim";
+                        IDispatch ydim = (IDispatch) sweptAreaAtributos.method("Item", obj);
+                        double ydimValor = (Double) ydim.get("Value");
+                        rec.setYDim(ydimValor);
+                        
+                        
+                        obj[0] = "Position";
+                        position = (IDispatch) sweptAreaAtributos.method("Item", obj);
+                        positionValor = (IDispatch) position.get("Value");
+                        positionAtributos = (IDispatch) positionValor.get("Attributes");
+                        
+                        obj[0] = "Location";
+                        location = (IDispatch) positionAtributos.method("Item", obj);
+                        locationValor = (IDispatch) location.get("Value");
+                        locationAtributos = (IDispatch) locationValor.get("Attributes");
+                        
+                        obj[0] = "Coordinates";
+                        coordinates = (IDispatch) locationAtributos.method("Item", obj);
+                        
+                        coordenadas = Integer.valueOf((coordinates.get("Size").toString()));
+                        
+                        Coordenada coordenada = new Coordenada();
+                        
+                        for(int i = 1; i<=Integer.valueOf(coordenadas);i++){
+                        	
+                        	Object[] posicionVectorCoordenadas = new Object[1];
+                        	posicionVectorCoordenadas[0] = i;
+                            double valor = (Double) coordinates.method("GetItem", posicionVectorCoordenadas);
+                            switch (i) {
+							case 1: coordenada.setX(valor); break;
+							case 2: coordenada.setY(valor); break;
+							}
+                        }
+                        
+                        rec.setPosition_location(coordenada);
 
+                        
+                        obj[0] = "RefDirection";
+                        refDirection = (IDispatch) positionAtributos.method("Item", obj);
+                        refDirectionValor = (IDispatch) refDirection.get("Value");
+                        refDirectionAtributos = (IDispatch) refDirectionValor.get("Attributes");
+                        
+                        obj[0] = "DirectionRatios";
+                        coordinates = (IDispatch) refDirectionAtributos.method("Item", obj);
+                        
+                        coordenadas = Integer.valueOf((coordinates.get("Size").toString()));
+                        
+                        coordenada = new Coordenada();
+                        
+                        for(int i = 1; i<=Integer.valueOf(coordenadas);i++){
+                        	
+                        	Object[] posicionVectorCoordenadas = new Object[1];
+                        	posicionVectorCoordenadas[0] = i;
+                            double valor = (Double) coordinates.method("GetItem", posicionVectorCoordenadas);
+                            switch (i) {
+							case 1: coordenada.setX(valor); break;
+							case 2: coordenada.setY(valor); break;
+							}
+                        }
+                        
+                        rec.setPosition_refDirection(coordenada);
+                        
+                        planchaActual.setRectangulo(rec);
+                        
                     }
-                    */
+                                        
             	}
-				
 			}
 			
 		} catch (Exception e) {
