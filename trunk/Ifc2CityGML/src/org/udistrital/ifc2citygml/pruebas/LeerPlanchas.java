@@ -31,12 +31,12 @@ public class LeerPlanchas {
             for (Piso pisoActual : pisos) {
             	for (Plancha planchaActual : pisoActual.getPlanchas()){
             		
-            		planchaActual.setPlacementRelTo_placementRelTo(new ArrayList());
-            		planchaActual.setPlacementRelTo_relativePlacement(new ArrayList());
-            		planchaActual.setRelativePlacement_location(new ArrayList());
-            		planchaActual.setRepresentation_position_location(new ArrayList());
-            		planchaActual.setRepresentation_position_axis(new ArrayList());
-            		planchaActual.setRepresentation_position_refDirection(new ArrayList());
+            		planchaActual.setPlacementRelTo_placementRelTo(new Coordenada());
+            		planchaActual.setPlacementRelTo_relativePlacement(new Coordenada());
+            		planchaActual.setRelativePlacement_location(new Coordenada());
+            		planchaActual.setRepresentation_position_location(new Coordenada());
+            		planchaActual.setRepresentation_position_axis(new Coordenada());
+            		planchaActual.setRepresentation_position_refDirection(new Coordenada());
             		
             		
             		//se cuenta el numero de entidades
@@ -87,12 +87,21 @@ public class LeerPlanchas {
                     IDispatch coordinates = (IDispatch) locationAtributos.method("Item", obj);
                     
                     int coordenadas = Integer.valueOf((coordinates.get("Size").toString()));
+                    
+                    Coordenada coord = new Coordenada();
                     for(int n = 1; n<=Integer.valueOf(coordenadas);n++){
                     	Object[] posicionVector = new Object[1];
                         posicionVector[0] = n;
                         double valor = (Double) coordinates.method("GetItem", posicionVector);
-                        planchaActual.getPlacementRelTo_placementRelTo().add(valor);
+                        
+                        switch (n) {
+						case 1: coord.setX(valor); break;
+						case 2: coord.setY(valor); break;
+						case 3: coord.setZ(valor); break;
+						}
+                        
                     }
+                    planchaActual.setPlacementRelTo_placementRelTo(coord);
                     
                   //Se lee RelativePlacement
                     
@@ -121,12 +130,20 @@ public class LeerPlanchas {
                     
                     coordenadas = Integer.valueOf((coordinates.get("Size").toString()));
                     
+                    coord = new Coordenada();
                     for(int n = 1; n<=Integer.valueOf(coordenadas);n++){
                     	Object[] posicionVector = new Object[1];
                         posicionVector[0] = n;
                         double valor = (Double) coordinates.method("GetItem", posicionVector);
-                        planchaActual.getPlacementRelTo_relativePlacement().add(valor);
+                        
+                        switch (n) {
+						case 1: coord.setX(valor); break;
+						case 2: coord.setY(valor); break;
+						case 3: coord.setZ(valor); break;
+						}
+
                     }
+                    planchaActual.setPlacementRelTo_relativePlacement(coord);
                     
                     //Se lee location
                     
@@ -150,12 +167,20 @@ public class LeerPlanchas {
                     
                     coordenadas = Integer.valueOf((coordinates.get("Size").toString()));
                     
+                    coord = new Coordenada();
                     for(int n = 1; n<=Integer.valueOf(coordenadas);n++){
                     	Object[] posicionVector = new Object[1];
                         posicionVector[0] = n;
                         double valor = (Double) coordinates.method("GetItem", posicionVector);
-                        planchaActual.getRelativePlacement_location().add(valor);
+                        
+                        switch (n) {
+						case 1: coord.setX(valor); break;
+						case 2: coord.setY(valor); break;
+						case 3: coord.setZ(valor); break;
+						}
+                        
                     }
+                    planchaActual.setRelativePlacement_location(coord);
                     
   
                     //Se lee Representation
@@ -204,12 +229,21 @@ public class LeerPlanchas {
                     coordinates = (IDispatch) locationAtributos.method("Item", obj);
                     
                     coordenadas = Integer.valueOf((coordinates.get("Size").toString()));
+                    
+                    coord = new Coordenada();
                     for(int n = 1; n<=Integer.valueOf(coordenadas);n++){
                     	posicionVector = new Object[1];
                         posicionVector[0] = n;
                         double valor = (Double) coordinates.method("GetItem", posicionVector);
-                        planchaActual.getRepresentation_position_location().add(valor);
+                        
+                        switch (n) {
+						case 1: coord.setX(valor); break;
+						case 2: coord.setY(valor); break;
+						case 3: coord.setZ(valor); break;
+						}
+                        
                     }
+                    planchaActual.setRepresentation_position_location(coord);
                     
                     obj[0] = "Axis";
                     IDispatch axis = (IDispatch) positionAtributos.method("Item", obj);
@@ -220,12 +254,21 @@ public class LeerPlanchas {
                     IDispatch directionRatios = (IDispatch) axisAtributos.method("Item", obj);
                     
                     coordenadas = Integer.valueOf((directionRatios.get("Size").toString()));
+                    
+                    coord = new Coordenada();
                     for(int n = 1; n<=Integer.valueOf(coordenadas);n++){
                     	posicionVector = new Object[1];
                         posicionVector[0] = n;
                         double valor = (Double) directionRatios.method("GetItem", posicionVector);
-                        planchaActual.getRepresentation_position_axis().add(valor);
+                        
+                        switch (n) {
+						case 1: coord.setX(valor); break;
+						case 2: coord.setY(valor); break;
+						case 3: coord.setZ(valor); break;
+						}
+                        
                     }
+                    planchaActual.setRepresentation_position_axis(coord);
                     
                     obj[0] = "RefDirection";
                     IDispatch refDirection = (IDispatch) positionAtributos.method("Item", obj);
@@ -236,12 +279,21 @@ public class LeerPlanchas {
                     directionRatios = (IDispatch) refDirectionAtributos.method("Item", obj);
                     
                     coordenadas = Integer.valueOf((directionRatios.get("Size").toString()));
+                    
+                    coord = new Coordenada();
                     for(int n = 1; n<=Integer.valueOf(coordenadas);n++){
                     	posicionVector = new Object[1];
                         posicionVector[0] = n;
                         double valor = (Double) directionRatios.method("GetItem", posicionVector);
-                        planchaActual.getRepresentation_position_refDirection().add(valor);
+                        
+                        switch (n) {
+						case 1: coord.setX(valor); break;
+						case 2: coord.setY(valor); break;
+						case 3: coord.setZ(valor); break;
+						}
+                        
                     }
+                    planchaActual.setRepresentation_position_refDirection(coord);
                     
                     obj[0] = "SweptArea";
                     IDispatch sweptArea = (IDispatch) itemsActualAtributos.method("Item", obj);

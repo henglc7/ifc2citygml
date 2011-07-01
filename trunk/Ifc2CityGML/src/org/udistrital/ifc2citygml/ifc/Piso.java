@@ -59,22 +59,22 @@ public class Piso {
 			cadena += "\n      id = " + planchaActual.getId();
 			cadena += "\n      placementRelTo";
 			cadena += "\n          placementRelTo = [ ";
-			for (Double coordenadaActual : planchaActual.getPlacementRelTo_placementRelTo()) {
-				cadena += coordenadaActual + " ";
-			}
+			cadena += planchaActual.getPlacementRelTo_placementRelTo().getX() + " ";
+			cadena += planchaActual.getPlacementRelTo_placementRelTo().getY() + " ";
+			cadena += planchaActual.getPlacementRelTo_placementRelTo().getZ() + " ";
 			cadena += "]";
 			
 			cadena += "\n          relativePlacement = [ ";
-			for (Double coordenadaActual : planchaActual.getPlacementRelTo_relativePlacement()) {
-				cadena += coordenadaActual + " ";
-			}
+			cadena += planchaActual.getPlacementRelTo_relativePlacement().getX() + " ";
+			cadena += planchaActual.getPlacementRelTo_relativePlacement().getY() + " ";
+			cadena += planchaActual.getPlacementRelTo_relativePlacement().getZ() + " ";
 			cadena += "]";
 			
 			cadena += "\n      relativePlacement";
 			cadena += "\n          location = [ ";
-			for (Double coordenadaActual : planchaActual.getRelativePlacement_location()) {
-				cadena += coordenadaActual + " ";
-			}
+			cadena += planchaActual.getRelativePlacement_location().getX() + " ";
+			cadena += planchaActual.getRelativePlacement_location().getY() + " ";
+			cadena += planchaActual.getRelativePlacement_location().getZ() + " ";
 			cadena += "]";
 			
 			cadena += "\n      Representation";
@@ -82,21 +82,21 @@ public class Piso {
 			cadena += "\n          SweptAreaType = " + planchaActual.getRepresentation_representation_SweptAreaType();
 			cadena += "\n          Position ";
 			cadena += "\n              Location = [ ";
-			for (Double coordenadaActual : planchaActual.getRepresentation_position_location()) {
-				cadena += coordenadaActual + " ";
-			}
+			cadena += planchaActual.getRepresentation_position_location().getX() + " ";
+			cadena += planchaActual.getRepresentation_position_location().getY() + " ";
+			cadena += planchaActual.getRepresentation_position_location().getZ() + " ";
 			cadena += "]";
 			
 			cadena += "\n              Axis = [ ";
-			for (Double coordenadaActual : planchaActual.getRepresentation_position_axis()) {
-				cadena += coordenadaActual + " ";
-			}
+			cadena += planchaActual.getRepresentation_position_axis().getX() + " ";
+			cadena += planchaActual.getRepresentation_position_axis().getY() + " ";
+			cadena += planchaActual.getRepresentation_position_axis().getZ() + " ";
 			cadena += "]";
 			
 			cadena += "\n              RefDirection = [ ";
-			for (Double coordenadaActual : planchaActual.getRepresentation_position_refDirection()) {
-				cadena += coordenadaActual + " ";
-			}
+			cadena += planchaActual.getRepresentation_position_refDirection().getX() + " ";
+			cadena += planchaActual.getRepresentation_position_refDirection().getY() + " ";
+			cadena += planchaActual.getRepresentation_position_refDirection().getZ() + " ";
 			cadena += "]";
 			
 			if(planchaActual.getRepresentation_points()!=null){

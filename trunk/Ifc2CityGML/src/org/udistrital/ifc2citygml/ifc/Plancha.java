@@ -8,11 +8,11 @@ public class Plancha {
 	
 	// ObjectPlacement
 	
-	private List<Double> placementRelTo_placementRelTo;
+	private Coordenada placementRelTo_placementRelTo;
 	
-	private List<Double> placementRelTo_relativePlacement;
+	private Coordenada placementRelTo_relativePlacement;
 	
-	private List<Double> relativePlacement_location;
+	private Coordenada relativePlacement_location;
 	
 	// Representation
 	
@@ -29,11 +29,11 @@ public class Plancha {
 		this.representation_representation_SweptAreaType = representation_representation_SweptAreaType;
 	}
 
-	private List<Double> representation_position_location;
+	private Coordenada representation_position_location;
 	
-	private List<Double> representation_position_axis;
+	private Coordenada representation_position_axis;
 	
-	private List<Double> representation_position_refDirection;
+	private Coordenada representation_position_refDirection;
 	
 	// estos 3 atributos son mutuamente excluyentes
 	
@@ -68,30 +68,30 @@ public class Plancha {
 		this.representation_points = representation_points;
 	}
 
-	public List<Double> getRepresentation_position_location() {
+	public Coordenada getRepresentation_position_location() {
 		return representation_position_location;
 	}
 
 	public void setRepresentation_position_location(
-			List<Double> representation_position_location) {
+			Coordenada representation_position_location) {
 		this.representation_position_location = representation_position_location;
 	}
 
-	public List<Double> getRepresentation_position_axis() {
+	public Coordenada getRepresentation_position_axis() {
 		return representation_position_axis;
 	}
 
 	public void setRepresentation_position_axis(
-			List<Double> representation_position_axis) {
+			Coordenada representation_position_axis) {
 		this.representation_position_axis = representation_position_axis;
 	}
 
-	public List<Double> getRepresentation_position_refDirection() {
+	public Coordenada getRepresentation_position_refDirection() {
 		return representation_position_refDirection;
 	}
 
 	public void setRepresentation_position_refDirection(
-			List<Double> representation_position_refDirection) {
+			Coordenada representation_position_refDirection) {
 		this.representation_position_refDirection = representation_position_refDirection;
 	}
 
@@ -104,30 +104,30 @@ public class Plancha {
 		this.representation_representationType = representation_representationType;
 	}
 
-	public List<Double> getRelativePlacement_location() {
+	public Coordenada getRelativePlacement_location() {
 		return relativePlacement_location;
 	}
 
 	public void setRelativePlacement_location(
-			List<Double> relativePlacement_location) {
+			Coordenada relativePlacement_location) {
 		this.relativePlacement_location = relativePlacement_location;
 	}
 
-	public List<Double> getPlacementRelTo_placementRelTo() {
+	public Coordenada getPlacementRelTo_placementRelTo() {
 		return placementRelTo_placementRelTo;
 	}
 
 	public void setPlacementRelTo_placementRelTo(
-			List<Double> placementRelTo_placementRelTo) {
+			Coordenada placementRelTo_placementRelTo) {
 		this.placementRelTo_placementRelTo = placementRelTo_placementRelTo;
 	}
 
-	public List<Double> getPlacementRelTo_relativePlacement() {
+	public Coordenada getPlacementRelTo_relativePlacement() {
 		return placementRelTo_relativePlacement;
 	}
 
 	public void setPlacementRelTo_relativePlacement(
-			List<Double> placementRelTo_relativePlacement) {
+			Coordenada placementRelTo_relativePlacement) {
 		this.placementRelTo_relativePlacement = placementRelTo_relativePlacement;
 	}
 
