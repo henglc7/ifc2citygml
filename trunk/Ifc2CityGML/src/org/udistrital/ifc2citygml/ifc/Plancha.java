@@ -1,5 +1,6 @@
 package org.udistrital.ifc2citygml.ifc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Plancha {
@@ -43,6 +44,19 @@ public class Plancha {
 	
 	private Rectangulo rectangulo;
 	
+	//este atributo contiene las coordenadas absolutas del perfil de la plancha
+	//sin importar si se deriva de representation_points, representation_segmentos o rectangulo
+	
+	private List<Coordenada> coordenadasAbsolutas;
+	
+
+	public List<Coordenada> getCoordenadasAbsolutas() {
+		return coordenadasAbsolutas;
+	}
+
+	public void setCoordenadasAbsolutas(List<Coordenada> coordenadasAbsolutas) {
+		this.coordenadasAbsolutas = coordenadasAbsolutas;
+	}
 
 	public Rectangulo getRectangulo() {
 		return rectangulo;
@@ -138,6 +152,54 @@ public class Plancha {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public void calcularCoordenadasAbsolutas(){
+		
+		if(representation_points!=null){
+			//coordenadasAbsolutas.addAll(getRepresentation_points());
+			
+			coordenadasAbsolutas = new ArrayList();
+			
+			for (Coordenada coordenadaActual : representation_points) {
+				double xActual = coordenadaActual.getX();
+				
+				if(representation_position_refDirection.getX()!=0){
+					xActual = xActual * representation_position_refDirection.getX();	
+				}
+				
+				xActual += placementRelTo_placementRelTo.getX();
+				xActual += placementRelTo_relativePlacement.getX();
+				xActual += relativePlacement_location.getX();
+				
+				xActual += representation_position_location.getX();
+				
+				
+				double yActual = coordenadaActual.getY();
+				
+				if(representation_position_refDirection.getY()!=0){
+					yActual = yActual * representation_position_refDirection.getY();	
+				}
+				
+				yActual += placementRelTo_placementRelTo.getY();
+				yActual += placementRelTo_relativePlacement.getY();
+				yActual += relativePlacement_location.getY();
+				
+				yActual += representation_position_location.getY();
+				
+				
+				Coordenada coord = new Coordenada();
+				coord.setX(xActual);
+				coord.setY(yActual);
+				coordenadasAbsolutas.add(coord);
+			}
+		}else if(representation_segmentos!=null){
+			
+		}else if(rectangulo!=null){
+			
+		}
+		
+		
 	}
 
 }

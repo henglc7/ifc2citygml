@@ -516,7 +516,9 @@ public class LeerPlanchas {
                         planchaActual.setRectangulo(rec);
                         
                     }
-                                        
+                         
+                    //se calculan las coordenadas absolutas de la geometria que define el perfil de la plancha
+                    planchaActual.calcularCoordenadasAbsolutas();
             	}
 			}
 			

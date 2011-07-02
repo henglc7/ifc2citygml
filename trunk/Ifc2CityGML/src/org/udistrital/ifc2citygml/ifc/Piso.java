@@ -124,6 +124,14 @@ public class Piso {
 				cadena += "\n              XDim = " + rec.getXDim();
 				cadena += "\n              YDim = " + rec.getYDim();
 			}
+			
+			if(planchaActual.getCoordenadasAbsolutas()!=null){
+				cadena += "\n          Absolutas (" + planchaActual.getCoordenadasAbsolutas().size() + ") = [ ";
+				for (Coordenada coordenadaActual : planchaActual.getCoordenadasAbsolutas()) {
+					cadena += coordenadaActual.getX() + " " + coordenadaActual.getY() + " , ";
+				}
+				cadena += "]";
+			}
 
 		}
 		
