@@ -197,6 +197,87 @@ public class Plancha {
 			
 		}else if(rectangulo!=null){
 			
+			List<Coordenada> cuatroEsquinas = new ArrayList();
+			
+			double ancho = 0;
+			double alto = 0;
+			
+			//eje X relativo igual a ejex X real
+			if(rectangulo.getPosition_refDirection().getX()!=0){
+				ancho = rectangulo.getXDim();
+				alto = rectangulo.getYDim();
+			}
+			
+			//eje X relativo igual a eje Y real
+			if(rectangulo.getPosition_refDirection().getY()!=0){
+				ancho = rectangulo.getYDim();
+				alto = rectangulo.getXDim();
+			}
+			
+			Coordenada coord = new Coordenada();
+			coord.setX((ancho / 2) * -1);
+			coord.setY((alto / 2) * -1);
+			cuatroEsquinas.add(coord); //inferior ixzquierda
+			
+			coord = new Coordenada();
+			coord.setX((ancho / 2) * -1);
+			coord.setY((alto / 2));
+			cuatroEsquinas.add(coord);//superior izquierda
+			
+			coord = new Coordenada();
+			coord.setX((ancho / 2));
+			coord.setY((alto / 2));
+			cuatroEsquinas.add(coord);//superior derecha
+			
+			coord = new Coordenada();
+			coord.setX((ancho / 2));
+			coord.setY((alto / 2) * -1);
+			cuatroEsquinas.add(coord);//superior derecha
+			
+			coordenadasAbsolutas = new ArrayList();
+			
+			int c = 0;
+			Coordenada primera = null;
+			for (Coordenada coordenadaActual : cuatroEsquinas) {
+				double xActual = coordenadaActual.getX();
+				
+				if(representation_position_refDirection.getX()!=0){
+					xActual = xActual * representation_position_refDirection.getX();	
+				}
+				
+				xActual += placementRelTo_placementRelTo.getX();
+				xActual += placementRelTo_relativePlacement.getX();
+				xActual += relativePlacement_location.getX();
+				
+				xActual += representation_position_location.getX();
+				
+				
+				double yActual = coordenadaActual.getY();
+				
+				if(representation_position_refDirection.getY()!=0){
+					yActual = yActual * representation_position_refDirection.getY();	
+				}
+				
+				yActual += placementRelTo_placementRelTo.getY();
+				yActual += placementRelTo_relativePlacement.getY();
+				yActual += relativePlacement_location.getY();
+				
+				yActual += representation_position_location.getY();
+				
+				
+				coord = new Coordenada();
+				coord.setX(xActual);
+				coord.setY(yActual);
+				coordenadasAbsolutas.add(coord);
+				
+				if(c==0){
+					primera = coord;
+				}
+				c++;
+			}
+			//se añade la primer para cerrar el poligono
+			coordenadasAbsolutas.add(primera);
+
 		}
 		
 		
