@@ -194,6 +194,56 @@ public class Plancha {
 				coordenadasAbsolutas.add(coord);
 			}
 		}else if(representation_segmentos!=null){
+
+			coordenadasAbsolutas = new ArrayList();
+			
+			int contador = 0;
+			
+			for (Segmento segmentoActual : representation_segmentos) {
+				
+				Coordenada primeraCoordenadaDelPoligono = new Coordenada();
+				Coordenada coordenadaActual;
+				
+				coordenadaActual = segmentoActual.getP0();
+				
+				double xActual = coordenadaActual.getX();
+				
+				if(representation_position_refDirection.getX()!=0){
+					xActual = xActual * representation_position_refDirection.getX();	
+				}
+				
+				xActual += placementRelTo_placementRelTo.getX();
+				xActual += placementRelTo_relativePlacement.getX();
+				xActual += relativePlacement_location.getX();
+				
+				xActual += representation_position_location.getX();
+				
+				
+				double yActual = coordenadaActual.getY();
+				
+				if(representation_position_refDirection.getY()!=0){
+					yActual = yActual * representation_position_refDirection.getY();	
+				}
+				
+				yActual += placementRelTo_placementRelTo.getY();
+				yActual += placementRelTo_relativePlacement.getY();
+				yActual += relativePlacement_location.getY();
+				
+				yActual += representation_position_location.getY();
+				
+				
+				Coordenada coord = new Coordenada();
+				coord.setX(xActual);
+				coord.setY(yActual);
+				coordenadasAbsolutas.add(coord);	
+				
+				contador++;
+				
+				if(contador==representation_segmentos.size()){
+					coordenadasAbsolutas.add(coordenadasAbsolutas.get(0));
+				}
+			}
+			
 			
 		}else if(rectangulo!=null){
 			
