@@ -6,6 +6,10 @@ import java.util.List;
 import org.udistrital.ifc2citygml.ifc.Piso;
 import org.udistrital.ifc2citygml.ifc.Plancha;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.MultiPolygon;
+
 import jp.ne.so_net.ga2.no_ji.jcom.IDispatch;
 import jp.ne.so_net.ga2.no_ji.jcom.ReleaseManager;
 
@@ -120,7 +124,11 @@ public class LeerPisos {
                             Plancha planchaActual = new Plancha();
                             planchaActual.setId(planchaGlobalIdValor);
                             
-                            pisoActual.getPlanchas().add(planchaActual);
+                            //esta plancha esta repetida, hay que descartarla
+                            if(!planchaGlobalIdValor.equals("2mDRgqfefBUB5bQoraYccC")){
+                            	pisoActual.getPlanchas().add(planchaActual);
+                            }
+                            
                             
                             /*
                             indice[0] = "ObjectPlacement";
@@ -166,18 +174,41 @@ public class LeerPisos {
     		}	
 		}
         
-        
-        LeerPlanchas leerPlanchas = new LeerPlanchas();
-        
-        leerPlanchas.leerPlanchas(pisos, rutaArchivo);
-        
-        
+        //se borran los pisos que no tengan planchas
+        List<Piso> borrar = new ArrayList();
         for (Piso pisoA : pisos) {
-        		
-    		pisoA.imprimir();	
+        	if(pisoA.getPlanchas()==null || pisoA.getPlanchas().size()<1){
+        		borrar.add(pisoA);
+        	}
 		}
         
-
+        pisos.removeAll(borrar);
+        
+        LeerPlanchas leerPlanchas = new LeerPlanchas();
+        leerPlanchas.leerPlanchas(pisos, rutaArchivo);
+        
+        int pisoMinimo = pisos.size() - 3; 
+        
+        GeometryFactory fact = new GeometryFactory();
+        Geometry unionTodasLasPlanchas = fact.createGeometryCollection(null);
+        
+        for (Piso pisoA : pisos) {
+        	if(pisos.indexOf(pisoA) >= pisoMinimo){
+        		pisoA.imprimir();
+        		
+        		MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos());
+        		
+        		Geometry unionEstePiso = fact.createGeometryCollection(null);
+        		unionEstePiso = unionEstePiso.union(poligonosPisoActual);
+        		
+        		//System.out.println(unionEstePiso);
+        		
+        		unionTodasLasPlanchas = unionTodasLasPlanchas.union(unionEstePiso);
+        	}
+		}
+        
+        System.out.println(unionTodasLasPlanchas);
+        
+        //unionTodasLasPlanchas.getCoordinates()
 	}
-
 }

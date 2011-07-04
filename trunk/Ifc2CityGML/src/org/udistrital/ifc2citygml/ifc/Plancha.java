@@ -3,6 +3,13 @@ package org.udistrital.ifc2citygml.ifc;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+
 public class Plancha {
 
 	private String id;
@@ -331,6 +338,28 @@ public class Plancha {
 		}
 		
 		
+	}
+	
+	public Polygon generarPoligono(){
+	    // create a factory using default values (e.g. floating precision)
+	    GeometryFactory fact = new GeometryFactory();
+
+	    Coordinate[] coordenadas = new Coordinate[coordenadasAbsolutas.size()];
+	    int c=0;
+	    	
+	    for (Coordenada coordenadaActual : coordenadasAbsolutas){
+	    	Coordinate coord = 
+	    		new Coordinate(coordenadaActual.getX() /*+ 445533*/, coordenadaActual.getY() /*+ 5444897*/, 0);
+	    	coordenadas[c] = coord;
+	    	c++;
+	    }
+	    
+	     
+	    LinearRing anillo = fact.createLinearRing(coordenadas);
+	    
+	    Polygon poligono = fact.createPolygon(anillo, null);
+	    
+	    return poligono;
 	}
 
 }

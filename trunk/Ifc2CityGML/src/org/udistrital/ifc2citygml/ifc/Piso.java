@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
+
 public class Piso {
 	
 	private String id;
@@ -138,6 +142,19 @@ public class Piso {
 		
 		
 		System.out.println(cadena);
+	}
+	
+	public Polygon[] generarPoligonos(){
+		
+		Polygon[] poligonos = new Polygon[getPlanchas().size()];
+		int c=0;
+		for (Plancha planchaActual : getPlanchas()){
+			Polygon poligonoActual = planchaActual.generarPoligono();
+			poligonos[c] = poligonoActual;
+			c++;
+		}
+		
+		return poligonos;
 	}
 
 }
