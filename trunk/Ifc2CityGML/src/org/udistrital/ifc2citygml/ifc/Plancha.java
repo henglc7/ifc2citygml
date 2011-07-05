@@ -340,7 +340,7 @@ public class Plancha {
 		
 	}
 	
-	public Polygon generarPoligono(){
+	public Polygon generarPoligono(double easting, double northing){
 	    // create a factory using default values (e.g. floating precision)
 	    GeometryFactory fact = new GeometryFactory();
 
@@ -349,7 +349,7 @@ public class Plancha {
 	    	
 	    for (Coordenada coordenadaActual : coordenadasAbsolutas){
 	    	Coordinate coord = 
-	    		new Coordinate(coordenadaActual.getX() /*+ 445533*/, coordenadaActual.getY() /*+ 5444897*/, 0);
+	    		new Coordinate(coordenadaActual.getX() + easting, coordenadaActual.getY() + northing, 0);
 	    	coordenadas[c] = coord;
 	    	c++;
 	    }

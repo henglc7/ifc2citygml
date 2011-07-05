@@ -144,12 +144,12 @@ public class Piso {
 		System.out.println(cadena);
 	}
 	
-	public Polygon[] generarPoligonos(){
+	public Polygon[] generarPoligonos(double easting, double northing){
 		
 		Polygon[] poligonos = new Polygon[getPlanchas().size()];
 		int c=0;
 		for (Plancha planchaActual : getPlanchas()){
-			Polygon poligonoActual = planchaActual.generarPoligono();
+			Polygon poligonoActual = planchaActual.generarPoligono(easting, northing);
 			poligonos[c] = poligonoActual;
 			c++;
 		}

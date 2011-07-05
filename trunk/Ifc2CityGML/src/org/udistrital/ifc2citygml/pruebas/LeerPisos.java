@@ -6,6 +6,10 @@ import java.util.List;
 import org.udistrital.ifc2citygml.ifc.Piso;
 import org.udistrital.ifc2citygml.ifc.Plancha;
 
+import uk.me.jstott.jcoord.LatLng;
+import uk.me.jstott.jcoord.UTMRef;
+
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
@@ -121,22 +125,16 @@ public class LeerPisos {
                             IDispatch planchaGlobalId = (IDispatch) planchaAtributos.method("Item", indice);
                             String planchaGlobalIdValor = (String) planchaGlobalId.get("value");
                             
-                            Plancha planchaActual = new Plancha();
-                            planchaActual.setId(planchaGlobalIdValor);
+                            indice[0] = "PredefinedType";
+                            IDispatch predefinedType = (IDispatch) planchaAtributos.method("Item", indice);
+                            String predefinedTypeValor = (String) predefinedType.get("value");
                             
-                            //esta plancha esta repetida, hay que descartarla
-                            if(!planchaGlobalIdValor.equals("2mDRgqfefBUB5bQoraYccC")){
-                            	pisoActual.getPlanchas().add(planchaActual);
+                            //se descartan las planchas que sean de tipo ROOF (techos)
+                            if(predefinedTypeValor.equals("FLOOR")){
+                            	Plancha planchaActual = new Plancha();
+                                planchaActual.setId(planchaGlobalIdValor);
+                                pisoActual.getPlanchas().add(planchaActual);	
                             }
-                            
-                            
-                            /*
-                            indice[0] = "ObjectPlacement";
-                            IDispatch objectPlacement = (IDispatch) planchaAtributos.method("Item", indice);
-                            IDispatch objectPlacementValor = (IDispatch) objectPlacement.get("Value");
-                            IDispatch objectPlacementAtributos = (IDispatch) objectPlacementValor.get("Attributes");
-                            */
-                            
                             
                         }
 
@@ -189,14 +187,41 @@ public class LeerPisos {
         
         int pisoMinimo = pisos.size() - 3; 
         
+        /************************ CALCULO DE COORDENADAS GEOGRAFICAS UTM BASADO EN GRADOS MINUTOS Y SEGUNDOS ************************************************************/
+        
+		//se prueba con las coordenadas del edificio sabio caldas asignadas en el archivo IFC
+		// la latitud y longitud reales del edificio son : 4.62787 -74.065849 pero IFC al parecer las trunca
+        // se puede probar en http://netvicious.com/gps/
+		
+		LatLonConvert lat = new LatLonConvert(4,37,40.331999);
+		//System.out.println(lat.getDecimal());
+		
+		LatLonConvert lon = new LatLonConvert(-74,3,57.56400);
+		//System.out.println(lon.getDecimal());
+		
+		
+		LatLng ll = new LatLng(lat.getDecimal(), lon.getDecimal());
+		UTMRef utm = ll.toUTMRef();
+		//System.out.println(utm);
+		
+		// northing is the distance in metres to the equator
+		//System.out.println(utm.getNorthing());
+		
+		// easting is the distance in metres to the false easting — a meridian that is uniquely defined for each UTM zone
+		//System.out.println(utm.getEasting());
+		
+
+		
+		/************************ CALCULO DE COORDENADAS GEOGRAFICAS UTM BASADO EN GRADOS MINUTOS Y SEGUNDOS ************************************************************/        
+        
         GeometryFactory fact = new GeometryFactory();
         Geometry unionTodasLasPlanchas = fact.createGeometryCollection(null);
         
         for (Piso pisoA : pisos) {
         	if(pisos.indexOf(pisoA) >= pisoMinimo){
         		pisoA.imprimir();
-        		
-        		MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos());
+        		//para obtener las coordenadas de IFC se podria invocar pisoA.generarPoligonos(0, 0)
+        		MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(utm.getEasting(), utm.getNorthing()));
         		
         		Geometry unionEstePiso = fact.createGeometryCollection(null);
         		unionEstePiso = unionEstePiso.union(poligonosPisoActual);
@@ -207,8 +232,49 @@ public class LeerPisos {
         	}
 		}
         
-        System.out.println(unionTodasLasPlanchas);
+        System.out.println("GEOMETRIA UNION FINAL = " + unionTodasLasPlanchas);
         
-        //unionTodasLasPlanchas.getCoordinates()
+        Coordinate[] coordenadas = unionTodasLasPlanchas.getCoordinates();
+        
+
+                
+        String gml = "";
+        for(int c=0; c < coordenadas.length -1 ; c++){
+        	Coordinate coordenadaActual = coordenadas[c];
+        	Coordinate coordenadaSiguiente = coordenadas[c+1];
+        	
+        	gml+= "\n                             <gml:surfaceMember>";
+        	gml+= "\n                                <gml:Polygon gml:id=\"PolyID" + c + "\">";
+        	gml+= "\n                                    <gml:exterior>";
+        	gml+= "\n                                        <gml:LinearRing gml:id=\"PolyID" + c + "\">";
+        	gml+= "\n                                            <gml:pos>" + coordenadaActual.x + " " + coordenadaActual.y + " 0 </gml:pos>";
+        	gml+= "\n                                            <gml:pos>" + coordenadaActual.x + " " + coordenadaActual.y + " 35 </gml:pos>";
+        	gml+= "\n                                            <gml:pos>" + coordenadaSiguiente.x + " " + coordenadaSiguiente.y + " 35 </gml:pos>";
+        	gml+= "\n                                            <gml:pos>" + coordenadaSiguiente.x + " " + coordenadaSiguiente.y + " 0 </gml:pos>";
+        	gml+= "\n                                            <gml:pos>" + coordenadaActual.x + " " + coordenadaActual.y + " 0 </gml:pos>";
+        	gml+= "\n                                        </gml:LinearRing>";
+        	gml+= "\n                                    </gml:exterior>";
+        	gml+= "\n                                </gml:Polygon>";
+        	gml+= "\n                            </gml:surfaceMember>";
+        }
+
+        
+    	gml+= "\n                             <gml:surfaceMember>";
+    	gml+= "\n                                <gml:Polygon gml:id=\"PolyIDasdasd\">";
+    	gml+= "\n                                    <gml:exterior>";
+    	gml+= "\n                                        <gml:LinearRing gml:id=\"PolyIDfghfg\">";
+        for(int c=coordenadas.length-1; c >=0 ; c--){
+        	Coordinate coordenadaActual = coordenadas[c];
+        	gml+= "\n                                            <gml:pos>" + coordenadaActual.x + " " + coordenadaActual.y + " 35 </gml:pos>";
+        }
+    	gml+= "\n                                        </gml:LinearRing>";
+    	gml+= "\n                                    </gml:exterior>";
+    	gml+= "\n                                </gml:Polygon>";
+    	gml+= "\n                            </gml:surfaceMember>";
+
+        
+        System.out.println(gml);
+        
+        
 	}
 }
