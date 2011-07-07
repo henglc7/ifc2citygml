@@ -232,11 +232,14 @@ public class LeerPisos {
         	}
 		}
         
+        //unionTodasLasPlanchas = unionTodasLasPlanchas.getEnvelope();
+        
         System.out.println("GEOMETRIA UNION FINAL = " + unionTodasLasPlanchas);
         
         Coordinate[] coordenadas = unionTodasLasPlanchas.getCoordinates();
         
 
+        /*
                 
         String gml = "";
         for(int c=0; c < coordenadas.length -1 ; c++){
@@ -274,6 +277,15 @@ public class LeerPisos {
 
         
         System.out.println(gml);
+        */
+        
+        BuildingCreator creador = new BuildingCreator();
+        try {
+			creador.doMain(coordenadas);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
         
 	}

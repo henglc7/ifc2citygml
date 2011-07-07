@@ -11,5 +11,16 @@
 	<classpathentry kind="lib" path="librerias/jts/junit.jar"/>
 	<classpathentry kind="lib" path="librerias/jts/xerces.jar"/>
 	<classpathentry kind="lib" path="librerias/jcoord-1.1-b.jar"/>
+	<classpathentry kind="lib" path="librerias/citygml4j/activation.jar"/>
+	<classpathentry kind="lib" path="librerias/citygml4j/citygml4j.jar" sourcepath="C:/Actual 2011/IFC - cityGML/software/citygml4j-1_0-src.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Actual 2011/IFC - cityGML/software/citygml4j-1_0-java5/citygml4j-1.0-java5/javadoc/org/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="librerias/citygml4j/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="librerias/citygml4j/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="librerias/citygml4j/jaxb-xjc.jar"/>
+	<classpathentry kind="lib" path="librerias/citygml4j/jsr173_1.0_api.jar"/>
+	<classpathentry kind="lib" path="librerias/citygml4j/sjsxp.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
