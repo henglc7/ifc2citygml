@@ -63,7 +63,7 @@ public class BuildingCreator {
 	}
 	*/
 
-	public void doMain(Coordinate[] coordenadas) throws Exception {
+	public void doMain(Coordinate[] coordenadas, double elevacion) throws Exception {
 		SimpleDateFormat df = new SimpleDateFormat("[HH:mm:ss] "); 
 
 		System.out.println(df.format(new Date()) + "setting up citygml4j context and JAXB builder");
@@ -79,49 +79,7 @@ public class BuildingCreator {
 
 		Building building = citygml.createBuilding();
 
-		/*
-		Polygon ground = geom.createLinearPolygon(new double[] {0,0,0, 0,12,0, 6,12,0, 6,0,0, 0,0,0}, 3);
-		Polygon wall_1 = geom.createLinearPolygon(new double[] {6,0,0, 6,12,0, 6,12,6, 6,0,6, 6,0,0}, 3);
-		Polygon wall_2 = geom.createLinearPolygon(new double[] {0,0,0, 0,0,6, 0,12,6, 0,12,0, 0,0,0}, 3);
-		Polygon wall_3 = geom.createLinearPolygon(new double[] {0,0,0, 6,0,0, 6,0,6, 3,0,9, 0,0,6, 0,0,0}, 3);
-		Polygon wall_4 = geom.createLinearPolygon(new double[] {6,12,0, 0,12,0, 0,12,6, 3,12,9, 6,12,6, 6,12,0}, 3);
-		Polygon tapa   = geom.createLinearPolygon(new double[] {0,0,6, 0,12,6, 6,12,6, 6,0,6, 0,0,6}, 3);
-		*/
-		//Polygon roof_1 = geom.createLinearPolygon(new double[] {6,0,6, 6,12,6, 3,12,9, 3,0,9, 6,0,6}, 3);
-		//Polygon roof_2 = geom.createLinearPolygon(new double[] {0,0,6, 3,0,9, 3,12,9, 0,12,6, 0,0,6}, 3);
-		/*
-		ground.setId(gmlIdManager.generateGmlId());
-		wall_1.setId(gmlIdManager.generateGmlId());
-		wall_2.setId(gmlIdManager.generateGmlId());
-		wall_3.setId(gmlIdManager.generateGmlId());
-		wall_4.setId(gmlIdManager.generateGmlId());
-		tapa.setId(gmlIdManager.generateGmlId());
-		*/
-		//roof_1.setId(gmlIdManager.generateGmlId());
-		//roof_2.setId(gmlIdManager.generateGmlId());
-		
-
-		/*
-		// lod2 solid
-		List<SurfaceProperty> surfaceMember = new ArrayList<SurfaceProperty>();
-		surfaceMember.add(gml.createSurfaceProperty('#' + ground.getId()));
-		surfaceMember.add(gml.createSurfaceProperty('#' + wall_1.getId()));
-		surfaceMember.add(gml.createSurfaceProperty('#' + wall_2.getId()));
-		surfaceMember.add(gml.createSurfaceProperty('#' + wall_3.getId()));
-		surfaceMember.add(gml.createSurfaceProperty('#' + wall_4.getId()));
-		surfaceMember.add(gml.createSurfaceProperty('#' + roof_1.getId()));
-		surfaceMember.add(gml.createSurfaceProperty('#' + roof_2.getId()));
-		*/
-		
 		List<AbstractSurface> shell = new ArrayList<AbstractSurface>();
-		/*
-		shell.add(ground);
-		shell.add(wall_1);
-		shell.add(wall_2);
-		shell.add(wall_3);
-		shell.add(wall_4);
-		shell.add(tapa);
-*/
 		
 		for(int c=0; c < coordenadas.length -1 ; c++){
         	Coordinate coordenadaActual = coordenadas[c];
@@ -131,8 +89,8 @@ public class BuildingCreator {
         			new double[]
         			           {
         					coordenadaActual.x, coordenadaActual.y,0,
-        					coordenadaActual.x, coordenadaActual.y,35,
-        					coordenadaSiguiente.x, coordenadaSiguiente.y, 35,
+        					coordenadaActual.x, coordenadaActual.y,elevacion,
+        					coordenadaSiguiente.x, coordenadaSiguiente.y, elevacion,
         					coordenadaSiguiente.x, coordenadaSiguiente.y, 0,
         					coordenadaActual.x, coordenadaActual.y, 0
         					}
@@ -151,7 +109,7 @@ public class BuildingCreator {
 			
 			tapa[c] = coordenadaActual.x;
         	tapa[c+1] = coordenadaActual.y;
-        	tapa[c+2] = 35;
+        	tapa[c+2] = elevacion;
         	
         	c=c+3;
 		}
@@ -160,14 +118,7 @@ public class BuildingCreator {
 		
 		shell.add(poligonoTapa);
 		
-		/*
-		CompositeSurface compositeSurface = gml.createCompositeSurface();
-		compositeSurface.setSurfaceMember(surfaceMember);		
-		Solid solid = gml.createSolid();
-		solid.setExterior(gml.createSurfaceProperty(compositeSurface));
 
-		building.setLod2Solid(gml.createSolidProperty(solid));
-		*/
 		
 		CompositeSurface exterior = gml.createCompositeSurface(shell);
 		Solid solid = gml.createSolid();
@@ -175,20 +126,6 @@ public class BuildingCreator {
 
 		building.setLod1Solid(gml.createSolidProperty(solid));
 
-		/*
-		// thematic boundary surfaces
-		List<BoundarySurfaceProperty> boundedBy = new ArrayList<BoundarySurfaceProperty>();
-		boundedBy.add(createBoundarySurface(CityGMLClass.GROUND_SURFACE, ground));
-		boundedBy.add(createBoundarySurface(CityGMLClass.WALL_SURFACE, wall_1));
-		boundedBy.add(createBoundarySurface(CityGMLClass.WALL_SURFACE, wall_2));
-		boundedBy.add(createBoundarySurface(CityGMLClass.WALL_SURFACE, wall_3));
-		boundedBy.add(createBoundarySurface(CityGMLClass.WALL_SURFACE, wall_4));
-		boundedBy.add(createBoundarySurface(CityGMLClass.ROOF_SURFACE, roof_1));
-		boundedBy.add(createBoundarySurface(CityGMLClass.ROOF_SURFACE, roof_2));		
-		building.setBoundedBySurface(boundedBy);
-		*/
-		
-		
 
 		CityModel cityModel = citygml.createCityModel();
 		cityModel.setBoundedBy(building.calcBoundedBy(false));
@@ -207,28 +144,5 @@ public class BuildingCreator {
 		System.out.println(df.format(new Date()) + "CityGML file LOD2_Building_v100.xml written");
 		System.out.println(df.format(new Date()) + "sample citygml4j application successfully finished");
 	}
-/*
-	private BoundarySurfaceProperty createBoundarySurface(CityGMLClass type, Polygon geometry) {
-		AbstractBoundarySurface boundarySurface = null;
 
-		switch (type) {
-		case WALL_SURFACE:
-			boundarySurface = citygml.createWallSurface();
-			break;
-		case ROOF_SURFACE:
-			boundarySurface = citygml.createRoofSurface();
-			break;
-		case GROUND_SURFACE:
-			boundarySurface = citygml.createGroundSurface();
-			break;
-		}
-
-		if (boundarySurface != null) {
-			boundarySurface.setLod2MultiSurface(gml.createMultiSurfaceProperty(gml.createMultiSurface(geometry)));
-			return citygml.createBoundarySurfaceProperty(boundarySurface);
-		}
-
-		return null;
-	}
-*/
 }

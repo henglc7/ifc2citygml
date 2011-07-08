@@ -159,6 +159,7 @@ public class LeerPisos {
         int posA = 0;
         int posB = 0;
         
+        
         for (posA = 0; posA < (pisos.size()-1); posA++) {
         	for (posB = posA+1; posB < pisos.size(); posB++) {
         		Piso pisoA = pisos.get(posA);
@@ -171,6 +172,14 @@ public class LeerPisos {
     			
     		}	
 		}
+        
+        double mayorElevacionEncontrada = 0;
+        
+        for (posA = 0; posA < pisos.size(); posA++) {
+        	Piso pisoA = pisos.get(posA);
+        	if(pisoA.getElevacion()>mayorElevacionEncontrada)
+        	mayorElevacionEncontrada = pisoA.getElevacion();
+        }
         
         //se borran los pisos que no tengan planchas
         List<Piso> borrar = new ArrayList();
@@ -281,7 +290,7 @@ public class LeerPisos {
         
         BuildingCreator creador = new BuildingCreator();
         try {
-			creador.doMain(coordenadas);
+			creador.doMain(coordenadas,mayorElevacionEncontrada);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
