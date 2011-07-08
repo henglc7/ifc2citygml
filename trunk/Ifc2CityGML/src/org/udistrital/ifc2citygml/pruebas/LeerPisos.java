@@ -3,6 +3,7 @@ package org.udistrital.ifc2citygml.pruebas;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.udistrital.ifc2citygml.ifc.Coordenada;
 import org.udistrital.ifc2citygml.ifc.Piso;
 import org.udistrital.ifc2citygml.ifc.Plancha;
 
@@ -28,6 +29,9 @@ public class LeerPisos {
 		List<Piso> pisos = new ArrayList();;
         ReleaseManager rm = new ReleaseManager();
       
+        int[] coordLatitud = null;
+        int[] coordLongitud = null;
+        
         //String rutaArchivo = "C:\\Actual 2011\\escritorio XP\\modelos\\casa\\IFC\\AC11-FZK-Haus-IFC.ifc";
         String rutaArchivo = "C:\\Actual 2011\\escritorio XP\\modelos\\sabio caldas\\SabioCaldasSimplificado.ifc";
         //String rutaArchivo = "C:\\Documents and Settings\\Administrator\\Desktop\\escritorio\\modelos\\muro y ventana\\miniExample20080731-CoordView-SweptSolid.ifc";
@@ -144,9 +148,66 @@ public class LeerPisos {
                                 
             }
     
+            //SE LEEN LAS COORDENADAS GEOGRAFICAS
+            //siempre devuelve un vector de una sola posicion
+            obj[0] = "IfcSite";
+            IDispatch vectorSite = (IDispatch) design.method("FindObjects", obj);
             
+            obj[0] = new Integer(1);
+            IDispatch site = (IDispatch) vectorSite.method("Item", obj);
+            IDispatch siteAtributos = (IDispatch) site.get("Attributes");
 
-             
+            obj[0] = "RefLatitude";
+            IDispatch refLatitude = (IDispatch) siteAtributos.method("Item", obj);
+            int valores = Integer.valueOf((refLatitude.get("Size").toString()));
+            
+            coordLatitud = new int[valores];
+            boolean latitudNegativa = false;
+            
+            for(int n = 1; n<=Integer.valueOf(valores);n++){
+            	Object[] posicionVector = new Object[1];
+                posicionVector[0] = n;
+                int valor = (Integer) refLatitude.method("GetItem", posicionVector);
+                
+                if(n==1 && valor<0){
+                	latitudNegativa = true;
+                }
+                // debido a que IFC guarda TODOS los valores de la latitud como negativos
+                // ese necesario ajustarlos
+                // ejemplo IFC : -74°-3'-57.-56400'' (MAL !!!)
+                // ajustado :    -74° 3' 57.56400''  (OK !!!)
+                if(n>1 && latitudNegativa && valor<0){
+                	valor = valor * -1;
+                }
+                
+                coordLatitud[n-1] = valor;
+            }
+            
+            obj[0] = "RefLongitude";
+            IDispatch refLongitude = (IDispatch) siteAtributos.method("Item", obj);
+            valores = Integer.valueOf((refLatitude.get("Size").toString()));
+            
+            coordLongitud = new int[valores];
+            boolean longitudNegativa = false;
+            
+            for(int n = 1; n<=Integer.valueOf(valores);n++){
+            	Object[] posicionVector = new Object[1];
+                posicionVector[0] = n;
+                int valor = (Integer) refLongitude.method("GetItem", posicionVector);
+                
+                if(n==1 && valor<0){
+                	longitudNegativa = true;
+                }
+                // debido a que IFC guarda TODOS los valores de la latitud como negativos
+                // ese necesario ajustarlos
+                // ejemplo IFC : -74°-3'-57.-56400'' (MAL !!!)
+                // ajustado :    -74° 3' 57.56400''  (OK !!!)
+                if(n>1 && longitudNegativa && valor<0){
+                	valor = valor * -1;
+                }
+                
+                coordLongitud[n-1] = valor;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -201,11 +262,22 @@ public class LeerPisos {
 		//se prueba con las coordenadas del edificio sabio caldas asignadas en el archivo IFC
 		// la latitud y longitud reales del edificio son : 4.62787 -74.065849 pero IFC al parecer las trunca
         // se puede probar en http://netvicious.com/gps/
+        
+        double latitudGrados = coordLatitud[0];
+        double latitudMinutos = coordLatitud[1];
+        double latitudSegundos = (coordLatitud.length == 3) ? coordLatitud[2] : Double.parseDouble(coordLatitud[2] + "." + coordLatitud[3]);
+        
+        
+        
+        double longitudGrados = coordLongitud[0];
+        double longitudMinutos = coordLongitud[1];
+        double longitudSegundos = (coordLongitud.length == 3) ? coordLongitud[2] : Double.parseDouble(coordLongitud[2] + "." + coordLongitud[3]);
+        
 		
-		LatLonConvert lat = new LatLonConvert(4,37,40.331999);
+		LatLonConvert lat = new LatLonConvert(latitudGrados,latitudMinutos,latitudSegundos);
 		//System.out.println(lat.getDecimal());
 		
-		LatLonConvert lon = new LatLonConvert(-74,3,57.56400);
+		LatLonConvert lon = new LatLonConvert(longitudGrados,longitudMinutos,longitudSegundos);
 		//System.out.println(lon.getDecimal());
 		
 		
@@ -230,7 +302,7 @@ public class LeerPisos {
         	if(pisos.indexOf(pisoA) >= pisoMinimo){
         		pisoA.imprimir();
         		//para obtener las coordenadas de IFC se podria invocar pisoA.generarPoligonos(0, 0)
-        		MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(utm.getEasting(), utm.getNorthing()));
+        		MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(0, 0));
         		
         		Geometry unionEstePiso = fact.createGeometryCollection(null);
         		unionEstePiso = unionEstePiso.union(poligonosPisoActual);
