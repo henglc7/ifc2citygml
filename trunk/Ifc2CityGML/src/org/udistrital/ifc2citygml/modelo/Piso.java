@@ -1,4 +1,4 @@
-package org.udistrital.ifc2citygml.ifc;
+package org.udistrital.ifc2citygml.modelo;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -48,7 +48,7 @@ import org.citygml4j.util.gmlid.DefaultGMLIdManager;
 import org.citygml4j.util.gmlid.GMLIdManager;
 import org.citygml4j.xml.io.CityGMLOutputFactory;
 import org.citygml4j.xml.io.writer.CityGMLWriter;
-import org.udistrital.ifc2citygml.ifc.Piso;
+import org.udistrital.ifc2citygml.modelo.Piso;
 
 import com.vividsolutions.jts.geom.Coordinate;
 

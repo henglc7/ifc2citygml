@@ -1,4 +1,4 @@
-package org.udistrital.ifc2citygml.pruebas;
+package org.udistrital.ifc2citygml.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,13 +6,13 @@ import java.util.List;
 import jp.ne.so_net.ga2.no_ji.jcom.IDispatch;
 import jp.ne.so_net.ga2.no_ji.jcom.ReleaseManager;
 
-import org.udistrital.ifc2citygml.ifc.Coordenada;
-import org.udistrital.ifc2citygml.ifc.Piso;
-import org.udistrital.ifc2citygml.ifc.Plancha;
-import org.udistrital.ifc2citygml.ifc.Rectangulo;
-import org.udistrital.ifc2citygml.ifc.Segmento;
+import org.udistrital.ifc2citygml.modelo.Coordenada;
+import org.udistrital.ifc2citygml.modelo.Piso;
+import org.udistrital.ifc2citygml.modelo.Plancha;
+import org.udistrital.ifc2citygml.modelo.Rectangulo;
+import org.udistrital.ifc2citygml.modelo.Segmento;
 
-public class LeerPlanchas {
+public class LectorPlanchas {
 	
 	public void leerPlanchas(List<Piso> pisos, String rutaArchivo){
 		

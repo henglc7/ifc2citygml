@@ -1,4 +1,4 @@
-package org.udistrital.ifc2citygml.pruebas;
+package org.udistrital.ifc2citygml.util;
 
 /******************************************************************************
 *

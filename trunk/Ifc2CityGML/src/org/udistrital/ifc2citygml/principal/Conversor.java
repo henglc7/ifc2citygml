@@ -1,11 +1,14 @@
-package org.udistrital.ifc2citygml.pruebas;
+package org.udistrital.ifc2citygml.principal;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.udistrital.ifc2citygml.ifc.Coordenada;
-import org.udistrital.ifc2citygml.ifc.Piso;
-import org.udistrital.ifc2citygml.ifc.Plancha;
+import org.udistrital.ifc2citygml.modelo.Coordenada;
+import org.udistrital.ifc2citygml.modelo.Piso;
+import org.udistrital.ifc2citygml.modelo.Plancha;
+import org.udistrital.ifc2citygml.pruebas.BuildingCreator;
+import org.udistrital.ifc2citygml.util.LatLonConvert;
+import org.udistrital.ifc2citygml.util.LectorPlanchas;
 
 import uk.me.jstott.jcoord.LatLng;
 import uk.me.jstott.jcoord.UTMRef;
@@ -19,7 +22,7 @@ import jp.ne.so_net.ga2.no_ji.jcom.IDispatch;
 import jp.ne.so_net.ga2.no_ji.jcom.ReleaseManager;
 
 
-public class LeerPisos {
+public class Conversor {
 
 	/**
 	 * @param args
@@ -252,7 +255,7 @@ public class LeerPisos {
         
         pisos.removeAll(borrar);
         
-        LeerPlanchas leerPlanchas = new LeerPlanchas();
+        LectorPlanchas leerPlanchas = new LectorPlanchas();
         leerPlanchas.leerPlanchas(pisos, rutaArchivo);
         
         int pisoMinimo = pisos.size() - 3; 
