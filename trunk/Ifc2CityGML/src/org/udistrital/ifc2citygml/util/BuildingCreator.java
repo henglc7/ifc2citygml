@@ -1,4 +1,4 @@
-package org.udistrital.ifc2citygml.pruebas;
+package org.udistrital.ifc2citygml.util;
 
 /*
  * This file is part of citygml4j.
@@ -63,7 +63,7 @@ public class BuildingCreator {
 	}
 	*/
 
-	public void doMain(Coordinate[] coordenadas, double elevacion) throws Exception {
+	public void doMain(Coordinate[] coordenadas, double elevacion, String archivoSalida) throws Exception {
 		SimpleDateFormat df = new SimpleDateFormat("[HH:mm:ss] "); 
 
 		System.out.println(df.format(new Date()) + "setting up citygml4j context and JAXB builder");
@@ -133,7 +133,7 @@ public class BuildingCreator {
 
 		System.out.println(df.format(new Date()) + "writing citygml4j object tree");
 		CityGMLOutputFactory out = builder.createCityGMLOutputFactory(CityGMLVersion.v1_0_0);
-		CityGMLWriter writer = out.createCityGMLWriter(new File("LOD2_Building_v100_Fredy.xml"));
+		CityGMLWriter writer = out.createCityGMLWriter(new File(archivoSalida));
 
 		writer.setPrefixes(CityGMLVersion.v1_0_0);
 		writer.setSchemaLocations(CityGMLVersion.v1_0_0);
@@ -141,7 +141,7 @@ public class BuildingCreator {
 		writer.write(cityModel);
 		writer.close();	
 		
-		System.out.println(df.format(new Date()) + "CityGML file LOD2_Building_v100.xml written");
+		System.out.println(df.format(new Date()) + "CityGML file archivoSalida written");
 		System.out.println(df.format(new Date()) + "sample citygml4j application successfully finished");
 	}
 

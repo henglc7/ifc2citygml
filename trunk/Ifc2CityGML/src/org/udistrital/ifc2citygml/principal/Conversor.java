@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.udistrital.ifc2citygml.modelo.Coordenada;
+import org.udistrital.ifc2citygml.modelo.Edificio;
 import org.udistrital.ifc2citygml.modelo.Piso;
 import org.udistrital.ifc2citygml.modelo.Plancha;
-import org.udistrital.ifc2citygml.pruebas.BuildingCreator;
+import org.udistrital.ifc2citygml.util.BuildingCreator;
 import org.udistrital.ifc2citygml.util.LatLonConvert;
 import org.udistrital.ifc2citygml.util.LectorPlanchas;
 
@@ -23,21 +24,25 @@ import jp.ne.so_net.ga2.no_ji.jcom.ReleaseManager;
 
 
 public class Conversor {
+	
+	private static Edificio edificio; 
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 
-		List<Piso> pisos = new ArrayList();;
+		//List<Piso> pisos = new ArrayList();;
+		edificio = new Edificio();
+		edificio.setPisos(new ArrayList());
         ReleaseManager rm = new ReleaseManager();
       
         int[] coordLatitud = null;
         int[] coordLongitud = null;
         
-        //String rutaArchivo = "C:\\Actual 2011\\escritorio XP\\modelos\\casa\\IFC\\AC11-FZK-Haus-IFC.ifc";
-        String rutaArchivo = "C:\\Actual 2011\\escritorio XP\\modelos\\sabio caldas\\SabioCaldasSimplificado.ifc";
-        //String rutaArchivo = "C:\\Documents and Settings\\Administrator\\Desktop\\escritorio\\modelos\\muro y ventana\\miniExample20080731-CoordView-SweptSolid.ifc";
+        String rutaArchivo = args[0]; 
+        	//"C:\\Actual 2011\\escritorio XP\\modelos\\sabio caldas\\SabioCaldasSimplificado.ifc";
+
         
         try {
 
@@ -107,7 +112,7 @@ public class Conversor {
                     	pisoActual.setElevacion(elevationValor);
                     	pisoActual.setNombre(nameValor);
                     	
-                    	pisos.add(pisoActual);
+                    	edificio.getPisos().add(pisoActual);
                     	
                     	indice = new Object[1];
                         indice[0] = "RelatedElements";
@@ -224,14 +229,14 @@ public class Conversor {
         int posB = 0;
         
         
-        for (posA = 0; posA < (pisos.size()-1); posA++) {
-        	for (posB = posA+1; posB < pisos.size(); posB++) {
-        		Piso pisoA = pisos.get(posA);
-        		Piso pisoB = pisos.get(posB);
+        for (posA = 0; posA < (edificio.getPisos().size()-1); posA++) {
+        	for (posB = posA+1; posB < edificio.getPisos().size(); posB++) {
+        		Piso pisoA = edificio.getPisos().get(posA);
+        		Piso pisoB = edificio.getPisos().get(posB);
         		if (pisoA.getElevacion()>pisoB.getElevacion()){
         			Piso aux = pisoA;
-        			pisos.set(posA, pisos.get(posB));
-        			pisos.set(posB, aux);
+        			edificio.getPisos().set(posA, edificio.getPisos().get(posB));
+        			edificio.getPisos().set(posB, aux);
         		}
     			
     		}	
@@ -239,26 +244,26 @@ public class Conversor {
         
         double mayorElevacionEncontrada = 0;
         
-        for (posA = 0; posA < pisos.size(); posA++) {
-        	Piso pisoA = pisos.get(posA);
+        for (posA = 0; posA < edificio.getPisos().size(); posA++) {
+        	Piso pisoA = edificio.getPisos().get(posA);
         	if(pisoA.getElevacion()>mayorElevacionEncontrada)
         	mayorElevacionEncontrada = pisoA.getElevacion();
         }
         
         //se borran los pisos que no tengan planchas
         List<Piso> borrar = new ArrayList();
-        for (Piso pisoA : pisos) {
+        for (Piso pisoA : edificio.getPisos()) {
         	if(pisoA.getPlanchas()==null || pisoA.getPlanchas().size()<1){
         		borrar.add(pisoA);
         	}
 		}
         
-        pisos.removeAll(borrar);
+        edificio.getPisos().removeAll(borrar);
         
         LectorPlanchas leerPlanchas = new LectorPlanchas();
-        leerPlanchas.leerPlanchas(pisos, rutaArchivo);
+        leerPlanchas.leerPlanchas(edificio.getPisos(), rutaArchivo);
         
-        int pisoMinimo = pisos.size() - 3; 
+        int pisoMinimo = edificio.getPisos().size() - 3; 
         
         /************************ CALCULO DE COORDENADAS GEOGRAFICAS UTM BASADO EN GRADOS MINUTOS Y SEGUNDOS ************************************************************/
         
@@ -301,11 +306,13 @@ public class Conversor {
         GeometryFactory fact = new GeometryFactory();
         Geometry unionTodasLasPlanchas = fact.createGeometryCollection(null);
         
-        for (Piso pisoA : pisos) {
-        	if(pisos.indexOf(pisoA) >= pisoMinimo){
+        for (Piso pisoA : edificio.getPisos()) {
+        	if(edificio.getPisos().indexOf(pisoA) >= pisoMinimo){
         		pisoA.imprimir();
         		//para obtener las coordenadas de IFC se podria invocar pisoA.generarPoligonos(0, 0)
-        		MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(0, 0));
+        		//MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(0, 0));
+        		MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(utm.getEasting(), utm.getNorthing()));
+        		//
         		
         		Geometry unionEstePiso = fact.createGeometryCollection(null);
         		unionEstePiso = unionEstePiso.union(poligonosPisoActual);
@@ -365,7 +372,7 @@ public class Conversor {
         
         BuildingCreator creador = new BuildingCreator();
         try {
-			creador.doMain(coordenadas,mayorElevacionEncontrada);
+			creador.doMain(coordenadas,mayorElevacionEncontrada,args[1]);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
