@@ -1,8 +1,13 @@
 package org.udistrital.ifc2citygml.principal;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.udistrital.ifc2citygml.modelo.Coordenada;
 import org.udistrital.ifc2citygml.modelo.Edificio;
 import org.udistrital.ifc2citygml.modelo.Piso;
@@ -30,6 +35,7 @@ public class Conversor {
 	/**
 	 * @param args
 	 */
+	
 	public static void main(String[] args) {
 
 		//List<Piso> pisos = new ArrayList();;
@@ -45,6 +51,8 @@ public class Conversor {
 
         
         try {
+        	
+        	//loadDll();
 
             //Se declara una instancia del componente ActiveX pasando el nombre como parametro
             IDispatch object = new IDispatch(rm, "IFCsvr.R300");
@@ -105,7 +113,7 @@ public class Conversor {
                     
                     //no se tienen en cuenta los pisos subterraneos ni el piso base (elevation = 0)
                     if(elevationValor>0){
-                    	//System.out.println(nameValor + " = " + elevationValor + " (" + globalIdValor + ")");
+                    	System.out.println(nameValor + " = " + elevationValor + " (" + globalIdValor + ")");
                     	
                     	Piso pisoActual = new Piso();
                     	pisoActual.setId(globalIdValor);
@@ -380,4 +388,23 @@ public class Conversor {
         
         
 	}
+
+	/*
+	private static void loadDll() {
+        try {
+
+                InputStream in = Conversor.class.getResourceAsStream("/jcom.dll");
+
+                File fileOut = new File("jcom.dll");
+
+                OutputStream out = FileUtils.openOutputStream(fileOut);
+                IOUtils.copy(in, out);
+                in.close();
+                out.close();
+                System.load(fileOut.toString());//loading goes here
+        } catch (Exception e) {
+               //handle
+        }
+        
+}	*/
 }

@@ -2,25 +2,22 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="lib/acme.jar"/>
+	<classpathentry kind="lib" path="lib/activation.jar"/>
+	<classpathentry kind="lib" path="lib/citygml4j.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-xjc.jar"/>
+	<classpathentry kind="lib" path="lib/jcoord-1.1-b.jar"/>
+	<classpathentry kind="lib" path="lib/jdom.jar"/>
+	<classpathentry kind="lib" path="lib/jsr173_1.0_api.jar"/>
+	<classpathentry kind="lib" path="lib/JTS_Test.jar"/>
+	<classpathentry kind="lib" path="lib/jts-1.8.jar"/>
+	<classpathentry kind="lib" path="lib/jtsio-1.8.jar"/>
+	<classpathentry kind="lib" path="lib/junit.jar"/>
+	<classpathentry kind="lib" path="lib/sjsxp.jar"/>
+	<classpathentry kind="lib" path="lib/xerces.jar"/>
 	<classpathentry kind="lib" path="jcom.jar"/>
-	<classpathentry kind="lib" path="librerias/jts/acme.jar"/>
-	<classpathentry kind="lib" path="librerias/jts/jdom.jar"/>
-	<classpathentry kind="lib" path="librerias/jts/JTS_Test.jar"/>
-	<classpathentry kind="lib" path="librerias/jts/jts-1.8.jar"/>
-	<classpathentry kind="lib" path="librerias/jts/jtsio-1.8.jar"/>
-	<classpathentry kind="lib" path="librerias/jts/junit.jar"/>
-	<classpathentry kind="lib" path="librerias/jts/xerces.jar"/>
-	<classpathentry kind="lib" path="librerias/jcoord-1.1-b.jar"/>
-	<classpathentry kind="lib" path="librerias/citygml4j/activation.jar"/>
-	<classpathentry kind="lib" path="librerias/citygml4j/citygml4j.jar" sourcepath="C:/Actual 2011/IFC - cityGML/software/citygml4j-1_0-src.zip">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Actual 2011/IFC - cityGML/software/citygml4j-1_0-java5/citygml4j-1.0-java5/javadoc/org/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="librerias/citygml4j/jaxb-api.jar"/>
-	<classpathentry kind="lib" path="librerias/citygml4j/jaxb-impl.jar"/>
-	<classpathentry kind="lib" path="librerias/citygml4j/jaxb-xjc.jar"/>
-	<classpathentry kind="lib" path="librerias/citygml4j/jsr173_1.0_api.jar"/>
-	<classpathentry kind="lib" path="librerias/citygml4j/sjsxp.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
