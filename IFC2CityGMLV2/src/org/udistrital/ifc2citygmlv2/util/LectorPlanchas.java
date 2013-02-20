@@ -164,45 +164,52 @@ public class LectorPlanchas {
                     
                     planchaActual.setRepresentation_position_location(coord);
                     
-                    IfcDirection axis = position.getAxis();
-                    LIST<DOUBLE> directionRatios = axis.getDirectionRatios();
+                    //System.out.println(pisoActual.getNombre());
+                    //planchaActual
                     
-                    coordenadas = directionRatios.size();
-                    
-                    coord = new Coordenada();
-                    
-                    for(int n = 0; n<coordenadas;n++){
-                        double valor = (Double) directionRatios.get(n).value;
+                    //Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.]. 
+                    if(position.getAxis() != null){
+                    	
+                    	IfcDirection axis = position.getAxis();
+                        LIST<DOUBLE> directionRatios = axis.getDirectionRatios();
                         
-                        switch (n) {
-						case 0: coord.setX(valor); break;
-						case 1: coord.setY(valor); break;
-						case 2: coord.setZ(valor); break;
-						}
+                        coordenadas = directionRatios.size();
                         
+                        coord = new Coordenada();
+                        
+                        for(int n = 0; n<coordenadas;n++){
+                            double valor = (Double) directionRatios.get(n).value;
+                            
+                            switch (n) {
+    						case 0: coord.setX(valor); break;
+    						case 1: coord.setY(valor); break;
+    						case 2: coord.setZ(valor); break;
+    						}
+                            
+                        }
+                        
+                        planchaActual.setRepresentation_position_axis(coord);
+                        
+                        IfcDirection refDirection = position.getRefDirection();
+                        directionRatios = refDirection.getDirectionRatios();
+                        
+                        coordenadas = directionRatios.size();
+                        
+                        coord = new Coordenada();
+                        
+                        for(int n = 0; n<coordenadas;n++){
+                            double valor = (Double) directionRatios.get(n).value;
+                            
+                            switch (n) {
+    						case 0: coord.setX(valor); break;
+    						case 1: coord.setY(valor); break;
+    						case 2: coord.setZ(valor); break;
+    						}
+                            
+                        }
+                        
+                        planchaActual.setRepresentation_position_refDirection(coord);
                     }
-                    
-                    planchaActual.setRepresentation_position_axis(coord);
-                    
-                    IfcDirection refDirection = position.getRefDirection();
-                    directionRatios = refDirection.getDirectionRatios();
-                    
-                    coordenadas = directionRatios.size();
-                    
-                    coord = new Coordenada();
-                    
-                    for(int n = 0; n<coordenadas;n++){
-                        double valor = (Double) directionRatios.get(n).value;
-                        
-                        switch (n) {
-						case 0: coord.setX(valor); break;
-						case 1: coord.setY(valor); break;
-						case 2: coord.setZ(valor); break;
-						}
-                        
-                    }
-                    
-                    planchaActual.setRepresentation_position_refDirection(coord);
                     
                     
                     
