@@ -212,7 +212,7 @@ public class Main {
 		LectorPlanchas leerPlanchas = new LectorPlanchas();
         leerPlanchas.leerPlanchas(edificio.getPisos(), ifcModel);
         
-        int pisoMinimo = edificio.getPisos().size() - 3; 
+        int pisoMinimo = edificio.getPisos().size() - 3;; 
         
 /************************ CALCULO DE COORDENADAS GEOGRAFICAS UTM BASADO EN GRADOS MINUTOS Y SEGUNDOS ************************************************************/
         
@@ -279,49 +279,9 @@ public class Main {
         Coordinate[] coordenadas = unionTodasLasPlanchas.getCoordinates();
         
 
-        /*
-                
-        String gml = "";
-        for(int c=0; c < coordenadas.length -1 ; c++){
-        	Coordinate coordenadaActual = coordenadas[c];
-        	Coordinate coordenadaSiguiente = coordenadas[c+1];
-        	
-        	gml+= "\n                             <gml:surfaceMember>";
-        	gml+= "\n                                <gml:Polygon gml:id=\"PolyID" + c + "\">";
-        	gml+= "\n                                    <gml:exterior>";
-        	gml+= "\n                                        <gml:LinearRing gml:id=\"PolyID" + c + "\">";
-        	gml+= "\n                                            <gml:pos>" + coordenadaActual.x + " " + coordenadaActual.y + " 0 </gml:pos>";
-        	gml+= "\n                                            <gml:pos>" + coordenadaActual.x + " " + coordenadaActual.y + " 35 </gml:pos>";
-        	gml+= "\n                                            <gml:pos>" + coordenadaSiguiente.x + " " + coordenadaSiguiente.y + " 35 </gml:pos>";
-        	gml+= "\n                                            <gml:pos>" + coordenadaSiguiente.x + " " + coordenadaSiguiente.y + " 0 </gml:pos>";
-        	gml+= "\n                                            <gml:pos>" + coordenadaActual.x + " " + coordenadaActual.y + " 0 </gml:pos>";
-        	gml+= "\n                                        </gml:LinearRing>";
-        	gml+= "\n                                    </gml:exterior>";
-        	gml+= "\n                                </gml:Polygon>";
-        	gml+= "\n                            </gml:surfaceMember>";
-        }
-
-        
-    	gml+= "\n                             <gml:surfaceMember>";
-    	gml+= "\n                                <gml:Polygon gml:id=\"PolyIDasdasd\">";
-    	gml+= "\n                                    <gml:exterior>";
-    	gml+= "\n                                        <gml:LinearRing gml:id=\"PolyIDfghfg\">";
-        for(int c=coordenadas.length-1; c >=0 ; c--){
-        	Coordinate coordenadaActual = coordenadas[c];
-        	gml+= "\n                                            <gml:pos>" + coordenadaActual.x + " " + coordenadaActual.y + " 35 </gml:pos>";
-        }
-    	gml+= "\n                                        </gml:LinearRing>";
-    	gml+= "\n                                    </gml:exterior>";
-    	gml+= "\n                                </gml:Polygon>";
-    	gml+= "\n                            </gml:surfaceMember>";
-
-        
-        System.out.println(gml);
-        */
-        
         BuildingCreator creador = new BuildingCreator();
         try {
-			creador.doMain(coordenadas,mayorElevacionEncontrada,args[1]);
+			creador.crearModeloLOD1(coordenadas,mayorElevacionEncontrada,args[1]);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

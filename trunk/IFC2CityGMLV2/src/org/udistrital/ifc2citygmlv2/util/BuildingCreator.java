@@ -63,14 +63,14 @@ public class BuildingCreator {
 	}
 	*/
 
-	public void doMain(Coordinate[] coordenadas, double elevacion, String archivoSalida) throws Exception {
+	public void crearModeloLOD1(Coordinate[] coordenadas, double elevacion, String archivoSalida) throws Exception {
 		SimpleDateFormat df = new SimpleDateFormat("[HH:mm:ss] "); 
 
 		System.out.println(df.format(new Date()) + "setting up citygml4j context and JAXB builder");
 		CityGMLContext ctx = new CityGMLContext();
 		JAXBBuilder builder = ctx.createJAXBBuilder();
 
-		System.out.println(df.format(new Date()) + "creating LOD2 building as citygml4j in-memory object tree");
+		System.out.println(df.format(new Date()) + "creating LOD1 building as citygml4j in-memory object tree");
 		GMLGeometryFactory geom = new GMLGeometryFactory();
 		citygml = new CityGMLFactory();
 		gml = new GMLFactory();
@@ -141,8 +141,12 @@ public class BuildingCreator {
 		writer.write(cityModel);
 		writer.close();	
 		
-		System.out.println(df.format(new Date()) + "CityGML file archivoSalida written");
+		System.out.println(df.format(new Date()) + "CityGML file " + archivoSalida + " written");
 		System.out.println(df.format(new Date()) + "sample citygml4j application successfully finished");
+	}
+	//deberia recibir, caras de planchas y techos
+	public void crearModeloLOD2(/*caras planchas, caras techos*/String archivoSalida) throws Exception {
+		
 	}
 
 }
