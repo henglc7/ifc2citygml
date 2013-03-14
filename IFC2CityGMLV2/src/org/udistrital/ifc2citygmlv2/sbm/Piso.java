@@ -1,3 +1,4 @@
+
 package org.udistrital.ifc2citygmlv2.sbm;
 
 import java.util.ArrayList;
@@ -101,6 +102,12 @@ public class Piso {
 			cadena += planchaActual.getRepresentation_position_refDirection().getX() + " ";
 			cadena += planchaActual.getRepresentation_position_refDirection().getY() + " ";
 			cadena += planchaActual.getRepresentation_position_refDirection().getZ() + " ";
+			cadena += "]";
+			
+			cadena += "\n          ExtrudedDirection = [ ";
+			cadena += planchaActual.getRepresentation_extruded_direction().getX() + " ";
+			cadena += planchaActual.getRepresentation_extruded_direction().getY() + " ";
+			cadena += planchaActual.getRepresentation_extruded_direction().getZ() + " ";
 			cadena += "]";
 			
 			if(planchaActual.getRepresentation_points()!=null){

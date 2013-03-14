@@ -10,7 +10,7 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-public class Plancha {
+public class Plancha extends Solido implements ISolido{
 
 	private String id;
 	
@@ -43,6 +43,8 @@ public class Plancha {
 	
 	private Coordenada representation_position_refDirection;
 	
+	private Coordenada representation_extruded_direction;
+	
 	// estos 3 atributos son mutuamente excluyentes
 	
 	private List<Coordenada> representation_points;
@@ -56,7 +58,18 @@ public class Plancha {
 	
 	private List<Coordenada> coordenadasAbsolutas;
 	
+	
+	
 
+	
+	public Coordenada getRepresentation_extruded_direction() {
+		return representation_extruded_direction;
+	}
+
+	public void setRepresentation_extruded_direction(
+			Coordenada representation_extruded_direction) {
+		this.representation_extruded_direction = representation_extruded_direction;
+	}
 	public List<Coordenada> getCoordenadasAbsolutas() {
 		return coordenadasAbsolutas;
 	}
@@ -361,5 +374,14 @@ public class Plancha {
 	    
 	    return poligono;
 	}
+
+	@Override
+	public void generarCaras() {
+		//ACA VOY
+		
+		// calcular las caras y fijar setCaras()
+		
+	}
+	
 
 }

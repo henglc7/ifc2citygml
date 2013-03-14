@@ -40,6 +40,7 @@ import org.udistrital.ifc2citygmlv2.sbm.Segmento;
 
 public class LectorPlanchas {
 	
+	
 	public void leerPlanchas(List<Piso> pisos, IfcModel ifcModel){
 		
 		try {
@@ -51,10 +52,15 @@ public class LectorPlanchas {
             		planchaActual.setPlacementRelTo_relativePlacement(new Coordenada());
             		planchaActual.setRelativePlacement_location(new Coordenada());
             		planchaActual.setRepresentation_position_location(new Coordenada());
-            		planchaActual.setRepresentation_position_axis(new Coordenada());
-            		planchaActual.setRepresentation_position_refDirection(new Coordenada());
+            		
+            		//Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.]. 
+            		planchaActual.setRepresentation_position_axis(new Coordenada(1,1,1));
+            		planchaActual.setRepresentation_position_refDirection(new Coordenada(1,1,1));
+            		
+            		planchaActual.setRepresentation_extruded_direction(new Coordenada());
             		
             		IfcSlab planchaEncontrada = (IfcSlab) ifcModel.getIfcObjectByID(planchaActual.getId());
+            		
             		
                    
                     //Se ubica en el nodo objectPlacement->placementRelTo de la plancha 
@@ -144,6 +150,10 @@ public class LectorPlanchas {
                     Iterator it = items.iterator();
                     //se asume que siempre va a existir UNA sola representacion (SOLO SE LEE EL PRIMER ITEM)
                     IfcExtrudedAreaSolid itemActual = (IfcExtrudedAreaSolid) it.next();
+                    
+                    System.err.println(representationType + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " DEPTH = " + itemActual.getDepth().value + " EXTRUDED DIR = " + itemActual.getExtrudedDirection().getDirectionRatios());
+                    
+                    
                     IfcAxis2Placement3D position = itemActual.getPosition();
                     IfcCartesianPoint location = position.getLocation();
                     LIST<IfcLengthMeasure> coordinatesD = location.getCoordinates();
@@ -163,6 +173,29 @@ public class LectorPlanchas {
                     }
                     
                     planchaActual.setRepresentation_position_location(coord);
+                    
+                    /********************************************/
+                    
+                    IfcDirection direction = itemActual.getExtrudedDirection();
+                    LIST<DOUBLE> coordinatesF = direction.getDirectionRatios();
+                    
+                    coordenadas = coordinatesF.size();
+                    
+                    coord = new Coordenada();
+                    for(int n = 0; n<coordenadas;n++){
+                        double valor = (Double) coordinatesF.get(n).value;
+                        
+                        switch (n) {
+						case 0: coord.setX(valor); break;
+						case 1: coord.setY(valor); break;
+						case 2: coord.setZ(valor); break;
+						}
+                        
+                    }
+                    
+                    planchaActual.setRepresentation_extruded_direction(coord);
+                    
+                    /************************************************/
                     
                     //System.out.println(pisoActual.getNombre());
                     //planchaActual
@@ -211,6 +244,8 @@ public class LectorPlanchas {
                         planchaActual.setRepresentation_position_refDirection(coord);
                     }
                     
+                    System.err.println("          " + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " AXIS = " + planchaActual.getRepresentation_position_axis());
+                    System.err.println("          " + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " RDIR = " + planchaActual.getRepresentation_position_refDirection());
                     
                     
                     if(itemActual.getSweptArea() instanceof IfcArbitraryClosedProfileDef){

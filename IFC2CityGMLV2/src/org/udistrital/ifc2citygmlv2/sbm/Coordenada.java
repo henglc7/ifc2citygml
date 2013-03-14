@@ -12,6 +12,12 @@ public class Coordenada {
 		z = 0;
 	}
 	
+	public Coordenada(double X, double Y, double Z){
+		x = X;
+		y = Y;
+		z = Z;
+	}
+	
 	public double getX() {
 		return x;
 	}
