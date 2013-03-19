@@ -139,10 +139,15 @@ public class Piso {
 			if(planchaActual.getCoordenadasAbsolutas()!=null){
 				cadena += "\n          Absolutas (" + planchaActual.getCoordenadasAbsolutas().size() + ") = [ ";
 				for (Coordenada coordenadaActual : planchaActual.getCoordenadasAbsolutas()) {
-					cadena += coordenadaActual.getX() + " " + coordenadaActual.getY() + " , ";
+					cadena += coordenadaActual.getX() + " " + coordenadaActual.getY() + " " + coordenadaActual.getZ() + " , ";
 				}
 				cadena += "]";
 			}
+			
+			cadena += "\n          Piso Padre";
+			cadena += "\n              Id = " + planchaActual.getPisoPadre().getId();
+			cadena += "\n              Nombre = " + planchaActual.getPisoPadre().getNombre();
+			cadena += "\n              Elevacion = " + planchaActual.getPisoPadre().getElevacion();
 
 		}
 		
