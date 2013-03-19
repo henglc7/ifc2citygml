@@ -54,8 +54,8 @@ public class LectorPlanchas {
             		planchaActual.setRepresentation_position_location(new Coordenada());
             		
             		//Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.]. 
-            		planchaActual.setRepresentation_position_axis(new Coordenada(1,1,1));
-            		planchaActual.setRepresentation_position_refDirection(new Coordenada(1,1,1));
+            		planchaActual.setRepresentation_position_axis(new Coordenada(1,0,0));
+            		planchaActual.setRepresentation_position_refDirection(new Coordenada(0,0,1));
             		
             		planchaActual.setRepresentation_extruded_direction(new Coordenada());
             		

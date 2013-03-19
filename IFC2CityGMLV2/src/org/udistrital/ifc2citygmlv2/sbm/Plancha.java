@@ -1,7 +1,11 @@
 package org.udistrital.ifc2citygmlv2.sbm;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlab;
+import openifctools.com.openifcjavatoolbox.ifcmodel.IfcModel;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -11,6 +15,10 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 public class Plancha extends Solido implements ISolido{
+	
+	private IfcModel ifcModel;
+	
+	private Piso pisoPadre;
 
 	private String id;
 	
@@ -27,6 +35,23 @@ public class Plancha extends Solido implements ISolido{
 	private String representation_representationType;
 	
 	private String representation_representation_SweptAreaType;
+	
+	
+	public IfcModel getIfcModel() {
+		return ifcModel;
+	}
+
+	public void setIfcModel(IfcModel ifcModel) {
+		this.ifcModel = ifcModel;
+	}
+	
+	public Piso getPisoPadre() {
+		return pisoPadre;
+	}
+
+	public void setPisoPadre(Piso pisoPadre) {
+		this.pisoPadre = pisoPadre;
+	}
 	
 	public String getRepresentation_representation_SweptAreaType() {
 		return representation_representation_SweptAreaType;
@@ -207,10 +232,24 @@ public class Plancha extends Solido implements ISolido{
 				
 				yActual += representation_position_location.getY();
 				
+				//
+				double zActual = coordenadaActual.getZ();
+				
+				if(representation_position_refDirection.getZ()!=0){
+					zActual = zActual * representation_position_refDirection.getZ();	
+				}
+				
+				zActual += placementRelTo_placementRelTo.getZ();
+				zActual += placementRelTo_relativePlacement.getZ();
+				zActual += relativePlacement_location.getZ();
+				
+				zActual += representation_position_location.getZ();
+				//
 				
 				Coordenada coord = new Coordenada();
 				coord.setX(xActual);
 				coord.setY(yActual);
+				coord.setZ(zActual);
 				coordenadasAbsolutas.add(coord);
 			}
 		}else if(representation_segmentos!=null){
@@ -251,10 +290,24 @@ public class Plancha extends Solido implements ISolido{
 				
 				yActual += representation_position_location.getY();
 				
+				//
+				double zActual = coordenadaActual.getZ();
+				
+				if(representation_position_refDirection.getZ()!=0){
+					zActual = zActual * representation_position_refDirection.getZ();	
+				}
+				
+				zActual += placementRelTo_placementRelTo.getZ();
+				zActual += placementRelTo_relativePlacement.getZ();
+				zActual += relativePlacement_location.getZ();
+				
+				zActual += representation_position_location.getZ();
+				//
 				
 				Coordenada coord = new Coordenada();
 				coord.setX(xActual);
 				coord.setY(yActual);
+				coord.setZ(zActual);
 				coordenadasAbsolutas.add(coord);	
 				
 				contador++;
@@ -335,9 +388,25 @@ public class Plancha extends Solido implements ISolido{
 				yActual += representation_position_location.getY();
 				
 				
+				//
+				double zActual = coordenadaActual.getZ();
+				
+				if(representation_position_refDirection.getZ()!=0){
+					zActual = zActual * representation_position_refDirection.getZ();	
+				}
+				
+				zActual += placementRelTo_placementRelTo.getZ();
+				zActual += placementRelTo_relativePlacement.getZ();
+				zActual += relativePlacement_location.getZ();
+				
+				zActual += representation_position_location.getZ();
+				//
+				
+				
 				coord = new Coordenada();
 				coord.setX(xActual);
 				coord.setY(yActual);
+				coord.setZ(zActual);
 				coordenadasAbsolutas.add(coord);
 				
 				if(c==0){
@@ -377,9 +446,60 @@ public class Plancha extends Solido implements ISolido{
 
 	@Override
 	public void generarCaras() {
-		//ACA VOY
 		
-		// calcular las caras y fijar setCaras()
+		//inicialmente se obtiene la instancia de la plancha en el modelo IFC
+		IfcSlab planchaIfc = (IfcSlab) getIfcModel().getIfcObjectByID(getId());
+		
+		System.err.println("Piso = " + getPisoPadre().getNombre());
+		System.err.println("Plancha = " + this.getId());
+		
+		//Double elevacion = getPisoPadre().getElevacion();
+		Double profundidad = 0.30;
+		
+		
+		Poligono caraSuperior = new Poligono();
+		
+		for (Coordenada coordenadaActual : coordenadasAbsolutas) {
+			
+			Coordenada c = new Coordenada(coordenadaActual.getX(), coordenadaActual.getY(), coordenadaActual.getZ() );
+			caraSuperior.getCoordenadas().add(c);
+			
+		}
+		
+		Poligono caraInferior = new Poligono();
+		
+		for (Coordenada coordenadaActual : coordenadasAbsolutas) {
+			
+			Coordenada c = new Coordenada(coordenadaActual.getX(), coordenadaActual.getY(), coordenadaActual.getZ() - profundidad);
+			caraInferior.getCoordenadas().add(c);
+			
+		}
+		
+		List<Poligono> carasLaterales = new ArrayList();
+		
+		Integer puntos = caraSuperior.getCoordenadas().size();
+		
+		for(int i=0; i<puntos-1; i++){
+			Poligono estaCara = new Poligono();
+			
+			estaCara.getCoordenadas().add(caraSuperior.getCoordenadas().get(i));
+			estaCara.getCoordenadas().add(caraSuperior.getCoordenadas().get(i+1));
+			
+			estaCara.getCoordenadas().add(caraInferior.getCoordenadas().get(i+1));
+			estaCara.getCoordenadas().add(caraInferior.getCoordenadas().get(i));
+			
+			estaCara.getCoordenadas().add(caraSuperior.getCoordenadas().get(i)); //se añade nuevamente la primera para cerrar
+			
+			carasLaterales.add(estaCara);
+		}
+		
+		List<Poligono> todasLasCaras = new ArrayList();
+		
+		todasLasCaras.add(caraSuperior);
+		todasLasCaras.addAll(carasLaterales);
+		todasLasCaras.add(caraInferior);
+		
+		this.setCaras(todasLasCaras);
 		
 	}
 	

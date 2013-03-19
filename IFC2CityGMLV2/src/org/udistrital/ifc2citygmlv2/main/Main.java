@@ -51,7 +51,7 @@ public class Main {
 		String rutaArchivo = args[0]; 
     	//"C:\\Actual 2011\\escritorio XP\\modelos\\sabio caldas\\SabioCaldasSimplificado.ifc";
 
-		// The IFC model is loaded in memory
+		// Se carga el modelo IFC en memoria
 		final File file = new File(rutaArchivo);
 		ifcModel = new IfcModel();
 		ifcModel.addStepParserProgressListener(new StepParserProgressListener() {
@@ -71,7 +71,9 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 
+		//Se leen los pisos del edificio y se cargan los IDs de planchas
 		for (IfcRelContainedInSpatialStructure currentRelation : (Collection<IfcRelContainedInSpatialStructure>) ifcModel
 				.getCollection(IfcRelContainedInSpatialStructure.class)) {
 			// solo interesa averiguar por los PISOS del edificio
@@ -89,9 +91,11 @@ public class Main {
 
 					edificio.getPisos().add(pisoActual);
 
+					/*
 					System.out.println(pisoActual.getNombre() + " = "
 							+ pisoActual.getElevacion() + " ("
 							+ pisoActual.getId() + ")");
+					*/
 
 					SET<IfcProduct> relatedElements = currentRelation
 							.getRelatedElements();
@@ -102,7 +106,11 @@ public class Main {
 							// se descartan las planchas que sean de tipo ROOF
 							// (techos)
 							if (currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.FLOOR) {
+								
 								Plancha planchaActual = new Plancha();
+								
+								planchaActual.setIfcModel(ifcModel);
+								planchaActual.setPisoPadre(pisoActual);
 								planchaActual.setId(currentSlab.getGlobalId()
 										.toString());
 								pisoActual.getPlanchas().add(planchaActual);
@@ -212,7 +220,7 @@ public class Main {
 		LectorPlanchas leerPlanchas = new LectorPlanchas();
         leerPlanchas.leerPlanchas(edificio.getPisos(), ifcModel);
         
-        int pisoMinimo = edificio.getPisos().size() - 3;; 
+        int pisoMinimo = 0;//edificio.getPisos().size() - 3;; 
         
 /************************ CALCULO DE COORDENADAS GEOGRAFICAS UTM BASADO EN GRADOS MINUTOS Y SEGUNDOS ************************************************************/
         
@@ -250,7 +258,7 @@ public class Main {
 		
 
 		
-		/************************ CALCULO DE COORDENADAS GEOGRAFICAS UTM BASADO EN GRADOS MINUTOS Y SEGUNDOS ************************************************************/        
+		// ---------------------------- CALCULO DE COORDENADAS GEOGRAFICAS UTM BASADO EN GRADOS MINUTOS Y SEGUNDOS ----------------------------         
         
         GeometryFactory fact = new GeometryFactory();
         Geometry unionTodasLasPlanchas = fact.createGeometryCollection(null);
@@ -259,9 +267,9 @@ public class Main {
         	if(edificio.getPisos().indexOf(pisoA) >= pisoMinimo){
         		pisoA.imprimir();
         		//para obtener las coordenadas de IFC se podria invocar pisoA.generarPoligonos(0, 0)
-        		//MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(0, 0));
-        		MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(utm.getEasting(), utm.getNorthing()));
-        		//
+        		MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(0, 0));
+        		//MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(utm.getEasting(), utm.getNorthing()));
+        		
         		
         		Geometry unionEstePiso = fact.createGeometryCollection(null);
         		unionEstePiso = unionEstePiso.union(poligonosPisoActual);
@@ -279,9 +287,33 @@ public class Main {
         Coordinate[] coordenadas = unionTodasLasPlanchas.getCoordinates();
         
 
+        /*
+        //Se genera el modelo LOD1
         BuildingCreator creador = new BuildingCreator();
         try {
 			creador.crearModeloLOD1(coordenadas,mayorElevacionEncontrada,args[1]);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+        
+        // ------------------------------------------ PARA GENERAR LOD2
+        
+        System.out.println("\n\n");
+        
+        for (Piso pisoActual : edificio.getPisos()) {
+        	
+        	for(Plancha planchaActual : pisoActual.getPlanchas()){
+        		planchaActual.generarCaras();
+        	}
+			
+		}
+        
+        //Se genera el modelo LOD1
+        BuildingCreator creador = new BuildingCreator();
+        try {
+			creador.crearModeloLOD2(edificio);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
