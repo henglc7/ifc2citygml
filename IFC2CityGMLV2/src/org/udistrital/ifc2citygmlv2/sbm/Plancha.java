@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcExtrudedAreaSolid;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRepresentation;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRepresentationItem;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlab;
 import openifctools.com.openifcjavatoolbox.ifcmodel.IfcModel;
 
@@ -449,14 +452,20 @@ public class Plancha extends Solido implements ISolido{
 		
 		//inicialmente se obtiene la instancia de la plancha en el modelo IFC
 		IfcSlab planchaIfc = (IfcSlab) getIfcModel().getIfcObjectByID(getId());
+		IfcRepresentation item = planchaIfc.getRepresentation().getRepresentations().get(0);
 		
-		System.err.println("Piso = " + getPisoPadre().getNombre());
-		System.err.println("Plancha = " + this.getId());
+		//la profundidad de la extrusion, que va a afectar las coordenadas en Z
+		Double profundidad = 0d;
 		
-		//Double elevacion = getPisoPadre().getElevacion();
-		Double profundidad = 0.30;
+		//System.err.println("Piso = " + getPisoPadre().getNombre());
+		//System.err.println("Plancha = " + this.getId());
+
+		if(item.getRepresentationType().toString().equals("SweptSolid")){
+			IfcExtrudedAreaSolid repItem = (IfcExtrudedAreaSolid) item.getItems().iterator().next();
+			profundidad = repItem.getDepth().value;
+		}
 		
-		
+				
 		Poligono caraSuperior = new Poligono();
 		
 		for (Coordenada coordenadaActual : coordenadasAbsolutas) {
@@ -470,7 +479,7 @@ public class Plancha extends Solido implements ISolido{
 		
 		for (Coordenada coordenadaActual : coordenadasAbsolutas) {
 			
-			Coordenada c = new Coordenada(coordenadaActual.getX(), coordenadaActual.getY(), coordenadaActual.getZ() - profundidad);
+			Coordenada c = new Coordenada(coordenadaActual.getX(), coordenadaActual.getY(), coordenadaActual.getZ() + profundidad);
 			caraInferior.getCoordenadas().add(c);
 			
 		}

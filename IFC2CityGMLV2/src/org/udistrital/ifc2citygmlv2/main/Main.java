@@ -310,7 +310,8 @@ public class Main {
 			
 		}
         
-        //Se genera el modelo LOD1
+        
+        //Se genera el modelo LOD2
         BuildingCreator creador = new BuildingCreator();
         try {
 			creador.crearModeloLOD2(edificio);
@@ -318,6 +319,7 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 
 }
