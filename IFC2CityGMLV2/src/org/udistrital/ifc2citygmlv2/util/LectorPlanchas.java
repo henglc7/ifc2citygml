@@ -48,16 +48,20 @@ public class LectorPlanchas {
             for (Piso pisoActual : pisos) {
             	for (Plancha planchaActual : pisoActual.getPlanchas()){
             		
-            		planchaActual.setPlacementRelTo_placementRelTo(new Coordenada());
-            		planchaActual.setPlacementRelTo_relativePlacement(new Coordenada());
-            		planchaActual.setRelativePlacement_location(new Coordenada());
-            		planchaActual.setRepresentation_position_location(new Coordenada());
+            		planchaActual.placement.setPlacementRelTo_placementRelTo(new Coordenada());
+            		planchaActual.placement.setPlacementRelTo_relativePlacement(new Coordenada());
             		
+            		planchaActual.placement.setRelativePlacement_location(new Coordenada());
+            		//Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.].
+            		planchaActual.placement.setRelativePlacement_axis(new Coordenada(1,0,0));
+            		planchaActual.placement.setRelativePlacement_refDirection(new Coordenada(0,0,1));
+            		
+            		planchaActual.representation.setRepresentation_position_location(new Coordenada());
             		//Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.]. 
-            		planchaActual.setRepresentation_position_axis(new Coordenada(1,0,0));
-            		planchaActual.setRepresentation_position_refDirection(new Coordenada(0,0,1));
+            		planchaActual.representation.setRepresentation_position_axis(new Coordenada(1,0,0));
+            		planchaActual.representation.setRepresentation_position_refDirection(new Coordenada(0,0,1));
             		
-            		planchaActual.setRepresentation_extruded_direction(new Coordenada());
+            		planchaActual.representation.setRepresentation_extruded_direction(new Coordenada());
             		
             		IfcSlab planchaEncontrada = (IfcSlab) ifcModel.getIfcObjectByID(planchaActual.getId());
             		
@@ -89,7 +93,7 @@ public class LectorPlanchas {
 						}
                         
                     }
-                    planchaActual.setPlacementRelTo_placementRelTo(coordA);
+                    planchaActual.placement.setPlacementRelTo_placementRelTo(coordA);
 
                     
                     
@@ -113,7 +117,7 @@ public class LectorPlanchas {
 						}
 
                     }
-                    planchaActual.setPlacementRelTo_relativePlacement(coordB);
+                    planchaActual.placement.setPlacementRelTo_relativePlacement(coordB);
                     
                     //Se lee location
                     
@@ -134,7 +138,53 @@ public class LectorPlanchas {
 						}
                         
                     }
-                    planchaActual.setRelativePlacement_location(coordC);
+                    planchaActual.placement.setRelativePlacement_location(coordC);
+                    
+                    /********************************************************************************/
+                    //Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.]. 
+                    if(relativePlacementC.getAxis() != null){
+                    	
+                    	IfcDirection axis = relativePlacementC.getAxis();
+                        LIST<DOUBLE> directionRatios = axis.getDirectionRatios();
+                        
+                        int coordenadas = directionRatios.size();
+                        
+                        Coordenada coord = new Coordenada();
+                        
+                        for(int n = 0; n<coordenadas;n++){
+                            double valor = (Double) directionRatios.get(n).value;
+                            
+                            switch (n) {
+    						case 0: coord.setX(valor); break;
+    						case 1: coord.setY(valor); break;
+    						case 2: coord.setZ(valor); break;
+    						}
+                            
+                        }
+                        
+                        planchaActual.placement.setRelativePlacement_axis(coord);
+                        
+                        IfcDirection refDirection = relativePlacementC.getRefDirection();
+                        directionRatios = refDirection.getDirectionRatios();
+                        
+                        coordenadas = directionRatios.size();
+                        
+                        coord = new Coordenada();
+                        
+                        for(int n = 0; n<coordenadas;n++){
+                            double valor = (Double) directionRatios.get(n).value;
+                            
+                            switch (n) {
+    						case 0: coord.setX(valor); break;
+    						case 1: coord.setY(valor); break;
+    						case 2: coord.setZ(valor); break;
+    						}
+                            
+                        }
+                        
+                        planchaActual.placement.setRelativePlacement_refDirection(coord);
+                    }
+                    /********************************************************************************/
                     
                     
                     //Se lee Representation
@@ -144,7 +194,7 @@ public class LectorPlanchas {
                     //se asume que siempre va a existir UNA sola representacion (SOLO SE LEE LA POSICION 0)
                     IfcRepresentation representationActual = representations.get(0);
                     String representationType = representationActual.getRepresentationType().toString();
-                    planchaActual.setRepresentation_representationType(representationType);
+                    planchaActual.representation.setRepresentation_representationType(representationType);
                     
                     SET<IfcRepresentationItem> items = representationActual.getItems();
                     Iterator it = items.iterator();
@@ -172,7 +222,7 @@ public class LectorPlanchas {
                         
                     }
                     
-                    planchaActual.setRepresentation_position_location(coord);
+                    planchaActual.representation.setRepresentation_position_location(coord);
                     
                     /********************************************/
                     
@@ -193,7 +243,7 @@ public class LectorPlanchas {
                         
                     }
                     
-                    planchaActual.setRepresentation_extruded_direction(coord);
+                    planchaActual.representation.setRepresentation_extruded_direction(coord);
                     
                     /************************************************/
                     
@@ -221,7 +271,7 @@ public class LectorPlanchas {
                             
                         }
                         
-                        planchaActual.setRepresentation_position_axis(coord);
+                        planchaActual.representation.setRepresentation_position_axis(coord);
                         
                         IfcDirection refDirection = position.getRefDirection();
                         directionRatios = refDirection.getDirectionRatios();
@@ -241,11 +291,11 @@ public class LectorPlanchas {
                             
                         }
                         
-                        planchaActual.setRepresentation_position_refDirection(coord);
+                        planchaActual.representation.setRepresentation_position_refDirection(coord);
                     }
                     
-                    System.err.println("          " + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " AXIS = " + planchaActual.getRepresentation_position_axis());
-                    System.err.println("          " + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " RDIR = " + planchaActual.getRepresentation_position_refDirection());
+                    System.err.println("          " + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " AXIS = " + planchaActual.representation.getRepresentation_position_axis());
+                    System.err.println("          " + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " RDIR = " + planchaActual.representation.getRepresentation_position_refDirection());
                     
                     
                     if(itemActual.getSweptArea() instanceof IfcArbitraryClosedProfileDef){
@@ -253,7 +303,7 @@ public class LectorPlanchas {
                     	IfcArbitraryClosedProfileDef sweptArea = (IfcArbitraryClosedProfileDef) itemActual.getSweptArea();
                         //int at = (Integer) sweptAreaAtributos.get("Count");
                         //sobra?
-                        planchaActual.setRepresentation_representation_SweptAreaType(sweptArea.getClass().getSimpleName());
+                        planchaActual.representation.setRepresentation_representation_SweptAreaType(sweptArea.getClass().getSimpleName());
                         Object outerCurve = sweptArea.getOuterCurve();
                     	
                         if(outerCurve instanceof IfcPolyline){
@@ -360,7 +410,7 @@ public class LectorPlanchas {
                         
                     	
                     	IfcRectangleProfileDef sweptArea = (IfcRectangleProfileDef) itemActual.getSweptArea();
-                    	planchaActual.setRepresentation_representation_SweptAreaType(sweptArea.getClass().getSimpleName());
+                    	planchaActual.representation.setRepresentation_representation_SweptAreaType(sweptArea.getClass().getSimpleName());
                     	
                     	Rectangulo rec = new Rectangulo();
                     	

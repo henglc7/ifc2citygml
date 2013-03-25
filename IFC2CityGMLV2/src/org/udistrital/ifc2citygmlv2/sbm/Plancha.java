@@ -25,20 +25,19 @@ public class Plancha extends Solido implements ISolido{
 
 	private String id;
 	
-	// ObjectPlacement
+
+	// estos 3 atributos son mutuamente excluyentes
 	
-	private Coordenada placementRelTo_placementRelTo;
+	private List<Coordenada> representation_points;
 	
-	private Coordenada placementRelTo_relativePlacement;
+	private List<Segmento> representation_segmentos;
 	
-	private Coordenada relativePlacement_location;
+	private Rectangulo rectangulo;
 	
-	// Representation
+	//este atributo contiene las coordenadas absolutas del perfil de la plancha
+	//sin importar si se deriva de representation_points, representation_segmentos o rectangulo
 	
-	private String representation_representationType;
-	
-	private String representation_representation_SweptAreaType;
-	
+	private List<Coordenada> coordenadasAbsolutas;
 	
 	public IfcModel getIfcModel() {
 		return ifcModel;
@@ -56,48 +55,6 @@ public class Plancha extends Solido implements ISolido{
 		this.pisoPadre = pisoPadre;
 	}
 	
-	public String getRepresentation_representation_SweptAreaType() {
-		return representation_representation_SweptAreaType;
-	}
-
-	public void setRepresentation_representation_SweptAreaType(
-			String representation_representation_SweptAreaType) {
-		this.representation_representation_SweptAreaType = representation_representation_SweptAreaType;
-	}
-
-	private Coordenada representation_position_location;
-	
-	private Coordenada representation_position_axis;
-	
-	private Coordenada representation_position_refDirection;
-	
-	private Coordenada representation_extruded_direction;
-	
-	// estos 3 atributos son mutuamente excluyentes
-	
-	private List<Coordenada> representation_points;
-	
-	private List<Segmento> representation_segmentos;
-	
-	private Rectangulo rectangulo;
-	
-	//este atributo contiene las coordenadas absolutas del perfil de la plancha
-	//sin importar si se deriva de representation_points, representation_segmentos o rectangulo
-	
-	private List<Coordenada> coordenadasAbsolutas;
-	
-	
-	
-
-	
-	public Coordenada getRepresentation_extruded_direction() {
-		return representation_extruded_direction;
-	}
-
-	public void setRepresentation_extruded_direction(
-			Coordenada representation_extruded_direction) {
-		this.representation_extruded_direction = representation_extruded_direction;
-	}
 	public List<Coordenada> getCoordenadasAbsolutas() {
 		return coordenadasAbsolutas;
 	}
@@ -130,68 +87,7 @@ public class Plancha extends Solido implements ISolido{
 		this.representation_points = representation_points;
 	}
 
-	public Coordenada getRepresentation_position_location() {
-		return representation_position_location;
-	}
 
-	public void setRepresentation_position_location(
-			Coordenada representation_position_location) {
-		this.representation_position_location = representation_position_location;
-	}
-
-	public Coordenada getRepresentation_position_axis() {
-		return representation_position_axis;
-	}
-
-	public void setRepresentation_position_axis(
-			Coordenada representation_position_axis) {
-		this.representation_position_axis = representation_position_axis;
-	}
-
-	public Coordenada getRepresentation_position_refDirection() {
-		return representation_position_refDirection;
-	}
-
-	public void setRepresentation_position_refDirection(
-			Coordenada representation_position_refDirection) {
-		this.representation_position_refDirection = representation_position_refDirection;
-	}
-
-	public String getRepresentation_representationType() {
-		return representation_representationType;
-	}
-
-	public void setRepresentation_representationType(
-			String representation_representationType) {
-		this.representation_representationType = representation_representationType;
-	}
-
-	public Coordenada getRelativePlacement_location() {
-		return relativePlacement_location;
-	}
-
-	public void setRelativePlacement_location(
-			Coordenada relativePlacement_location) {
-		this.relativePlacement_location = relativePlacement_location;
-	}
-
-	public Coordenada getPlacementRelTo_placementRelTo() {
-		return placementRelTo_placementRelTo;
-	}
-
-	public void setPlacementRelTo_placementRelTo(
-			Coordenada placementRelTo_placementRelTo) {
-		this.placementRelTo_placementRelTo = placementRelTo_placementRelTo;
-	}
-
-	public Coordenada getPlacementRelTo_relativePlacement() {
-		return placementRelTo_relativePlacement;
-	}
-
-	public void setPlacementRelTo_relativePlacement(
-			Coordenada placementRelTo_relativePlacement) {
-		this.placementRelTo_relativePlacement = placementRelTo_relativePlacement;
-	}
 
 
 	public String getId() {
@@ -212,41 +108,41 @@ public class Plancha extends Solido implements ISolido{
 			for (Coordenada coordenadaActual : representation_points) {
 				double xActual = coordenadaActual.getX();
 				
-				if(representation_position_refDirection.getX()!=0){
-					xActual = xActual * representation_position_refDirection.getX();	
+				if(representation.representation_position_refDirection.getX()!=0){
+					xActual = xActual * representation.representation_position_refDirection.getX();	
 				}
 				
-				xActual += placementRelTo_placementRelTo.getX();
-				xActual += placementRelTo_relativePlacement.getX();
-				xActual += relativePlacement_location.getX();
+				xActual += placement.placementRelTo_placementRelTo.getX();
+				xActual += placement.placementRelTo_relativePlacement.getX();
+				xActual += placement.relativePlacement_location.getX();
 				
-				xActual += representation_position_location.getX();
+				xActual += representation.representation_position_location.getX();
 				
 				
 				double yActual = coordenadaActual.getY();
 				
-				if(representation_position_refDirection.getY()!=0){
-					yActual = yActual * representation_position_refDirection.getY();	
+				if(representation.representation_position_refDirection.getY()!=0){
+					yActual = yActual * representation.representation_position_refDirection.getY();	
 				}
 				
-				yActual += placementRelTo_placementRelTo.getY();
-				yActual += placementRelTo_relativePlacement.getY();
-				yActual += relativePlacement_location.getY();
+				yActual += placement.placementRelTo_placementRelTo.getY();
+				yActual += placement.placementRelTo_relativePlacement.getY();
+				yActual += placement.relativePlacement_location.getY();
 				
-				yActual += representation_position_location.getY();
+				yActual += representation.representation_position_location.getY();
 				
 				//
 				double zActual = coordenadaActual.getZ();
 				
-				if(representation_position_refDirection.getZ()!=0){
-					zActual = zActual * representation_position_refDirection.getZ();	
+				if(representation.representation_position_refDirection.getZ()!=0){
+					zActual = zActual * representation.representation_position_refDirection.getZ();	
 				}
 				
-				zActual += placementRelTo_placementRelTo.getZ();
-				zActual += placementRelTo_relativePlacement.getZ();
-				zActual += relativePlacement_location.getZ();
+				zActual += placement.placementRelTo_placementRelTo.getZ();
+				zActual += placement.placementRelTo_relativePlacement.getZ();
+				zActual += placement.relativePlacement_location.getZ();
 				
-				zActual += representation_position_location.getZ();
+				zActual += representation.representation_position_location.getZ();
 				//
 				
 				Coordenada coord = new Coordenada();
@@ -270,41 +166,41 @@ public class Plancha extends Solido implements ISolido{
 				
 				double xActual = coordenadaActual.getX();
 				
-				if(representation_position_refDirection.getX()!=0){
-					xActual = xActual * representation_position_refDirection.getX();	
+				if(representation.representation_position_refDirection.getX()!=0){
+					xActual = xActual * representation.representation_position_refDirection.getX();	
 				}
 				
-				xActual += placementRelTo_placementRelTo.getX();
-				xActual += placementRelTo_relativePlacement.getX();
-				xActual += relativePlacement_location.getX();
+				xActual += placement.placementRelTo_placementRelTo.getX();
+				xActual += placement.placementRelTo_relativePlacement.getX();
+				xActual += placement.relativePlacement_location.getX();
 				
-				xActual += representation_position_location.getX();
+				xActual += representation.representation_position_location.getX();
 				
 				
 				double yActual = coordenadaActual.getY();
 				
-				if(representation_position_refDirection.getY()!=0){
-					yActual = yActual * representation_position_refDirection.getY();	
+				if(representation.representation_position_refDirection.getY()!=0){
+					yActual = yActual * representation.representation_position_refDirection.getY();	
 				}
 				
-				yActual += placementRelTo_placementRelTo.getY();
-				yActual += placementRelTo_relativePlacement.getY();
-				yActual += relativePlacement_location.getY();
+				yActual += placement.placementRelTo_placementRelTo.getY();
+				yActual += placement.placementRelTo_relativePlacement.getY();
+				yActual += placement.relativePlacement_location.getY();
 				
-				yActual += representation_position_location.getY();
+				yActual += representation.representation_position_location.getY();
 				
 				//
 				double zActual = coordenadaActual.getZ();
 				
-				if(representation_position_refDirection.getZ()!=0){
-					zActual = zActual * representation_position_refDirection.getZ();	
+				if(representation.representation_position_refDirection.getZ()!=0){
+					zActual = zActual * representation.representation_position_refDirection.getZ();	
 				}
 				
-				zActual += placementRelTo_placementRelTo.getZ();
-				zActual += placementRelTo_relativePlacement.getZ();
-				zActual += relativePlacement_location.getZ();
+				zActual += placement.placementRelTo_placementRelTo.getZ();
+				zActual += placement.placementRelTo_relativePlacement.getZ();
+				zActual += placement.relativePlacement_location.getZ();
 				
-				zActual += representation_position_location.getZ();
+				zActual += representation.representation_position_location.getZ();
 				//
 				
 				Coordenada coord = new Coordenada();
@@ -367,42 +263,42 @@ public class Plancha extends Solido implements ISolido{
 			for (Coordenada coordenadaActual : cuatroEsquinas) {
 				double xActual = coordenadaActual.getX();
 				
-				if(representation_position_refDirection.getX()!=0){
-					xActual = xActual * representation_position_refDirection.getX();	
+				if(representation.representation_position_refDirection.getX()!=0){
+					xActual = xActual * representation.representation_position_refDirection.getX();	
 				}
 				
-				xActual += placementRelTo_placementRelTo.getX();
-				xActual += placementRelTo_relativePlacement.getX();
-				xActual += relativePlacement_location.getX();
+				xActual += placement.placementRelTo_placementRelTo.getX();
+				xActual += placement.placementRelTo_relativePlacement.getX();
+				xActual += placement.relativePlacement_location.getX();
 				
-				xActual += representation_position_location.getX();
+				xActual += representation.representation_position_location.getX();
 				
 				
 				double yActual = coordenadaActual.getY();
 				
-				if(representation_position_refDirection.getY()!=0){
-					yActual = yActual * representation_position_refDirection.getY();	
+				if(representation.representation_position_refDirection.getY()!=0){
+					yActual = yActual * representation.representation_position_refDirection.getY();	
 				}
 				
-				yActual += placementRelTo_placementRelTo.getY();
-				yActual += placementRelTo_relativePlacement.getY();
-				yActual += relativePlacement_location.getY();
+				yActual += placement.placementRelTo_placementRelTo.getY();
+				yActual += placement.placementRelTo_relativePlacement.getY();
+				yActual += placement.relativePlacement_location.getY();
 				
-				yActual += representation_position_location.getY();
+				yActual += representation.representation_position_location.getY();
 				
 				
 				//
 				double zActual = coordenadaActual.getZ();
 				
-				if(representation_position_refDirection.getZ()!=0){
-					zActual = zActual * representation_position_refDirection.getZ();	
+				if(representation.representation_position_refDirection.getZ()!=0){
+					zActual = zActual * representation.representation_position_refDirection.getZ();	
 				}
 				
-				zActual += placementRelTo_placementRelTo.getZ();
-				zActual += placementRelTo_relativePlacement.getZ();
-				zActual += relativePlacement_location.getZ();
+				zActual += placement.placementRelTo_placementRelTo.getZ();
+				zActual += placement.placementRelTo_relativePlacement.getZ();
+				zActual += placement.relativePlacement_location.getZ();
 				
-				zActual += representation_position_location.getZ();
+				zActual += representation.representation_position_location.getZ();
 				//
 				
 				
@@ -507,6 +403,9 @@ public class Plancha extends Solido implements ISolido{
 		todasLasCaras.add(caraSuperior);
 		todasLasCaras.addAll(carasLaterales);
 		todasLasCaras.add(caraInferior);
+		
+		//se aplica la primera rotacion
+				
 		
 		this.setCaras(todasLasCaras);
 		

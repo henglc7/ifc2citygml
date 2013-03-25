@@ -82,7 +82,7 @@ public class Main {
 						.getRelatingStructure();
 				// no se tienen en cuenta los pisos subterraneos ni el piso base
 				// (elevation = 0)
-				if (storey.getElevation().value > 0) {
+				if (storey.getElevation().value >= 0) {
 
 					Piso pisoActual = new Piso();
 					pisoActual.setId(storey.getGlobalId().toString());
@@ -100,12 +100,18 @@ public class Main {
 					SET<IfcProduct> relatedElements = currentRelation
 							.getRelatedElements();
 					// se buscan las planchas que tenga el piso
-					for (IfcProduct product : relatedElements) {
+					for (Object product : relatedElements) {
 						if (product instanceof IfcSlab) {
 							IfcSlab currentSlab = (IfcSlab) product;
 							// se descartan las planchas que sean de tipo ROOF
 							// (techos)
-							if (currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.FLOOR) {
+							if (
+									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.FLOOR
+									||
+									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.BASESLAB
+									||
+									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.ROOF
+								) {
 								
 								Plancha planchaActual = new Plancha();
 								
@@ -114,8 +120,14 @@ public class Main {
 								planchaActual.setId(currentSlab.getGlobalId()
 										.toString());
 								pisoActual.getPlanchas().add(planchaActual);
+								
+								if(currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.ROOF){
+									System.err.println("AGREGADO ROOF : " + currentSlab.getGlobalId().toString());
+								}
 								// System.out.println("agregada plancha " +
 								// planchaActual.getId());
+							}else{
+							System.err.println("DESCARTADA " + currentSlab.getPredefinedType());	
 							}
 						}
 					}
@@ -220,7 +232,7 @@ public class Main {
 		LectorPlanchas leerPlanchas = new LectorPlanchas();
         leerPlanchas.leerPlanchas(edificio.getPisos(), ifcModel);
         
-        int pisoMinimo = 0;//edificio.getPisos().size() - 3;; 
+        int pisoMinimo = edificio.getPisos().size() - 3;; 
         
 /************************ CALCULO DE COORDENADAS GEOGRAFICAS UTM BASADO EN GRADOS MINUTOS Y SEGUNDOS ************************************************************/
         
@@ -274,9 +286,14 @@ public class Main {
         		Geometry unionEstePiso = fact.createGeometryCollection(null);
         		unionEstePiso = unionEstePiso.union(poligonosPisoActual);
         		
-        		//System.out.println(unionEstePiso);
+        		        		
+        		if(unionEstePiso.isValid()){
+        			unionTodasLasPlanchas = unionTodasLasPlanchas.union(unionEstePiso);        			
+        		}else{
+        			System.err.println("Geometria INVALIDA : " + unionEstePiso);
+        		}
         		
-        		unionTodasLasPlanchas = unionTodasLasPlanchas.union(unionEstePiso);
+        		
         	}
 		}
         
@@ -287,7 +304,7 @@ public class Main {
         Coordinate[] coordenadas = unionTodasLasPlanchas.getCoordinates();
         
 
-        /*
+        
         //Se genera el modelo LOD1
         BuildingCreator creador = new BuildingCreator();
         try {
@@ -296,7 +313,7 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
+		
         
         // ------------------------------------------ PARA GENERAR LOD2
         
@@ -312,7 +329,7 @@ public class Main {
         
         
         //Se genera el modelo LOD2
-        BuildingCreator creador = new BuildingCreator();
+        //BuildingCreator creador = new BuildingCreator();
         try {
 			creador.crearModeloLOD2(edificio);
 		} catch (Exception e) {
