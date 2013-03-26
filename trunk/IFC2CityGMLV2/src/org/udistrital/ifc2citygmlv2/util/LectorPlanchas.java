@@ -48,13 +48,13 @@ public class LectorPlanchas {
             for (Piso pisoActual : pisos) {
             	for (Plancha planchaActual : pisoActual.getPlanchas()){
             		
-            		planchaActual.placement.setPlacementRelTo_placementRelTo(new Coordenada());
-            		planchaActual.placement.setPlacementRelTo_relativePlacement(new Coordenada());
+            		planchaActual.objectPlacement.setPlacementRelTo_placementRelTo(new Coordenada());
+            		planchaActual.objectPlacement.setPlacementRelTo_relativePlacement(new Coordenada());
             		
-            		planchaActual.placement.setRelativePlacement_location(new Coordenada());
+            		planchaActual.objectPlacement.setRelativePlacement_location(new Coordenada());
             		//Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.].
-            		planchaActual.placement.setRelativePlacement_axis(new Coordenada(1,0,0));
-            		planchaActual.placement.setRelativePlacement_refDirection(new Coordenada(0,0,1));
+            		planchaActual.objectPlacement.setRelativePlacement_axis(new Coordenada(1,0,0));
+            		planchaActual.objectPlacement.setRelativePlacement_refDirection(new Coordenada(0,0,1));
             		
             		planchaActual.representation.setRepresentation_position_location(new Coordenada());
             		//Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.]. 
@@ -93,7 +93,7 @@ public class LectorPlanchas {
 						}
                         
                     }
-                    planchaActual.placement.setPlacementRelTo_placementRelTo(coordA);
+                    planchaActual.objectPlacement.setPlacementRelTo_placementRelTo(coordA);
 
                     
                     
@@ -117,7 +117,7 @@ public class LectorPlanchas {
 						}
 
                     }
-                    planchaActual.placement.setPlacementRelTo_relativePlacement(coordB);
+                    planchaActual.objectPlacement.setPlacementRelTo_relativePlacement(coordB);
                     
                     //Se lee location
                     
@@ -138,7 +138,7 @@ public class LectorPlanchas {
 						}
                         
                     }
-                    planchaActual.placement.setRelativePlacement_location(coordC);
+                    planchaActual.objectPlacement.setRelativePlacement_location(coordC);
                     
                     /********************************************************************************/
                     //Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.]. 
@@ -162,7 +162,7 @@ public class LectorPlanchas {
                             
                         }
                         
-                        planchaActual.placement.setRelativePlacement_axis(coord);
+                        planchaActual.objectPlacement.setRelativePlacement_axis(coord);
                         
                         IfcDirection refDirection = relativePlacementC.getRefDirection();
                         directionRatios = refDirection.getDirectionRatios();
@@ -182,7 +182,7 @@ public class LectorPlanchas {
                             
                         }
                         
-                        planchaActual.placement.setRelativePlacement_refDirection(coord);
+                        planchaActual.objectPlacement.setRelativePlacement_refDirection(coord);
                     }
                     /********************************************************************************/
                     

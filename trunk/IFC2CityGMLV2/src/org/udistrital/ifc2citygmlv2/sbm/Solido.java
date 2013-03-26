@@ -8,7 +8,7 @@ import org.udistrital.ifc2citygmlv2.sbm.ifc.Representation;
 
 public class Solido {
 	
-	public Placement placement = new Placement();
+	public Placement objectPlacement = new Placement();
 	
 	public Representation representation = new Representation();
 	
