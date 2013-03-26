@@ -167,7 +167,9 @@ public class BuildingCreator {
 
 		Building building = citygml.createBuilding();
 		
-		List<Polygon> poligonosCityGML = new ArrayList();
+		List<Polygon> poligonosPlanchas = new ArrayList();
+		
+		List<Polygon> poligonosTechos = new ArrayList();
 		
 		for (Piso pisoActual : edificio.getPisos()) {
         	for(Plancha planchaActual : pisoActual.getPlanchas()){
@@ -181,20 +183,33 @@ public class BuildingCreator {
         				coordenadasEstePoligono.add(coordenadaActual.getZ());
         			}
         			
-        			poligonosCityGML.add(geom.createLinearPolygon(coordenadasEstePoligono, 3));
+        			if(planchaActual.getTipo().equals("FLOOR") || planchaActual.getTipo().equals("BASESLAB")){
+        				poligonosPlanchas.add(geom.createLinearPolygon(coordenadasEstePoligono, 3));
+        			}
+        			if(planchaActual.getTipo().equals("ROOF")){
+        				poligonosTechos.add(geom.createLinearPolygon(coordenadasEstePoligono, 3));
+        			}
+        			
         		}
         	}
 		}
 		
 		
-		for (Polygon polygonActual : poligonosCityGML) {
+		for (Polygon polygonActual : poligonosPlanchas) {
+			polygonActual.setId(gmlIdManager.generateGmlId());
+		}
+		for (Polygon polygonActual : poligonosTechos) {
 			polygonActual.setId(gmlIdManager.generateGmlId());
 		}
 
 		// lod2 solid
 		List<SurfaceProperty> surfaceMember = new ArrayList<SurfaceProperty>();
 		
-		for (Polygon polygonActual : poligonosCityGML) {
+		for (Polygon polygonActual : poligonosPlanchas) {
+			surfaceMember.add(gml.createSurfaceProperty('#' + polygonActual.getId()));
+		}
+		
+		for (Polygon polygonActual : poligonosTechos) {
 			surfaceMember.add(gml.createSurfaceProperty('#' + polygonActual.getId()));
 		}
 /*
@@ -224,12 +239,14 @@ public class BuildingCreator {
 		surfaceMember.add(gml.createSurfaceProperty('#' + roof_1.getId()));
 		surfaceMember.add(gml.createSurfaceProperty('#' + roof_2.getId()));
 */
+		
 		CompositeSurface compositeSurface = gml.createCompositeSurface();
 		compositeSurface.setSurfaceMember(surfaceMember);		
 		Solid solid = gml.createSolid();
 		solid.setExterior(gml.createSurfaceProperty(compositeSurface));
 
 		building.setLod2Solid(gml.createSolidProperty(solid));
+		
 /*
 		// thematic boundary surfaces
 		List<BoundarySurfaceProperty> boundedBy = new ArrayList<BoundarySurfaceProperty>();
@@ -245,9 +262,14 @@ public class BuildingCreator {
 		// thematic boundary surfaces
 		List<BoundarySurfaceProperty> boundedBy = new ArrayList<BoundarySurfaceProperty>();
 		
-		for (Polygon polygonActual : poligonosCityGML) {
+		for (Polygon polygonActual : poligonosPlanchas) {
 			boundedBy.add(createBoundarySurface(CityGMLClass.WALL_SURFACE, polygonActual));
 		}
+		
+		for (Polygon polygonActual : poligonosTechos) {
+			boundedBy.add(createBoundarySurface(CityGMLClass.ROOF_SURFACE, polygonActual));
+		}
+		
 		building.setBoundedBySurface(boundedBy);
 		
 		CityModel cityModel = citygml.createCityModel();

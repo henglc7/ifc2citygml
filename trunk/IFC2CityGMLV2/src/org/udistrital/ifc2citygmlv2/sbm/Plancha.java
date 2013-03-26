@@ -28,6 +28,8 @@ public class Plancha extends Solido implements ISolido{
 
 	private String id;
 	
+	private String tipo;
+	
 
 	// estos 3 atributos son mutuamente excluyentes
 	
@@ -41,6 +43,16 @@ public class Plancha extends Solido implements ISolido{
 	//sin importar si se deriva de representation_points, representation_segmentos o rectangulo
 	
 	private List<Coordenada> coordenadasAbsolutas;
+	
+
+	
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
 	
 	public IfcModel getIfcModel() {
 		return ifcModel;
@@ -205,10 +217,11 @@ public class Plancha extends Solido implements ISolido{
 	}
 	
 	
-	public Coordenada aplicarObjectPlacement(Coordenada coordOriginal){
-		
+	public Coordenada aplicarObjectPlacement(Coordenada original){
+		//Hay que rotar primero, o no funciona bien
+		Coordenada conRotacion = rotar(original); 
 			
-		double xActual = coordOriginal.getX();
+		double xActual = conRotacion.getX();
 		
 		if(representation.representation_position_refDirection.getX()!=0){
 			xActual = xActual * representation.representation_position_refDirection.getX();	
@@ -218,7 +231,7 @@ public class Plancha extends Solido implements ISolido{
 		xActual += objectPlacement.placementRelTo_relativePlacement.getX();
 		xActual += objectPlacement.relativePlacement_location.getX();
 		
-		double yActual = coordOriginal.getY();
+		double yActual = conRotacion.getY();
 		
 		if(representation.representation_position_refDirection.getY()!=0){
 			yActual = yActual * representation.representation_position_refDirection.getY();	
@@ -228,7 +241,7 @@ public class Plancha extends Solido implements ISolido{
 		yActual += objectPlacement.placementRelTo_relativePlacement.getY();
 		yActual += objectPlacement.relativePlacement_location.getY();
 		
-		double zActual = coordOriginal.getZ();
+		double zActual = conRotacion.getZ();
 		
 		if(representation.representation_position_refDirection.getZ()!=0){
 			zActual = zActual * representation.representation_position_refDirection.getZ();	
@@ -262,7 +275,7 @@ public class Plancha extends Solido implements ISolido{
 		
 	}
 	
-	/*
+	
 	public Coordenada rotar(Coordenada coordOriginal){
 		
 		Coordenada r = new Coordenada();
@@ -293,13 +306,11 @@ public class Plancha extends Solido implements ISolido{
 		r.setY(puntoRotado.getY());
 		r.setZ(puntoRotado.getZ());
 			
-			
-			
 		
 
 		return r;
 	}
-	*/
+	
 	
 	public Polygon generarPoligono(double easting, double northing){
 	    // create a factory using default values (e.g. floating precision)
