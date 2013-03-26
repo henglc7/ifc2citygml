@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcExtrudedAreaSolid;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRepresentation;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRepresentationItem;
@@ -106,50 +109,11 @@ public class Plancha extends Solido implements ISolido{
 			coordenadasAbsolutas = new ArrayList();
 			
 			for (Coordenada coordenadaActual : representation_points) {
-				double xActual = coordenadaActual.getX();
 				
-				if(representation.representation_position_refDirection.getX()!=0){
-					xActual = xActual * representation.representation_position_refDirection.getX();	
-				}
+				Coordenada coordAbsoluta = aplicarObjectPlacement(coordenadaActual);
+				coordAbsoluta = aplicarObjectRepresentation(coordAbsoluta);
+				coordenadasAbsolutas.add(coordAbsoluta);
 				
-				xActual += placement.placementRelTo_placementRelTo.getX();
-				xActual += placement.placementRelTo_relativePlacement.getX();
-				xActual += placement.relativePlacement_location.getX();
-				
-				xActual += representation.representation_position_location.getX();
-				
-				
-				double yActual = coordenadaActual.getY();
-				
-				if(representation.representation_position_refDirection.getY()!=0){
-					yActual = yActual * representation.representation_position_refDirection.getY();	
-				}
-				
-				yActual += placement.placementRelTo_placementRelTo.getY();
-				yActual += placement.placementRelTo_relativePlacement.getY();
-				yActual += placement.relativePlacement_location.getY();
-				
-				yActual += representation.representation_position_location.getY();
-				
-				//
-				double zActual = coordenadaActual.getZ();
-				
-				if(representation.representation_position_refDirection.getZ()!=0){
-					zActual = zActual * representation.representation_position_refDirection.getZ();	
-				}
-				
-				zActual += placement.placementRelTo_placementRelTo.getZ();
-				zActual += placement.placementRelTo_relativePlacement.getZ();
-				zActual += placement.relativePlacement_location.getZ();
-				
-				zActual += representation.representation_position_location.getZ();
-				//
-				
-				Coordenada coord = new Coordenada();
-				coord.setX(xActual);
-				coord.setY(yActual);
-				coord.setZ(zActual);
-				coordenadasAbsolutas.add(coord);
 			}
 		}else if(representation_segmentos!=null){
 
@@ -164,50 +128,9 @@ public class Plancha extends Solido implements ISolido{
 				
 				coordenadaActual = segmentoActual.getP0();
 				
-				double xActual = coordenadaActual.getX();
-				
-				if(representation.representation_position_refDirection.getX()!=0){
-					xActual = xActual * representation.representation_position_refDirection.getX();	
-				}
-				
-				xActual += placement.placementRelTo_placementRelTo.getX();
-				xActual += placement.placementRelTo_relativePlacement.getX();
-				xActual += placement.relativePlacement_location.getX();
-				
-				xActual += representation.representation_position_location.getX();
-				
-				
-				double yActual = coordenadaActual.getY();
-				
-				if(representation.representation_position_refDirection.getY()!=0){
-					yActual = yActual * representation.representation_position_refDirection.getY();	
-				}
-				
-				yActual += placement.placementRelTo_placementRelTo.getY();
-				yActual += placement.placementRelTo_relativePlacement.getY();
-				yActual += placement.relativePlacement_location.getY();
-				
-				yActual += representation.representation_position_location.getY();
-				
-				//
-				double zActual = coordenadaActual.getZ();
-				
-				if(representation.representation_position_refDirection.getZ()!=0){
-					zActual = zActual * representation.representation_position_refDirection.getZ();	
-				}
-				
-				zActual += placement.placementRelTo_placementRelTo.getZ();
-				zActual += placement.placementRelTo_relativePlacement.getZ();
-				zActual += placement.relativePlacement_location.getZ();
-				
-				zActual += representation.representation_position_location.getZ();
-				//
-				
-				Coordenada coord = new Coordenada();
-				coord.setX(xActual);
-				coord.setY(yActual);
-				coord.setZ(zActual);
-				coordenadasAbsolutas.add(coord);	
+				Coordenada coordAbsoluta = aplicarObjectPlacement(coordenadaActual);
+				coordAbsoluta = aplicarObjectRepresentation(coordAbsoluta);
+				coordenadasAbsolutas.add(coordAbsoluta);
 				
 				contador++;
 				
@@ -261,65 +184,122 @@ public class Plancha extends Solido implements ISolido{
 			int c = 0;
 			Coordenada primera = null;
 			for (Coordenada coordenadaActual : cuatroEsquinas) {
-				double xActual = coordenadaActual.getX();
 				
-				if(representation.representation_position_refDirection.getX()!=0){
-					xActual = xActual * representation.representation_position_refDirection.getX();	
-				}
-				
-				xActual += placement.placementRelTo_placementRelTo.getX();
-				xActual += placement.placementRelTo_relativePlacement.getX();
-				xActual += placement.relativePlacement_location.getX();
-				
-				xActual += representation.representation_position_location.getX();
-				
-				
-				double yActual = coordenadaActual.getY();
-				
-				if(representation.representation_position_refDirection.getY()!=0){
-					yActual = yActual * representation.representation_position_refDirection.getY();	
-				}
-				
-				yActual += placement.placementRelTo_placementRelTo.getY();
-				yActual += placement.placementRelTo_relativePlacement.getY();
-				yActual += placement.relativePlacement_location.getY();
-				
-				yActual += representation.representation_position_location.getY();
-				
-				
-				//
-				double zActual = coordenadaActual.getZ();
-				
-				if(representation.representation_position_refDirection.getZ()!=0){
-					zActual = zActual * representation.representation_position_refDirection.getZ();	
-				}
-				
-				zActual += placement.placementRelTo_placementRelTo.getZ();
-				zActual += placement.placementRelTo_relativePlacement.getZ();
-				zActual += placement.relativePlacement_location.getZ();
-				
-				zActual += representation.representation_position_location.getZ();
-				//
-				
-				
-				coord = new Coordenada();
-				coord.setX(xActual);
-				coord.setY(yActual);
-				coord.setZ(zActual);
-				coordenadasAbsolutas.add(coord);
+				Coordenada coordAbsoluta = aplicarObjectPlacement(coordenadaActual);
+				coordAbsoluta = aplicarObjectRepresentation(coordAbsoluta);
+				coordenadasAbsolutas.add(coordAbsoluta);
 				
 				if(c==0){
-					primera = coord;
+					primera = coordAbsoluta;
 				}
 				c++;
 			}
 			//se añade la primer para cerrar el poligono
 			coordenadasAbsolutas.add(primera);
 
+			
 		}
 		
+		//aplicarObjectPlacement(/*coordenadasAbsolutas*/);
 		
 	}
+	
+	
+	public Coordenada aplicarObjectPlacement(Coordenada coordOriginal){
+		
+			
+		double xActual = coordOriginal.getX();
+		
+		if(representation.representation_position_refDirection.getX()!=0){
+			xActual = xActual * representation.representation_position_refDirection.getX();	
+		}
+		
+		xActual += objectPlacement.placementRelTo_placementRelTo.getX();
+		xActual += objectPlacement.placementRelTo_relativePlacement.getX();
+		xActual += objectPlacement.relativePlacement_location.getX();
+		
+		double yActual = coordOriginal.getY();
+		
+		if(representation.representation_position_refDirection.getY()!=0){
+			yActual = yActual * representation.representation_position_refDirection.getY();	
+		}
+		
+		yActual += objectPlacement.placementRelTo_placementRelTo.getY();
+		yActual += objectPlacement.placementRelTo_relativePlacement.getY();
+		yActual += objectPlacement.relativePlacement_location.getY();
+		
+		double zActual = coordOriginal.getZ();
+		
+		if(representation.representation_position_refDirection.getZ()!=0){
+			zActual = zActual * representation.representation_position_refDirection.getZ();	
+		}
+		
+		zActual += objectPlacement.placementRelTo_placementRelTo.getZ();
+		zActual += objectPlacement.placementRelTo_relativePlacement.getZ();
+		zActual += objectPlacement.relativePlacement_location.getZ();
+		
+		
+		Coordenada coord = new Coordenada(xActual, yActual, zActual);
+		
+		return coord;
+		
+	}
+	
+	public Coordenada aplicarObjectRepresentation(Coordenada coordOriginal){
+		
+		double xActual = coordOriginal.getX();
+		xActual += representation.representation_position_location.getX();
+		
+		double yActual = coordOriginal.getY();
+		yActual += representation.representation_position_location.getY();
+		
+		double zActual = coordOriginal.getZ();
+		zActual += representation.representation_position_location.getZ();
+		
+		Coordenada coord = new Coordenada(xActual, yActual, zActual);
+		
+		return coord;
+		
+	}
+	
+	/*
+	public Coordenada rotar(Coordenada coordOriginal){
+		
+		Coordenada r = new Coordenada();
+		
+		Coordenada axis = this.objectPlacement.relativePlacement_axis;
+		Coordenada refDirection = this.objectPlacement.relativePlacement_refDirection;
+		
+		
+		Vector3D axisX = new Vector3D(1, 0, 0);
+		//Vector3D axisY = new Vector3D(0, 1, 0);
+		Vector3D axisZ = new Vector3D(0, 0, 1);
+
+		Vector3D deseadoX = new Vector3D(axis.getX(), axis.getY(), axis.getZ()); //(AXIS, eje Z)
+		//Vector3D deseadoX = new Vector3D(0, 0, 1); //(AXIS, eje Z)
+		Vector3D deseadoZ = new Vector3D(refDirection.getX(), refDirection.getY(), refDirection.getZ()); //(refdirection, eje X)
+		
+		Rotation rotacionX = new Rotation(axisX,deseadoZ);
+		//Rotation rotacionY = new Rotation(axisY,deseadoY);
+		Rotation rotacionZ = new Rotation(axisZ,deseadoX);
+		
+		
+		Vector3D punto = new Vector3D(coordOriginal.getX(), coordOriginal.getY(), coordOriginal.getZ());
+		Vector3D puntoRotado = rotacionX.applyTo(punto);
+		//puntoRotado = rotacionY.applyTo(puntoRotado);
+		puntoRotado = rotacionZ.applyTo(puntoRotado);
+		
+		r.setX(puntoRotado.getX());
+		r.setY(puntoRotado.getY());
+		r.setZ(puntoRotado.getZ());
+			
+			
+			
+		
+
+		return r;
+	}
+	*/
 	
 	public Polygon generarPoligono(double easting, double northing){
 	    // create a factory using default values (e.g. floating precision)
