@@ -25,6 +25,7 @@ import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRelContainedInSpatialStr
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSite;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlab;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlabTypeEnum;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlabTypeEnum.IfcSlabTypeEnum_internal;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.SET;
 import openifctools.com.openifcjavatoolbox.ifcmodel.IfcModel;
 import openifctools.com.openifcjavatoolbox.step.parser.util.ProgressEvent;
@@ -103,8 +104,7 @@ public class Main {
 					for (Object product : relatedElements) {
 						if (product instanceof IfcSlab) {
 							IfcSlab currentSlab = (IfcSlab) product;
-							// se descartan las planchas que sean de tipo ROOF
-							// (techos)
+							
 							if (
 									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.FLOOR
 									||
@@ -119,6 +119,8 @@ public class Main {
 								planchaActual.setPisoPadre(pisoActual);
 								planchaActual.setId(currentSlab.getGlobalId()
 										.toString());
+								planchaActual.setTipo(currentSlab.getPredefinedType().value.name());
+								
 								pisoActual.getPlanchas().add(planchaActual);
 								
 								if(currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.ROOF){
