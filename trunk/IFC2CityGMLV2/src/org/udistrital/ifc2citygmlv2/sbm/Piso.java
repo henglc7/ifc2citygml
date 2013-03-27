@@ -64,6 +64,7 @@ public class Piso {
 			cadena += "\n      id = " + planchaActual.getId();
 			cadena += "\n      placementRelTo";
 			cadena += "\n          placementRelTo = [ ";
+			
 			cadena += planchaActual.objectPlacement.getPlacementRelTo_placementRelTo().getX() + " ";
 			cadena += planchaActual.objectPlacement.getPlacementRelTo_placementRelTo().getY() + " ";
 			cadena += planchaActual.objectPlacement.getPlacementRelTo_placementRelTo().getZ() + " ";
@@ -83,15 +84,15 @@ public class Piso {
 			cadena += "]";
 			
 			cadena += "\n          Axis = [ ";
-			cadena += planchaActual.objectPlacement.getRelativePlacement_axis().getX() + " ";
-			cadena += planchaActual.objectPlacement.getRelativePlacement_axis().getY() + " ";
-			cadena += planchaActual.objectPlacement.getRelativePlacement_axis().getZ() + " ";
+			cadena += (( planchaActual.objectPlacement.getRelativePlacement_axis() !=null) ? planchaActual.objectPlacement.getRelativePlacement_axis().getX() : "null") + " ";
+			cadena += (( planchaActual.objectPlacement.getRelativePlacement_axis() !=null) ? planchaActual.objectPlacement.getRelativePlacement_axis().getY() : "null") + " ";
+			cadena += (( planchaActual.objectPlacement.getRelativePlacement_axis() !=null) ? planchaActual.objectPlacement.getRelativePlacement_axis().getZ() : "null") + " ";
 			cadena += "]";
 			
 			cadena += "\n          RefDirection = [ ";
-			cadena += planchaActual.objectPlacement.getRelativePlacement_refDirection().getX() + " ";
-			cadena += planchaActual.objectPlacement.getRelativePlacement_refDirection().getY() + " ";
-			cadena += planchaActual.objectPlacement.getRelativePlacement_refDirection().getZ() + " ";
+			cadena += (( planchaActual.objectPlacement.getRelativePlacement_refDirection() !=null) ? planchaActual.objectPlacement.getRelativePlacement_refDirection().getX() : "null") + " ";
+			cadena += (( planchaActual.objectPlacement.getRelativePlacement_refDirection() !=null) ? planchaActual.objectPlacement.getRelativePlacement_refDirection().getY() : "null") + " ";
+			cadena += (( planchaActual.objectPlacement.getRelativePlacement_refDirection() !=null) ? planchaActual.objectPlacement.getRelativePlacement_refDirection().getZ() : "null") + " ";
 			cadena += "]";
 			
 			
@@ -104,18 +105,21 @@ public class Piso {
 			cadena += planchaActual.representation.getRepresentation_position_location().getY() + " ";
 			cadena += planchaActual.representation.getRepresentation_position_location().getZ() + " ";
 			cadena += "]";
+
 			
+
 			cadena += "\n              Axis = [ ";
-			cadena += planchaActual.representation.getRepresentation_position_axis().getX() + " ";
-			cadena += planchaActual.representation.getRepresentation_position_axis().getY() + " ";
-			cadena += planchaActual.representation.getRepresentation_position_axis().getZ() + " ";
+			cadena += (( planchaActual.representation.getRepresentation_position_axis()!=null) ? planchaActual.representation.getRepresentation_position_axis().getX() : "null") + " ";
+			cadena += (( planchaActual.representation.getRepresentation_position_axis()!=null) ? planchaActual.representation.getRepresentation_position_axis().getY() : "null") + " ";
+			cadena += (( planchaActual.representation.getRepresentation_position_axis()!=null) ? planchaActual.representation.getRepresentation_position_axis().getZ() : "null") + " ";
 			cadena += "]";
 			
 			cadena += "\n              RefDirection = [ ";
-			cadena += planchaActual.representation.getRepresentation_position_refDirection().getX() + " ";
-			cadena += planchaActual.representation.getRepresentation_position_refDirection().getY() + " ";
-			cadena += planchaActual.representation.getRepresentation_position_refDirection().getZ() + " ";
+			cadena += (( planchaActual.representation.getRepresentation_position_refDirection()!=null) ? planchaActual.representation.getRepresentation_position_refDirection().getX() : "null") + " ";
+			cadena += (( planchaActual.representation.getRepresentation_position_refDirection()!=null) ? planchaActual.representation.getRepresentation_position_refDirection().getY() : "null") + " ";
+			cadena += (( planchaActual.representation.getRepresentation_position_refDirection()!=null) ? planchaActual.representation.getRepresentation_position_refDirection().getZ() : "null") + " ";
 			cadena += "]";
+			
 			
 			cadena += "\n          ExtrudedDirection = [ ";
 			cadena += planchaActual.representation.getRepresentation_extruded_direction().getX() + " ";
