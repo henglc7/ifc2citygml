@@ -122,8 +122,8 @@ public class Plancha extends Solido implements ISolido{
 			
 			for (Coordenada coordenadaActual : representation_points) {
 				
-				Coordenada coordAbsoluta = aplicarObjectPlacement(coordenadaActual);
-				coordAbsoluta = aplicarObjectRepresentation(coordAbsoluta);
+				Coordenada coordAbsoluta = aplicarObjectRepresentation(coordenadaActual);
+				coordAbsoluta = aplicarObjectPlacement(coordAbsoluta);
 				coordenadasAbsolutas.add(coordAbsoluta);
 				
 			}
@@ -140,8 +140,8 @@ public class Plancha extends Solido implements ISolido{
 				
 				coordenadaActual = segmentoActual.getP0();
 				
-				Coordenada coordAbsoluta = aplicarObjectPlacement(coordenadaActual);
-				coordAbsoluta = aplicarObjectRepresentation(coordAbsoluta);
+				Coordenada coordAbsoluta = aplicarObjectRepresentation(coordenadaActual);
+				coordAbsoluta = aplicarObjectPlacement(coordAbsoluta);
 				coordenadasAbsolutas.add(coordAbsoluta);
 				
 				contador++;
@@ -197,8 +197,8 @@ public class Plancha extends Solido implements ISolido{
 			Coordenada primera = null;
 			for (Coordenada coordenadaActual : cuatroEsquinas) {
 				
-				Coordenada coordAbsoluta = aplicarObjectPlacement(coordenadaActual);
-				coordAbsoluta = aplicarObjectRepresentation(coordAbsoluta);
+				Coordenada coordAbsoluta = aplicarObjectRepresentation(coordenadaActual);
+				coordAbsoluta = aplicarObjectPlacement(coordAbsoluta);
 				coordenadasAbsolutas.add(coordAbsoluta);
 				
 				if(c==0){
@@ -223,10 +223,6 @@ public class Plancha extends Solido implements ISolido{
 		
 		double xActual = conRotacion.getX();
 		
-		if(representation.representation_position_refDirection.getX()!=0){
-			xActual = xActual * representation.representation_position_refDirection.getX();	
-		}
-		
 		
 		xActual += objectPlacement.placementRelTo_placementRelTo.getX();
 		xActual += objectPlacement.placementRelTo_relativePlacement.getX();
@@ -235,20 +231,11 @@ public class Plancha extends Solido implements ISolido{
 		double yActual = conRotacion.getY();
 		
 		
-		if(representation.representation_position_refDirection.getY()!=0){
-			yActual = yActual * representation.representation_position_refDirection.getY();	
-		}
-		
-		
 		yActual += objectPlacement.placementRelTo_placementRelTo.getY();
 		yActual += objectPlacement.placementRelTo_relativePlacement.getY();
 		yActual += objectPlacement.relativePlacement_location.getY();
 		
 		double zActual = conRotacion.getZ();
-		
-		if(representation.representation_position_refDirection.getZ()!=0){
-			zActual = zActual * representation.representation_position_refDirection.getZ();	
-		}
 		
 		zActual += objectPlacement.placementRelTo_placementRelTo.getZ();
 		zActual += objectPlacement.placementRelTo_relativePlacement.getZ();
@@ -266,12 +253,26 @@ public class Plancha extends Solido implements ISolido{
 		//Coordenada conRotacion = aplicarRotacionSegunRepresentation(coordOriginal);
 		
 		double xActual = coordOriginal.getX();
+		
+		if(representation.representation_position_refDirection.getX()!=0){
+			xActual = xActual * representation.representation_position_refDirection.getX();	
+		}
 		xActual += representation.representation_position_location.getX();
 		
 		double yActual = coordOriginal.getY();
+		
+		if(representation.representation_position_refDirection.getY()!=0){
+			yActual = yActual * representation.representation_position_refDirection.getY();	
+		}
+		
 		yActual += representation.representation_position_location.getY();
 		
 		double zActual = coordOriginal.getZ();
+		
+		if(representation.representation_position_refDirection.getZ()!=0){
+			zActual = zActual * representation.representation_position_refDirection.getZ();	
+		}
+		
 		zActual += representation.representation_position_location.getZ();
 		
 		Coordenada coord = new Coordenada(xActual, yActual, zActual);
