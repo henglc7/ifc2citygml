@@ -251,6 +251,9 @@ public class Plancha extends Solido implements ISolido{
 	public Coordenada aplicarObjectRepresentation(Coordenada coordOriginal){
 		
 		//Coordenada conRotacion = aplicarRotacionSegunRepresentation(coordOriginal);
+		if(this.getTipo().equals("ROOF")){
+			coordOriginal = aplicarRotacionSegunRepresentation(coordOriginal);
+		}
 		
 		double xActual = coordOriginal.getX();
 		
@@ -278,8 +281,6 @@ public class Plancha extends Solido implements ISolido{
 		zActual += representation.representation_position_location.getZ();
 		
 		Coordenada coord = new Coordenada(xActual, yActual, zActual);
-		
-		
 		
 		return coord;
 		
