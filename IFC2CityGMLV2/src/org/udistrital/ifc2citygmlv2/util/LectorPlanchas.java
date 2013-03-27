@@ -201,7 +201,7 @@ public class LectorPlanchas {
                     //se asume que siempre va a existir UNA sola representacion (SOLO SE LEE EL PRIMER ITEM)
                     IfcExtrudedAreaSolid itemActual = (IfcExtrudedAreaSolid) it.next();
                     
-                    System.err.println(representationType + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " DEPTH = " + itemActual.getDepth().value + " EXTRUDED DIR = " + itemActual.getExtrudedDirection().getDirectionRatios());
+                    //System.err.println(representationType + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " DEPTH = " + itemActual.getDepth().value + " EXTRUDED DIR = " + itemActual.getExtrudedDirection().getDirectionRatios());
                     
                     
                     IfcAxis2Placement3D position = itemActual.getPosition();
@@ -294,8 +294,8 @@ public class LectorPlanchas {
                         planchaActual.representation.setRepresentation_position_refDirection(coord);
                     }
                     
-                    System.err.println("          " + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " AXIS = " + planchaActual.representation.getRepresentation_position_axis());
-                    System.err.println("          " + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " RDIR = " + planchaActual.representation.getRepresentation_position_refDirection());
+                    //System.err.println("          " + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " AXIS = " + planchaActual.representation.getRepresentation_position_axis());
+                    //System.err.println("          " + " PLANCHA " + planchaActual.getId() + " PISO " + pisoActual.getNombre() + " RDIR = " + planchaActual.representation.getRepresentation_position_refDirection());
                     
                     
                     if(itemActual.getSweptArea() instanceof IfcArbitraryClosedProfileDef){
