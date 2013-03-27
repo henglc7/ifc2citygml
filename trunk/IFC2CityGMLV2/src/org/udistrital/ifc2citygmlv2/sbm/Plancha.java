@@ -219,13 +219,14 @@ public class Plancha extends Solido implements ISolido{
 	
 	public Coordenada aplicarObjectPlacement(Coordenada original){
 		//Hay que rotar primero, o no funciona bien
-		Coordenada conRotacion = rotar(original); 
-			
+		Coordenada conRotacion = aplicarRotacionSegunObjectPlacement(original);
+		
 		double xActual = conRotacion.getX();
 		
 		if(representation.representation_position_refDirection.getX()!=0){
 			xActual = xActual * representation.representation_position_refDirection.getX();	
 		}
+		
 		
 		xActual += objectPlacement.placementRelTo_placementRelTo.getX();
 		xActual += objectPlacement.placementRelTo_relativePlacement.getX();
@@ -233,9 +234,11 @@ public class Plancha extends Solido implements ISolido{
 		
 		double yActual = conRotacion.getY();
 		
+		
 		if(representation.representation_position_refDirection.getY()!=0){
 			yActual = yActual * representation.representation_position_refDirection.getY();	
 		}
+		
 		
 		yActual += objectPlacement.placementRelTo_placementRelTo.getY();
 		yActual += objectPlacement.placementRelTo_relativePlacement.getY();
@@ -260,6 +263,8 @@ public class Plancha extends Solido implements ISolido{
 	
 	public Coordenada aplicarObjectRepresentation(Coordenada coordOriginal){
 		
+		//Coordenada conRotacion = aplicarRotacionSegunRepresentation(coordOriginal);
+		
 		double xActual = coordOriginal.getX();
 		xActual += representation.representation_position_location.getX();
 		
@@ -271,17 +276,54 @@ public class Plancha extends Solido implements ISolido{
 		
 		Coordenada coord = new Coordenada(xActual, yActual, zActual);
 		
+		
+		
 		return coord;
 		
 	}
 	
 	
-	public Coordenada rotar(Coordenada coordOriginal){
+	public Coordenada aplicarRotacionSegunObjectPlacement(Coordenada coordOriginal){
 		
 		Coordenada r = new Coordenada();
 		
 		Coordenada axis = this.objectPlacement.relativePlacement_axis;
 		Coordenada refDirection = this.objectPlacement.relativePlacement_refDirection;
+		
+		
+		Vector3D axisX = new Vector3D(1, 0, 0);
+		//Vector3D axisY = new Vector3D(0, 1, 0);
+		Vector3D axisZ = new Vector3D(0, 0, 1);
+
+		Vector3D deseadoX = new Vector3D(axis.getX(), axis.getY(), axis.getZ()); //(AXIS, eje Z)
+		Vector3D deseadoZ = new Vector3D(refDirection.getX(), refDirection.getY(), refDirection.getZ()); //(refdirection, eje X)
+		//Vector3D deseadoY = Vector3D.crossProduct(deseadoX, deseadoZ); // producto cruz
+		
+		Rotation rotacionX = new Rotation(axisX,deseadoZ);
+		//Rotation rotacionY = new Rotation(axisY,deseadoY);
+		Rotation rotacionZ = new Rotation(axisZ,deseadoX);
+		
+		
+		Vector3D punto = new Vector3D(coordOriginal.getX(), coordOriginal.getY(), coordOriginal.getZ());
+		Vector3D puntoRotado = rotacionX.applyTo(punto);
+		//puntoRotado = rotacionY.applyTo(puntoRotado);
+		puntoRotado = rotacionZ.applyTo(puntoRotado);
+		
+		r.setX(puntoRotado.getX());
+		r.setY(puntoRotado.getY());
+		r.setZ(puntoRotado.getZ());
+			
+		
+
+		return r;
+	}
+	
+	public Coordenada aplicarRotacionSegunRepresentation(Coordenada coordOriginal){
+		
+		Coordenada r = new Coordenada();
+		
+		Coordenada axis = this.representation.representation_position_axis;
+		Coordenada refDirection = this.representation.representation_position_refDirection;
 		
 		
 		Vector3D axisX = new Vector3D(1, 0, 0);

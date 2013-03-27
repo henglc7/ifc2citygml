@@ -171,12 +171,26 @@ public class Piso {
 	
 	public Polygon[] generarPoligonos(double easting, double northing){
 		
-		Polygon[] poligonos = new Polygon[getPlanchas().size()];
+		int planchasTipoFloor = 0;
+		for (Plancha planchaActual : getPlanchas()){
+			if(planchaActual.getTipo().equals("FLOOR") || planchaActual.getTipo().equals("BASESLAB")){
+				planchasTipoFloor++;
+			}
+		}
+		
+		
+		Polygon[] poligonos = new Polygon[planchasTipoFloor];
 		int c=0;
 		for (Plancha planchaActual : getPlanchas()){
-			Polygon poligonoActual = planchaActual.generarPoligono(easting, northing);
-			poligonos[c] = poligonoActual;
-			c++;
+			//solo se toman en cuenta las planchas que sea de tipo "FLOOR,BASESLAB", se descartan "ROOF,LANDING,USERDEFINED,NOTDEFINED"
+			if(planchaActual.getTipo().equals("FLOOR") || planchaActual.getTipo().equals("BASESLAB")){
+				
+				Polygon poligonoActual = planchaActual.generarPoligono(easting, northing);
+				poligonos[c] = poligonoActual;
+				c++;
+				
+			}
+			
 		}
 		
 		return poligonos;

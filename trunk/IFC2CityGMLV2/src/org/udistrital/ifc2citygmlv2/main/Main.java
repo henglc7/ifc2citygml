@@ -9,6 +9,7 @@ import java.util.List;
 import org.udistrital.ifc2citygmlv2.util.BuildingCreator;
 import org.udistrital.ifc2citygmlv2.util.LatLonConvert;
 import org.udistrital.ifc2citygmlv2.util.LectorPlanchas;
+import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Plancha;
 import org.udistrital.ifc2citygmlv2.sbm.Edificio;
 import org.udistrital.ifc2citygmlv2.sbm.Piso;
@@ -21,7 +22,9 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcBuildingStorey;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcOpeningElement;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcProduct;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRelAggregates;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRelContainedInSpatialStructure;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRoof;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSite;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlab;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlabTypeEnum;
@@ -74,6 +77,17 @@ public class Main {
 		}
 		
 
+		List<IfcRelAggregates> listaTechosAgregados = new ArrayList(); 
+		
+		//Se carga el listado de IfcRelAggregates que contiene las definiciones de techos (un techo puede ser definido por un IfcSlab unicamente o por un IfcRelAggregates que contiene un IfcRoof y un IfcSlab agregados) 
+		for (IfcRelAggregates techoAgregado : (Collection<IfcRelAggregates>) ifcModel.getCollection(IfcRelAggregates.class)) {
+			Object objetoRelacionado = techoAgregado.getRelatingObject();
+			if(objetoRelacionado instanceof IfcRoof){
+				listaTechosAgregados.add(techoAgregado);
+			}
+		}
+		
+		
 		//Se leen los pisos del edificio y se cargan los IDs de planchas
 		for (IfcRelContainedInSpatialStructure currentRelation : (Collection<IfcRelContainedInSpatialStructure>) ifcModel
 				.getCollection(IfcRelContainedInSpatialStructure.class)) {
@@ -102,8 +116,16 @@ public class Main {
 							.getRelatedElements();
 					// se buscan las planchas que tenga el piso
 					for (Object product : relatedElements) {
+						
+						Plancha planchaActual = new Plancha();
+						
+						planchaActual.setIfcModel(ifcModel);
+						planchaActual.setPisoPadre(pisoActual);
+						
 						if (product instanceof IfcSlab) {
 							IfcSlab currentSlab = (IfcSlab) product;
+							
+							
 							
 							if (
 									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.FLOOR
@@ -113,25 +135,39 @@ public class Main {
 									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.ROOF
 								) {
 								
-								Plancha planchaActual = new Plancha();
 								
-								planchaActual.setIfcModel(ifcModel);
-								planchaActual.setPisoPadre(pisoActual);
-								planchaActual.setId(currentSlab.getGlobalId()
-										.toString());
+								planchaActual.setId(currentSlab.getGlobalId().toString());
 								planchaActual.setTipo(currentSlab.getPredefinedType().value.name());
-								
 								pisoActual.getPlanchas().add(planchaActual);
 								
-								if(currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.ROOF){
-									System.err.println("AGREGADO ROOF : " + currentSlab.getGlobalId().toString());
+							}
+							
+						}else if (product instanceof IfcRoof){ //los techos que no se hayan capturado en el if anterior se capturan aca, las dos opciones son probables
+							
+							IfcRoof techoVacioPiso = (IfcRoof) product;
+							
+							for (IfcRelAggregates techoAgregado : (Collection<IfcRelAggregates>) listaTechosAgregados) {
+								IfcRoof techoVacioAgregado = (IfcRoof) techoAgregado.getRelatingObject();
+								
+								if(techoVacioPiso.getGlobalId().toString().equals(techoVacioAgregado.getGlobalId().toString())){
+									System.err.println("TECHO " + techoVacioPiso.getGlobalId() + " EN PISO " + pisoActual.getNombre());
+									
+									IfcSlab currentSlab = (IfcSlab) techoAgregado.getRelatedObjects().iterator().next();
+									
+									planchaActual.setId(currentSlab.getGlobalId().toString());
+									planchaActual.setTipo(currentSlab.getPredefinedType().value.name());
+									pisoActual.getPlanchas().add(planchaActual);
+									
+									
 								}
-								// System.out.println("agregada plancha " +
-								// planchaActual.getId());
-							}else{
-							System.err.println("DESCARTADA " + currentSlab.getPredefinedType());	
+								
+								
 							}
 						}
+						
+						
+						
+						
 					}
 				}
 			}
@@ -234,7 +270,7 @@ public class Main {
 		LectorPlanchas leerPlanchas = new LectorPlanchas();
         leerPlanchas.leerPlanchas(edificio.getPisos(), ifcModel);
         
-        int pisoMinimo = edificio.getPisos().size() - 3;; 
+        int pisoMinimo = edificio.getPisos().size() - 4; 
         
 /************************ CALCULO DE COORDENADAS GEOGRAFICAS UTM BASADO EN GRADOS MINUTOS Y SEGUNDOS ************************************************************/
         
@@ -292,6 +328,9 @@ public class Main {
         		if(unionEstePiso.isValid()){
         			unionTodasLasPlanchas = unionTodasLasPlanchas.union(unionEstePiso);        			
         		}else{
+        			
+        			//unionTodasLasPlanchas = unionTodasLasPlanchas.union(unionEstePiso);
+        			
         			System.err.println("Geometria INVALIDA : " + unionEstePiso);
         		}
         		
