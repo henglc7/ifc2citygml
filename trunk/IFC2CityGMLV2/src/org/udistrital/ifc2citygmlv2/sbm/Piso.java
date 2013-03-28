@@ -62,6 +62,7 @@ public class Piso {
 		for (Plancha planchaActual : getPlanchas()) {
 			cadena += "\n  |__ Plancha";
 			cadena += "\n      id = " + planchaActual.getId();
+			cadena += "\n      tipo = " + planchaActual.getTipo();
 			cadena += "\n      placementRelTo";
 			cadena += "\n          placementRelTo = [ ";
 			

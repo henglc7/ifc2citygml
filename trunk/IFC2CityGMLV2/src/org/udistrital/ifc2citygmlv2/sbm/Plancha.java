@@ -340,18 +340,18 @@ public class Plancha extends Solido implements ISolido{
 			Vector3D axisZ = new Vector3D(0, 0, 1);
 
 			Vector3D deseadoX = new Vector3D(axis.getX(), axis.getY(), axis.getZ()); //(AXIS, eje Z)
-			Vector3D deseadoZ = new Vector3D(refDirection.getX(), refDirection.getY(), refDirection.getZ()); //(refdirection, eje X)
+			//Vector3D deseadoZ = new Vector3D(refDirection.getX(), refDirection.getY(), refDirection.getZ()); //(refdirection, eje X)
 			//Vector3D deseadoY = Vector3D.crossProduct(deseadoX, deseadoZ); // producto cruz
 			
-			Rotation rotacionX = new Rotation(axisX,deseadoZ);
+			//Rotation rotacionX = new Rotation(axisX,deseadoZ);
 			//Rotation rotacionY = new Rotation(axisY,deseadoY);
 			Rotation rotacionZ = new Rotation(axisZ,deseadoX);
 			
 			
 			Vector3D punto = new Vector3D(coordOriginal.getX(), coordOriginal.getY(), coordOriginal.getZ());
-			Vector3D puntoRotado = rotacionX.applyTo(punto);
+			//Vector3D puntoRotado = rotacionX.applyTo(punto);
 			//puntoRotado = rotacionY.applyTo(puntoRotado);
-			puntoRotado = rotacionZ.applyTo(puntoRotado);
+			Vector3D puntoRotado = rotacionZ.applyTo(punto);
 			
 			r.setX(puntoRotado.getX());
 			r.setY(puntoRotado.getY());
