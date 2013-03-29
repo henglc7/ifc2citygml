@@ -14,9 +14,19 @@ public class Piso {
 	private String id;
 	private String nombre;
 	private double elevacion;
+	
 	private List<Plancha> planchas;
+	private List<Plancha> muros;
 
 	
+	public List<Plancha> getMuros() {
+		return muros;
+	}
+
+	public void setMuros(List<Plancha> muros) {
+		this.muros = muros;
+	}
+
 	public String getId() {
 		return id;
 	}

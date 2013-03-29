@@ -1,6 +1,7 @@
 package org.udistrital.ifc2citygmlv2.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 /*
@@ -11,6 +12,7 @@ import openifctools.com.openifcjavatoolbox.ifc2x3tc1.DOUBLE;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcArbitraryClosedProfileDef;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcAxis2Placement2D;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcAxis2Placement3D;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcBuildingStorey;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcCartesianPoint;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcCompositeCurve;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcCompositeCurveSegment;
@@ -21,18 +23,24 @@ import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcLengthMeasure;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcLocalPlacement;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPolyline;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPositiveLengthMeasure;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcProduct;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcProductDefinitionShape;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcProductRepresentation;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRectangleProfileDef;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRelAggregates;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRelContainedInSpatialStructure;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRepresentation;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRepresentationItem;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRoof;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlab;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlabTypeEnum;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcTrimmedCurve;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.LIST;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.SET;
 import openifctools.com.openifcjavatoolbox.ifcmodel.IfcModel;
 
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
+import org.udistrital.ifc2citygmlv2.sbm.Edificio;
 import org.udistrital.ifc2citygmlv2.sbm.Piso;
 import org.udistrital.ifc2citygmlv2.sbm.Plancha;
 import org.udistrital.ifc2citygmlv2.sbm.Rectangulo;
@@ -40,8 +48,92 @@ import org.udistrital.ifc2citygmlv2.sbm.Segmento;
 
 public class LectorPlanchas {
 	
+	protected List<IfcRelAggregates> listaTechosAgregados = new ArrayList();
 	
-	public void leerPlanchas(List<Piso> pisos, IfcModel ifcModel){
+	public void cargarDatosBasicos(IfcModel ifcModel, Edificio edificio){
+
+		//Se carga el listado de IfcRelAggregates que contiene las definiciones de techos (un techo puede ser definido por un IfcSlab unicamente o por un IfcRelAggregates que contiene un IfcRoof y un IfcSlab agregados) 
+		for (IfcRelAggregates techoAgregado : (Collection<IfcRelAggregates>) ifcModel.getCollection(IfcRelAggregates.class)) {
+			Object objetoRelacionado = techoAgregado.getRelatingObject();
+			if(objetoRelacionado instanceof IfcRoof){
+				listaTechosAgregados.add(techoAgregado);
+			}
+		}
+		
+		//Se leen los pisos del edificio y se cargan los IDs de planchas
+		for (IfcRelContainedInSpatialStructure currentRelation : (Collection<IfcRelContainedInSpatialStructure>) ifcModel
+				.getCollection(IfcRelContainedInSpatialStructure.class)) {
+			// solo interesa averiguar por los PISOS del edificio
+			if (currentRelation.getRelatingStructure() instanceof IfcBuildingStorey) {
+				IfcBuildingStorey storey = (IfcBuildingStorey) currentRelation
+						.getRelatingStructure();
+				// no se tienen en cuenta los pisos subterraneos ni el piso base
+				// (elevation = 0)
+				if (storey.getElevation().value >= 0) {
+
+					Piso pisoActual = new Piso();
+					pisoActual.setId(storey.getGlobalId().toString());
+					pisoActual.setElevacion(storey.getElevation().value);
+					pisoActual.setNombre(storey.getName().toString());
+
+					edificio.getPisos().add(pisoActual);
+
+					SET<IfcProduct> relatedElements = currentRelation
+							.getRelatedElements();
+					
+					// se buscan las planchas que tenga el piso
+					for (Object product : relatedElements) {
+						
+						Plancha planchaActual = new Plancha();
+						
+						planchaActual.setIfcModel(ifcModel);
+						planchaActual.setPisoPadre(pisoActual);
+						
+						if (product instanceof IfcSlab) {
+
+							IfcSlab currentSlab = (IfcSlab) product;
+							
+							if (
+									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.FLOOR
+									||
+									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.BASESLAB
+									||
+									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.ROOF
+								) {
+								
+								planchaActual.setId(currentSlab.getGlobalId().toString());
+								planchaActual.setTipo(currentSlab.getPredefinedType().value.name());
+								pisoActual.getPlanchas().add(planchaActual);
+								
+							}
+							
+						}else if (product instanceof IfcRoof){ //los techos que no se hayan capturado en el if anterior se capturan aca, las dos opciones son probables
+							
+							IfcRoof techoVacioPiso = (IfcRoof) product;
+							
+							for (IfcRelAggregates techoAgregado : (Collection<IfcRelAggregates>) listaTechosAgregados) {
+								IfcRoof techoVacioAgregado = (IfcRoof) techoAgregado.getRelatingObject();
+								
+								if(techoVacioPiso.getGlobalId().toString().equals(techoVacioAgregado.getGlobalId().toString())){
+									System.err.println("TECHO " + techoVacioPiso.getGlobalId() + " EN PISO " + pisoActual.getNombre());
+									
+									IfcSlab currentSlab = (IfcSlab) techoAgregado.getRelatedObjects().iterator().next();
+									
+									planchaActual.setId(currentSlab.getGlobalId().toString());
+									planchaActual.setTipo(currentSlab.getPredefinedType().value.name());
+									pisoActual.getPlanchas().add(planchaActual);
+									
+									
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public void leerPlanchas(IfcModel ifcModel, List<Piso> pisos){
 		
 		try {
 			

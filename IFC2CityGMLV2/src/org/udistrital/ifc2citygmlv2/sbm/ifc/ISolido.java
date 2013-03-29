@@ -1,4 +1,4 @@
-package org.udistrital.ifc2citygmlv2.sbm;
+package org.udistrital.ifc2citygmlv2.sbm.ifc;
 
 public interface ISolido {
 	

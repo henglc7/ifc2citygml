@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.udistrital.ifc2citygmlv2.util.BuildingCreator;
 import org.udistrital.ifc2citygmlv2.util.LatLonConvert;
+import org.udistrital.ifc2citygmlv2.util.LectorModeloIfc;
 import org.udistrital.ifc2citygmlv2.util.LectorPlanchas;
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Plancha;
@@ -37,6 +38,9 @@ import uk.me.jstott.jcoord.LatLng;
 import uk.me.jstott.jcoord.UTMRef;
 
 public class Main {
+	
+	private static LectorModeloIfc lectorModeloIfc = new LectorModeloIfc();
+	private static LectorPlanchas lectorPlanchas = new LectorPlanchas();
 
 	private static IfcModel ifcModel = null;
 	private static Edificio edificio;
@@ -53,125 +57,11 @@ public class Main {
 		int[] coordLongitud = null;
 		
 		String rutaArchivo = args[0]; 
-    	//"C:\\Actual 2011\\escritorio XP\\modelos\\sabio caldas\\SabioCaldasSimplificado.ifc";
 
-		// Se carga el modelo IFC en memoria
-		final File file = new File(rutaArchivo);
-		ifcModel = new IfcModel();
-		ifcModel.addStepParserProgressListener(new StepParserProgressListener() {
-			@Override
-			public void progressActionPerformed(final ProgressEvent event) {
-
-				if (((int) event.getCurrentState() % 10 == 0)
-						&& (event.getCurrentState() > 0)) {
-
-					System.out.println(event.getMessage() + " - "
-							+ event.getCurrentState() + "%");
-				}
-			}
-		});
-		try {
-			ifcModel.readStepFile(file);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ifcModel = lectorModeloIfc.cargarModeloIfc(rutaArchivo);
 		
-
-		List<IfcRelAggregates> listaTechosAgregados = new ArrayList(); 
-		
-		//Se carga el listado de IfcRelAggregates que contiene las definiciones de techos (un techo puede ser definido por un IfcSlab unicamente o por un IfcRelAggregates que contiene un IfcRoof y un IfcSlab agregados) 
-		for (IfcRelAggregates techoAgregado : (Collection<IfcRelAggregates>) ifcModel.getCollection(IfcRelAggregates.class)) {
-			Object objetoRelacionado = techoAgregado.getRelatingObject();
-			if(objetoRelacionado instanceof IfcRoof){
-				listaTechosAgregados.add(techoAgregado);
-			}
-		}
-		
-		
-		//Se leen los pisos del edificio y se cargan los IDs de planchas
-		for (IfcRelContainedInSpatialStructure currentRelation : (Collection<IfcRelContainedInSpatialStructure>) ifcModel
-				.getCollection(IfcRelContainedInSpatialStructure.class)) {
-			// solo interesa averiguar por los PISOS del edificio
-			if (currentRelation.getRelatingStructure() instanceof IfcBuildingStorey) {
-				IfcBuildingStorey storey = (IfcBuildingStorey) currentRelation
-						.getRelatingStructure();
-				// no se tienen en cuenta los pisos subterraneos ni el piso base
-				// (elevation = 0)
-				if (storey.getElevation().value >= 0) {
-
-					Piso pisoActual = new Piso();
-					pisoActual.setId(storey.getGlobalId().toString());
-					pisoActual.setElevacion(storey.getElevation().value);
-					pisoActual.setNombre(storey.getName().toString());
-
-					edificio.getPisos().add(pisoActual);
-
-					/*
-					System.out.println(pisoActual.getNombre() + " = "
-							+ pisoActual.getElevacion() + " ("
-							+ pisoActual.getId() + ")");
-					*/
-
-					SET<IfcProduct> relatedElements = currentRelation
-							.getRelatedElements();
-					// se buscan las planchas que tenga el piso
-					for (Object product : relatedElements) {
-						
-						Plancha planchaActual = new Plancha();
-						
-						planchaActual.setIfcModel(ifcModel);
-						planchaActual.setPisoPadre(pisoActual);
-						
-						if (product instanceof IfcSlab) {
-							IfcSlab currentSlab = (IfcSlab) product;
-							
-							
-							
-							if (
-									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.FLOOR
-									||
-									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.BASESLAB
-									||
-									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.ROOF
-								) {
-								
-								
-								planchaActual.setId(currentSlab.getGlobalId().toString());
-								planchaActual.setTipo(currentSlab.getPredefinedType().value.name());
-								pisoActual.getPlanchas().add(planchaActual);
-								
-							}
-							
-						}else if (product instanceof IfcRoof){ //los techos que no se hayan capturado en el if anterior se capturan aca, las dos opciones son probables
-							
-							IfcRoof techoVacioPiso = (IfcRoof) product;
-							
-							for (IfcRelAggregates techoAgregado : (Collection<IfcRelAggregates>) listaTechosAgregados) {
-								IfcRoof techoVacioAgregado = (IfcRoof) techoAgregado.getRelatingObject();
-								
-								if(techoVacioPiso.getGlobalId().toString().equals(techoVacioAgregado.getGlobalId().toString())){
-									System.err.println("TECHO " + techoVacioPiso.getGlobalId() + " EN PISO " + pisoActual.getNombre());
-									
-									IfcSlab currentSlab = (IfcSlab) techoAgregado.getRelatedObjects().iterator().next();
-									
-									planchaActual.setId(currentSlab.getGlobalId().toString());
-									planchaActual.setTipo(currentSlab.getPredefinedType().value.name());
-									pisoActual.getPlanchas().add(planchaActual);
-									
-									
-								}
-								
-								
-							}
-						}
-						
-						
-						
-						
-					}
-				}
-			}
-		}
+		//se cargan los datos basicos de planchas al edificio
+		lectorPlanchas.cargarDatosBasicos(ifcModel, edificio);
 
 		// SE LEEN LAS COORDENADAS GEOGRAFICAS
 		// siempre devuelve un vector de una sola posicion
@@ -266,9 +156,7 @@ public class Main {
 		}
 
 		edificio.getPisos().removeAll(borrar);
-		
-		LectorPlanchas leerPlanchas = new LectorPlanchas();
-        leerPlanchas.leerPlanchas(edificio.getPisos(), ifcModel);
+		lectorPlanchas.leerPlanchas(ifcModel, edificio.getPisos());
         
         int pisoMinimo = edificio.getPisos().size() - 4; 
         
