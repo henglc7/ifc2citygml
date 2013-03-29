@@ -53,7 +53,7 @@ import org.udistrital.ifc2citygmlv2.sbm.Edificio;
 import org.udistrital.ifc2citygmlv2.sbm.Piso;
 import org.udistrital.ifc2citygmlv2.sbm.Plancha;
 import org.udistrital.ifc2citygmlv2.sbm.Poligono;
-import org.udistrital.ifc2citygmlv2.sbm.Solido;
+import org.udistrital.ifc2citygmlv2.sbm.ifc.Solido;
 
 import com.vividsolutions.jts.geom.Coordinate;
 

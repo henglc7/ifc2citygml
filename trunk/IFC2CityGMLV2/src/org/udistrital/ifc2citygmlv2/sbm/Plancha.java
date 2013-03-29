@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.udistrital.ifc2citygmlv2.sbm.ifc.ISolido;
+import org.udistrital.ifc2citygmlv2.sbm.ifc.Solido;
 
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcExtrudedAreaSolid;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRepresentation;
@@ -22,15 +24,7 @@ import com.vividsolutions.jts.geom.Polygon;
 
 public class Plancha extends Solido implements ISolido{
 	
-	private IfcModel ifcModel;
 	
-	private Piso pisoPadre;
-
-	private String id;
-	
-	private String tipo;
-	
-
 	// estos 3 atributos son mutuamente excluyentes
 	
 	private List<Coordenada> representation_points;
@@ -46,29 +40,6 @@ public class Plancha extends Solido implements ISolido{
 	
 
 	
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-	
-	public IfcModel getIfcModel() {
-		return ifcModel;
-	}
-
-	public void setIfcModel(IfcModel ifcModel) {
-		this.ifcModel = ifcModel;
-	}
-	
-	public Piso getPisoPadre() {
-		return pisoPadre;
-	}
-
-	public void setPisoPadre(Piso pisoPadre) {
-		this.pisoPadre = pisoPadre;
-	}
 	
 	public List<Coordenada> getCoordenadasAbsolutas() {
 		return coordenadasAbsolutas;
@@ -102,17 +73,6 @@ public class Plancha extends Solido implements ISolido{
 		this.representation_points = representation_points;
 	}
 
-
-
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-	
 	public void calcularCoordenadasAbsolutas(){
 		
 		if(representation_points!=null){
