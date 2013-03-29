@@ -1,6 +1,7 @@
 package org.udistrital.ifc2citygmlv2.sbm;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Edificio {
@@ -20,4 +21,21 @@ public class Edificio {
 		//pisos = new ArrayList();
 	}
 
+	
+	public Piso buscarPiso(String id){
+		
+		Piso r = null;
+		
+		for (Piso pisoActual : getPisos()) {
+			
+			if ( pisoActual.getId().equals(id)){
+				r = pisoActual;
+				break;
+			}
+			
+		}
+		
+		return r;
+		
+	}
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import org.udistrital.ifc2citygmlv2.util.BuildingCreator;
 import org.udistrital.ifc2citygmlv2.util.LatLonConvert;
 import org.udistrital.ifc2citygmlv2.util.LectorModeloIfc;
+import org.udistrital.ifc2citygmlv2.util.LectorMuros;
 import org.udistrital.ifc2citygmlv2.util.LectorPlanchas;
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Plancha;
@@ -41,6 +42,7 @@ public class Main {
 	
 	private static LectorModeloIfc lectorModeloIfc = new LectorModeloIfc();
 	private static LectorPlanchas lectorPlanchas = new LectorPlanchas();
+	private static LectorMuros lectorMuros = new LectorMuros();
 
 	private static IfcModel ifcModel = null;
 	private static Edificio edificio;
@@ -51,7 +53,6 @@ public class Main {
 	public static void main(String[] args) {
 
 		edificio = new Edificio();
-		edificio.setPisos(new ArrayList());
 
 		int[] coordLatitud = null;
 		int[] coordLongitud = null;
@@ -203,7 +204,7 @@ public class Main {
         
         for (Piso pisoA : edificio.getPisos()) {
         	if(edificio.getPisos().indexOf(pisoA) >= pisoMinimo){
-        		pisoA.imprimir();
+
         		//para obtener las coordenadas de IFC se podria invocar pisoA.generarPoligonos(0, 0)
         		MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(0, 0));
         		//MultiPolygon poligonosPisoActual = fact.createMultiPolygon(pisoA.generarPoligonos(utm.getEasting(), utm.getNorthing()));
@@ -228,9 +229,25 @@ public class Main {
         
         //unionTodasLasPlanchas = unionTodasLasPlanchas.getEnvelope();
         
-        System.out.println("GEOMETRIA UNION FINAL = " + unionTodasLasPlanchas);
+        
+        lectorMuros.cargarDatosBasicos(ifcModel, edificio);
+        
+        for (Piso pisoA : edificio.getPisos()) {
+        	if(edificio.getPisos().indexOf(pisoA) >= pisoMinimo){
+        		
+        		pisoA.imprimir();
+        		
+        	}
+		}
         
         Coordinate[] coordenadas = unionTodasLasPlanchas.getCoordinates();
+        
+
+        
+		
+
+		System.out.println("GEOMETRIA BASE PARA LOD1 = " + unionTodasLasPlanchas);
+		
         
 
         
@@ -265,6 +282,7 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		
 	}
 
