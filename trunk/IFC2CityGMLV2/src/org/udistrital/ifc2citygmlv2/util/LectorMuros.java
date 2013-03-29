@@ -35,34 +35,28 @@ import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRoof;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlab;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlabTypeEnum;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcTrimmedCurve;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcWall;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcWallStandardCase;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.LIST;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.SET;
 import openifctools.com.openifcjavatoolbox.ifcmodel.IfcModel;
 
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Edificio;
+import org.udistrital.ifc2citygmlv2.sbm.Muro;
 import org.udistrital.ifc2citygmlv2.sbm.Piso;
 import org.udistrital.ifc2citygmlv2.sbm.Plancha;
 import org.udistrital.ifc2citygmlv2.sbm.Rectangulo;
 import org.udistrital.ifc2citygmlv2.sbm.Segmento;
 
-public class LectorPlanchas {
+public class LectorMuros {
 	
 	protected List<IfcRelAggregates> listaTechosAgregados = new ArrayList();
 	
 	public void cargarDatosBasicos(IfcModel ifcModel, Edificio edificio){
-		
-		edificio.setPisos(new ArrayList());
 
-		//Se carga el listado de IfcRelAggregates que contiene las definiciones de techos (un techo puede ser definido por un IfcSlab unicamente o por un IfcRelAggregates que contiene un IfcRoof y un IfcSlab agregados) 
-		for (IfcRelAggregates techoAgregado : (Collection<IfcRelAggregates>) ifcModel.getCollection(IfcRelAggregates.class)) {
-			Object objetoRelacionado = techoAgregado.getRelatingObject();
-			if(objetoRelacionado instanceof IfcRoof){
-				listaTechosAgregados.add(techoAgregado);
-			}
-		}
 		
-		//Se leen los pisos del edificio y se cargan los IDs de planchas
+		//Se leen los pisos del edificio y se cargan los IDs de muros
 		for (IfcRelContainedInSpatialStructure currentRelation : (Collection<IfcRelContainedInSpatialStructure>) ifcModel
 				.getCollection(IfcRelContainedInSpatialStructure.class)) {
 			// solo interesa averiguar por los PISOS del edificio
@@ -73,70 +67,48 @@ public class LectorPlanchas {
 				// (elevation = 0)
 				if (storey.getElevation().value >= 0) {
 
-					Piso pisoActual = new Piso();
-					pisoActual.setId(storey.getGlobalId().toString());
-					pisoActual.setElevacion(storey.getElevation().value);
-					pisoActual.setNombre(storey.getName().toString());
-
-					edificio.getPisos().add(pisoActual);
-
-					SET<IfcProduct> relatedElements = currentRelation
-							.getRelatedElements();
+					Piso pisoActual = edificio.buscarPiso(storey.getGlobalId().toString());
 					
-					// se buscan las planchas que tenga el piso
-					for (Object product : relatedElements) {
-						
-						Plancha planchaActual = new Plancha();
-						
-						planchaActual.setIfcModel(ifcModel);
-						planchaActual.setPisoPadre(pisoActual);
-						
-						if (product instanceof IfcSlab) {
+					if(pisoActual != null){
 
-							IfcSlab currentSlab = (IfcSlab) product;
+						SET<IfcProduct> relatedElements = currentRelation
+								.getRelatedElements();
+						
+						// se buscan las planchas que tenga el piso
+						for (Object product : relatedElements) {
 							
-							if (
-									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.FLOOR
-									||
-									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.BASESLAB
-									||
-									currentSlab.getPredefinedType().value == IfcSlabTypeEnum.IfcSlabTypeEnum_internal.ROOF
-								) {
+							Muro muroActual = new Muro();
+							
+							muroActual.setIfcModel(ifcModel);
+							muroActual.setPisoPadre(pisoActual);
+							
+							if (product instanceof IfcWallStandardCase) {
 								
-								planchaActual.setId(currentSlab.getGlobalId().toString());
-								planchaActual.setTipo(currentSlab.getPredefinedType().value.name());
-								pisoActual.getPlanchas().add(planchaActual);
+								IfcWallStandardCase currentWall = (IfcWallStandardCase) product;
+								
+								muroActual.setId(currentWall.getGlobalId().toString());
+								muroActual.setTipo("ESTANDAR");
+								pisoActual.getMuros().add(muroActual);
+									
+								
+							}else if (product instanceof IfcWall){ //los muros que no son estandar
+										
+								IfcWall currentWall = (IfcWall) product;
+								muroActual.setId(currentWall.getGlobalId().toString());
+								muroActual.setTipo("NO ESTANDAR");
+								pisoActual.getMuros().add(muroActual);
 								
 							}
-							
-						}else if (product instanceof IfcRoof){ //los techos que no se hayan capturado en el if anterior se capturan aca, las dos opciones son probables
-							
-							IfcRoof techoVacioPiso = (IfcRoof) product;
-							
-							for (IfcRelAggregates techoAgregado : (Collection<IfcRelAggregates>) listaTechosAgregados) {
-								IfcRoof techoVacioAgregado = (IfcRoof) techoAgregado.getRelatingObject();
-								
-								if(techoVacioPiso.getGlobalId().toString().equals(techoVacioAgregado.getGlobalId().toString())){
-									System.err.println("TECHO " + techoVacioPiso.getGlobalId() + " EN PISO " + pisoActual.getNombre());
-									
-									IfcSlab currentSlab = (IfcSlab) techoAgregado.getRelatedObjects().iterator().next();
-									
-									planchaActual.setId(currentSlab.getGlobalId().toString());
-									planchaActual.setTipo(currentSlab.getPredefinedType().value.name());
-									pisoActual.getPlanchas().add(planchaActual);
-									
-									
-								}
-							}
-						}
+						}						
 					}
 				}
 			}
 		}
 	}
 	
-	public void leerPlanchas(IfcModel ifcModel, List<Piso> pisos){
+	public void leerMuros(List<Piso> pisos, IfcModel ifcModel){
 		
+		/*
 		try {
 			
             for (Piso pisoActual : pisos) {
@@ -238,7 +210,7 @@ public class LectorPlanchas {
                     }
                     planchaActual.objectPlacement.setRelativePlacement_location(coordC);
                     
-                    /********************************************************************************/
+                    /------------------------------------------------------------------------/
                     //Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.]. 
                     if(relativePlacementC.getAxis() != null){
                     	
@@ -282,7 +254,7 @@ public class LectorPlanchas {
                         
                         planchaActual.objectPlacement.setRelativePlacement_refDirection(coord);
                     }
-                    /********************************************************************************/
+                    /-------------------------------------------------------------------------------/
                     
                     
                     //Se lee Representation
@@ -322,7 +294,7 @@ public class LectorPlanchas {
                     
                     planchaActual.representation.setRepresentation_position_location(coord);
                     
-                    /********************************************/
+                   /-------------------------------------------------------------------------------/
                     
                     IfcDirection direction = itemActual.getExtrudedDirection();
                     LIST<DOUBLE> coordinatesF = direction.getDirectionRatios();
@@ -343,7 +315,7 @@ public class LectorPlanchas {
                     
                     planchaActual.representation.setRepresentation_extruded_direction(coord);
                     
-                    /************************************************/
+                    /-------------------------------------------------------------------------------/
                     
                     //System.out.println(pisoActual.getNombre());
                     //planchaActual
@@ -571,7 +543,7 @@ public class LectorPlanchas {
         } finally {
             //rm.release();
         }
-		
+		*/
 	}
 
 }

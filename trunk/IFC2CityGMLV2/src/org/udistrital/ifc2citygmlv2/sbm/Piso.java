@@ -16,14 +16,15 @@ public class Piso {
 	private double elevacion;
 	
 	private List<Plancha> planchas;
-	private List<Plancha> muros;
+	private List<Muro> muros;
 
 	
-	public List<Plancha> getMuros() {
+
+	public List<Muro> getMuros() {
 		return muros;
 	}
 
-	public void setMuros(List<Plancha> muros) {
+	public void setMuros(List<Muro> muros) {
 		this.muros = muros;
 	}
 
@@ -62,6 +63,7 @@ public class Piso {
 	
 	public Piso(){
 		planchas = new ArrayList();
+		muros = new ArrayList();
 	}
 	
 	public void imprimir(){
@@ -176,6 +178,15 @@ public class Piso {
 			cadena += "\n              Id = " + planchaActual.getPisoPadre().getId();
 			cadena += "\n              Nombre = " + planchaActual.getPisoPadre().getNombre();
 			cadena += "\n              Elevacion = " + planchaActual.getPisoPadre().getElevacion();
+
+		}
+		
+		
+		cadena += "\n  " + getMuros().size() + " Muros:";
+		for (Muro muroActual : getMuros()) {
+			cadena += "\n  |__ Muro";
+			cadena += "\n      id = " + muroActual.getId();
+			cadena += "\n      tipo = " + muroActual.getTipo();
 
 		}
 		
