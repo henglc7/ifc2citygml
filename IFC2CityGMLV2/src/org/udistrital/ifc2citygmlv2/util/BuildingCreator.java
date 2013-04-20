@@ -50,6 +50,7 @@ import org.citygml4j.xml.io.CityGMLOutputFactory;
 import org.citygml4j.xml.io.writer.CityGMLWriter;
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Edificio;
+import org.udistrital.ifc2citygmlv2.sbm.Muro;
 import org.udistrital.ifc2citygmlv2.sbm.Piso;
 import org.udistrital.ifc2citygmlv2.sbm.Plancha;
 import org.udistrital.ifc2citygmlv2.sbm.Poligono;
@@ -167,9 +168,13 @@ public class BuildingCreator {
 
 		Building building = citygml.createBuilding();
 		
+		
 		List<Polygon> poligonosPlanchas = new ArrayList();
 		
 		List<Polygon> poligonosTechos = new ArrayList();
+		
+		List<Polygon> poligonosMuros = new ArrayList();
+		
 		
 		for (Piso pisoActual : edificio.getPisos()) {
         	for(Plancha planchaActual : pisoActual.getPlanchas()){
@@ -192,13 +197,39 @@ public class BuildingCreator {
         			
         		}
         	}
+        	
+		}
+		
+		
+		for (Piso pisoActual : edificio.getPisos()) {
+        	for(Muro muroActual : pisoActual.getMuros()){
+        		for(Poligono poligonoActual : muroActual.getCaras()){
+        			
+        			List<Double> coordenadasEstePoligono = new ArrayList(); 
+        			
+        			for(Coordenada coordenadaActual : poligonoActual.getCoordenadas()){
+        				coordenadasEstePoligono.add(coordenadaActual.getX());
+        				coordenadasEstePoligono.add(coordenadaActual.getY());
+        				coordenadasEstePoligono.add(coordenadaActual.getZ());
+        			}
+        			
+
+       				poligonosMuros.add(geom.createLinearPolygon(coordenadasEstePoligono, 3));
+        			
+        		}
+        	}
+        	
 		}
 		
 		
 		for (Polygon polygonActual : poligonosPlanchas) {
 			polygonActual.setId(gmlIdManager.generateGmlId());
 		}
+		
 		for (Polygon polygonActual : poligonosTechos) {
+			polygonActual.setId(gmlIdManager.generateGmlId());
+		}
+		for (Polygon polygonActual : poligonosMuros) {
 			polygonActual.setId(gmlIdManager.generateGmlId());
 		}
 
@@ -210,6 +241,10 @@ public class BuildingCreator {
 		}
 		
 		for (Polygon polygonActual : poligonosTechos) {
+			surfaceMember.add(gml.createSurfaceProperty('#' + polygonActual.getId()));
+		}
+		
+		for (Polygon polygonActual : poligonosMuros) {
 			surfaceMember.add(gml.createSurfaceProperty('#' + polygonActual.getId()));
 		}
 /*
@@ -263,11 +298,15 @@ public class BuildingCreator {
 		List<BoundarySurfaceProperty> boundedBy = new ArrayList<BoundarySurfaceProperty>();
 		
 		for (Polygon polygonActual : poligonosPlanchas) {
-			boundedBy.add(createBoundarySurface(CityGMLClass.WALL_SURFACE, polygonActual));
+			boundedBy.add(createBoundarySurface(CityGMLClass.FLOOR_SURFACE, polygonActual));
 		}
 		
 		for (Polygon polygonActual : poligonosTechos) {
 			boundedBy.add(createBoundarySurface(CityGMLClass.ROOF_SURFACE, polygonActual));
+		}
+		
+		for (Polygon polygonActual : poligonosMuros) {
+			boundedBy.add(createBoundarySurface(CityGMLClass.WALL_SURFACE, polygonActual));
 		}
 		
 		building.setBoundedBySurface(boundedBy);
@@ -302,6 +341,9 @@ public class BuildingCreator {
 			break;
 		case GROUND_SURFACE:
 			boundarySurface = citygml.createGroundSurface();
+			break;
+		case FLOOR_SURFACE:
+			boundarySurface = citygml.createFloorSurface();
 			break;
 		}
 

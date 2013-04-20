@@ -17,8 +17,17 @@ public class Representation {
 	public Coordenada representation_position_refDirection;
 	
 	public Coordenada representation_extruded_direction;
-
 	
+	public int stepLineNumber;
+
+	public int getStepLineNumber() {
+		return stepLineNumber;
+	}
+
+	public void setStepLineNumber(int stepLineNumber) {
+		this.stepLineNumber = stepLineNumber;
+	}
+
 	public String getRepresentation_representation_SweptAreaType() {
 		return representation_representation_SweptAreaType;
 	}

@@ -12,6 +12,7 @@ import org.udistrital.ifc2citygmlv2.util.LectorModeloIfc;
 import org.udistrital.ifc2citygmlv2.util.LectorMuros;
 import org.udistrital.ifc2citygmlv2.util.LectorPlanchas;
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
+import org.udistrital.ifc2citygmlv2.sbm.Muro;
 import org.udistrital.ifc2citygmlv2.sbm.Plancha;
 import org.udistrital.ifc2citygmlv2.sbm.Edificio;
 import org.udistrital.ifc2citygmlv2.sbm.Piso;
@@ -231,6 +232,7 @@ public class Main {
         
         
         lectorMuros.cargarDatosBasicos(ifcModel, edificio);
+        lectorMuros.leerMuros(edificio.getPisos(), ifcModel);
         
         for (Piso pisoA : edificio.getPisos()) {
         	if(edificio.getPisos().indexOf(pisoA) >= pisoMinimo){
@@ -269,6 +271,10 @@ public class Main {
         	
         	for(Plancha planchaActual : pisoActual.getPlanchas()){
         		planchaActual.generarCaras();
+        	}
+        	
+        	for(Muro muroActual : pisoActual.getMuros()){
+        		muroActual.generarCaras();
         	}
 			
 		}

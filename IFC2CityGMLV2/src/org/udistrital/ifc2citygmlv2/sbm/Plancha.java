@@ -25,54 +25,6 @@ import com.vividsolutions.jts.geom.Polygon;
 public class Plancha extends Solido implements ISolido{
 	
 	
-	// estos 3 atributos son mutuamente excluyentes
-	
-	private List<Coordenada> representation_points;
-	
-	private List<Segmento> representation_segmentos;
-	
-	private Rectangulo rectangulo;
-	
-	//este atributo contiene las coordenadas absolutas del perfil de la plancha
-	//sin importar si se deriva de representation_points, representation_segmentos o rectangulo
-	
-	private List<Coordenada> coordenadasAbsolutas;
-	
-
-	
-	
-	public List<Coordenada> getCoordenadasAbsolutas() {
-		return coordenadasAbsolutas;
-	}
-
-	public void setCoordenadasAbsolutas(List<Coordenada> coordenadasAbsolutas) {
-		this.coordenadasAbsolutas = coordenadasAbsolutas;
-	}
-
-	public Rectangulo getRectangulo() {
-		return rectangulo;
-	}
-
-	public void setRectangulo(Rectangulo rectangulo) {
-		this.rectangulo = rectangulo;
-	}
-
-	public List<Segmento> getRepresentation_segmentos() {
-		return representation_segmentos;
-	}
-
-	public void setRepresentation_segmentos(List<Segmento> representation_segmentos) {
-		this.representation_segmentos = representation_segmentos;
-	}
-
-	public List<Coordenada> getRepresentation_points() {
-		return representation_points;
-	}
-
-	public void setRepresentation_points(List<Coordenada> representation_points) {
-		this.representation_points = representation_points;
-	}
-
 	public void calcularCoordenadasAbsolutas(){
 		
 		if(representation_points!=null){
