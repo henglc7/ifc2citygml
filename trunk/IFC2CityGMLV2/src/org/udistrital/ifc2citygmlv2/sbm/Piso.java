@@ -187,10 +187,118 @@ public class Piso {
 			cadena += "\n  |__ Muro";
 			cadena += "\n      id = " + muroActual.getId();
 			cadena += "\n      tipo = " + muroActual.getTipo();
+			cadena += "\n      placementRelTo";
+			cadena += "\n          placementRelTo = [ ";
+			
+			cadena += muroActual.objectPlacement.getPlacementRelTo_placementRelTo().getX() + " ";
+			cadena += muroActual.objectPlacement.getPlacementRelTo_placementRelTo().getY() + " ";
+			cadena += muroActual.objectPlacement.getPlacementRelTo_placementRelTo().getZ() + " ";
+			cadena += "]";
+			
+			cadena += "\n          relativePlacement = [ ";
+			cadena += muroActual.objectPlacement.getPlacementRelTo_relativePlacement().getX() + " ";
+			cadena += muroActual.objectPlacement.getPlacementRelTo_relativePlacement().getY() + " ";
+			cadena += muroActual.objectPlacement.getPlacementRelTo_relativePlacement().getZ() + " ";
+			cadena += "]";
+			
+			cadena += "\n      relativePlacement";
+			cadena += "\n          location = [ ";
+			cadena += muroActual.objectPlacement.getRelativePlacement_location().getX() + " ";
+			cadena += muroActual.objectPlacement.getRelativePlacement_location().getY() + " ";
+			cadena += muroActual.objectPlacement.getRelativePlacement_location().getZ() + " ";
+			cadena += "]";
+			
+			cadena += "\n          Axis = [ ";
+			cadena += (( muroActual.objectPlacement.getRelativePlacement_axis() !=null) ? muroActual.objectPlacement.getRelativePlacement_axis().getX() : "null") + " ";
+			cadena += (( muroActual.objectPlacement.getRelativePlacement_axis() !=null) ? muroActual.objectPlacement.getRelativePlacement_axis().getY() : "null") + " ";
+			cadena += (( muroActual.objectPlacement.getRelativePlacement_axis() !=null) ? muroActual.objectPlacement.getRelativePlacement_axis().getZ() : "null") + " ";
+			cadena += "]";
+			
+			cadena += "\n          RefDirection = [ ";
+			cadena += (( muroActual.objectPlacement.getRelativePlacement_refDirection() !=null) ? muroActual.objectPlacement.getRelativePlacement_refDirection().getX() : "null") + " ";
+			cadena += (( muroActual.objectPlacement.getRelativePlacement_refDirection() !=null) ? muroActual.objectPlacement.getRelativePlacement_refDirection().getY() : "null") + " ";
+			cadena += (( muroActual.objectPlacement.getRelativePlacement_refDirection() !=null) ? muroActual.objectPlacement.getRelativePlacement_refDirection().getZ() : "null") + " ";
+			cadena += "]";
+			
+			cadena += "\n      Representation";
+			cadena += "\n          STEP Line number = " + muroActual.representation.getStepLineNumber();
+			cadena += "\n          RepresentationType = " + muroActual.representation.getRepresentation_representationType();
+			cadena += "\n          SweptAreaType = " + muroActual.representation.getRepresentation_representation_SweptAreaType();
+			cadena += "\n          Position ";
+			cadena += "\n              Location = [ ";
+			cadena += muroActual.representation.getRepresentation_position_location().getX() + " ";
+			cadena += muroActual.representation.getRepresentation_position_location().getY() + " ";
+			cadena += muroActual.representation.getRepresentation_position_location().getZ() + " ";
+			cadena += "]";
+			
+			cadena += "\n              Axis = [ ";
+			cadena += (( muroActual.representation.getRepresentation_position_axis()!=null) ? muroActual.representation.getRepresentation_position_axis().getX() : "null") + " ";
+			cadena += (( muroActual.representation.getRepresentation_position_axis()!=null) ? muroActual.representation.getRepresentation_position_axis().getY() : "null") + " ";
+			cadena += (( muroActual.representation.getRepresentation_position_axis()!=null) ? muroActual.representation.getRepresentation_position_axis().getZ() : "null") + " ";
+			cadena += "]";
+			
+			cadena += "\n              RefDirection = [ ";
+			cadena += (( muroActual.representation.getRepresentation_position_refDirection()!=null) ? muroActual.representation.getRepresentation_position_refDirection().getX() : "null") + " ";
+			cadena += (( muroActual.representation.getRepresentation_position_refDirection()!=null) ? muroActual.representation.getRepresentation_position_refDirection().getY() : "null") + " ";
+			cadena += (( muroActual.representation.getRepresentation_position_refDirection()!=null) ? muroActual.representation.getRepresentation_position_refDirection().getZ() : "null") + " ";
+			cadena += "]";
+			
+			
+			cadena += "\n          ExtrudedDirection = [ ";
+			cadena += muroActual.representation.getRepresentation_extruded_direction().getX() + " ";
+			cadena += muroActual.representation.getRepresentation_extruded_direction().getY() + " ";
+			cadena += muroActual.representation.getRepresentation_extruded_direction().getZ() + " ";
+			cadena += "]";
+
+			
+			if(muroActual.getRepresentation_points()!=null){
+				cadena += "\n          Puntos (" + muroActual.getRepresentation_points().size() + ") = [ ";
+				for (Coordenada coordenadaActual : muroActual.getRepresentation_points()) {
+					cadena += coordenadaActual.getX() + " " + coordenadaActual.getY() + " , ";
+				}
+				cadena += "]";
+			}
+			
+			if(muroActual.getRepresentation_segmentos()!=null){
+				cadena += "\n          Segmentos (" + muroActual.getRepresentation_segmentos().size() + ") = [ ";
+				for (Segmento segmentoActual : muroActual.getRepresentation_segmentos()) {
+					cadena += segmentoActual.getP0().getX() + " " + segmentoActual.getP0().getY() + " , ";
+					cadena += segmentoActual.getP1().getX() + " " + segmentoActual.getP1().getY() + " , ";
+				}
+				cadena += "]";
+			}
+			
+			if(muroActual.getRectangulo()!=null){
+				Rectangulo rec = muroActual.getRectangulo(); 
+				cadena += "\n          Rectangulo";
+				cadena += "\n              Location = [ " + rec.getPosition_location().getX() + " " + rec.getPosition_location().getY() + " ]";
+				cadena += "\n              RefDirection = [ " + rec.getPosition_refDirection().getX() + " " + rec.getPosition_refDirection().getY() + " ]";
+				cadena += "\n              XDim = " + rec.getXDim();
+				cadena += "\n              YDim = " + rec.getYDim();
+			}
+
+			/*
+
+			if(planchaActual.getCoordenadasAbsolutas()!=null){
+				cadena += "\n          Absolutas (" + planchaActual.getCoordenadasAbsolutas().size() + ") = [ ";
+				for (Coordenada coordenadaActual : planchaActual.getCoordenadasAbsolutas()) {
+					cadena += coordenadaActual.getX() + " " + coordenadaActual.getY() + " " + coordenadaActual.getZ() + " , ";
+				}
+				cadena += "]";
+			}
+			
+			cadena += "\n          Piso Padre";
+			cadena += "\n              Id = " + planchaActual.getPisoPadre().getId();
+			cadena += "\n              Nombre = " + planchaActual.getPisoPadre().getNombre();
+			cadena += "\n              Elevacion = " + planchaActual.getPisoPadre().getElevacion();
 
 		}
+ 
+ 
+ */					
+		}
 		
-		
+
 		
 		System.out.println(cadena);
 	}

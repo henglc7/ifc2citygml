@@ -1,12 +1,16 @@
 
 package org.udistrital.ifc2citygmlv2.sbm.ifc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import openifctools.com.openifcjavatoolbox.ifcmodel.IfcModel;
 
+import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Piso;
 import org.udistrital.ifc2citygmlv2.sbm.Poligono;
+import org.udistrital.ifc2citygmlv2.sbm.Rectangulo;
+import org.udistrital.ifc2citygmlv2.sbm.Segmento;
 
 public class Solido {
 	
@@ -26,9 +30,60 @@ public class Solido {
 	
 	public Representation representation = new Representation();
 	
-	private List<Poligono> caras;
+	//el listado de caras se inicializa, aunque puede que permanezca siempre vacío
+	private List<Poligono> caras = new ArrayList();
 
 	
+	// estos 3 atributos son mutuamente excluyentes
+	
+	protected List<Coordenada> representation_points;
+	
+	protected List<Segmento> representation_segmentos;
+	
+	protected Rectangulo rectangulo;
+	
+	
+	//este atributo contiene las coordenadas absolutas del perfil de la plancha
+	//sin importar si se deriva de representation_points, representation_segmentos o rectangulo
+	
+	protected List<Coordenada> coordenadasAbsolutas;
+	
+
+	
+	
+	public List<Coordenada> getCoordenadasAbsolutas() {
+		return coordenadasAbsolutas;
+	}
+
+	public void setCoordenadasAbsolutas(List<Coordenada> coordenadasAbsolutas) {
+		this.coordenadasAbsolutas = coordenadasAbsolutas;
+	}
+	
+	
+	public Rectangulo getRectangulo() {
+		return rectangulo;
+	}
+
+	public void setRectangulo(Rectangulo rectangulo) {
+		this.rectangulo = rectangulo;
+	}
+
+	public List<Segmento> getRepresentation_segmentos() {
+		return representation_segmentos;
+	}
+
+	public void setRepresentation_segmentos(List<Segmento> representation_segmentos) {
+		this.representation_segmentos = representation_segmentos;
+	}
+
+	public List<Coordenada> getRepresentation_points() {
+		return representation_points;
+	}
+
+	public void setRepresentation_points(List<Coordenada> representation_points) {
+		this.representation_points = representation_points;
+	}
+
 	
 
 	public String getTipo() {
