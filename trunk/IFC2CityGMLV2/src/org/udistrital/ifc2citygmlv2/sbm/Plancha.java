@@ -152,8 +152,7 @@ public class Plancha extends Solido implements ISolido{
 		zActual += objectPlacement.placementRelTo_placementRelTo.getZ();
 		zActual += objectPlacement.placementRelTo_relativePlacement.getZ();
 		zActual += objectPlacement.relativePlacement_location.getZ();
-		
-		
+			
 		Coordenada coord = new Coordenada(xActual, yActual, zActual);
 		
 		return coord;

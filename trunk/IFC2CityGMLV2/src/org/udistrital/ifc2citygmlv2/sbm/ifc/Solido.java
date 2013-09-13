@@ -11,6 +11,7 @@ import org.udistrital.ifc2citygmlv2.sbm.Piso;
 import org.udistrital.ifc2citygmlv2.sbm.Poligono;
 import org.udistrital.ifc2citygmlv2.sbm.Rectangulo;
 import org.udistrital.ifc2citygmlv2.sbm.Segmento;
+import org.udistrital.ifc2citygmlv2.util.Transformador;
 
 public class Solido {
 	
@@ -22,7 +23,7 @@ public class Solido {
 	
 	private String tipo;
 	
-	
+	public Transformador transformador = new Transformador();
 	
 	
 	

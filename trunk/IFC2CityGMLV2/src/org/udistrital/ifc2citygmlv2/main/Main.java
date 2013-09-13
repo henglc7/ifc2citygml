@@ -160,7 +160,8 @@ public class Main {
 		edificio.getPisos().removeAll(borrar);
 		lectorPlanchas.leerPlanchas(ifcModel, edificio.getPisos());
         
-        int pisoMinimo = edificio.getPisos().size() - 4; 
+        //int pisoMinimo = edificio.getPisos().size() - 4;
+        int pisoMinimo = 3;
         
 /************************ CALCULO DE COORDENADAS GEOGRAFICAS UTM BASADO EN GRADOS MINUTOS Y SEGUNDOS ************************************************************/
         
@@ -267,17 +268,27 @@ public class Main {
         
         System.out.println("\n\n");
         
+        int pisoMinimoLod2 = 3;
+        int pisoMaximoLod2 = 5;
+        
         for (Piso pisoActual : edificio.getPisos()) {
         	
-        	for(Plancha planchaActual : pisoActual.getPlanchas()){
-        		planchaActual.generarCaras();
+//        	if(edificio.getPisos().indexOf(pisoActual) >= pisoMinimoLod2
+//        			&&
+//        			edificio.getPisos().indexOf(pisoActual) <= pisoMaximoLod2){
+
+        		for(Plancha planchaActual : pisoActual.getPlanchas()){
+            		planchaActual.generarCaras();
+            	}
+            	
+            	for(Muro muroActual : pisoActual.getMuros()){
+            		muroActual.generarCaras();
+            	}
         	}
         	
-        	for(Muro muroActual : pisoActual.getMuros()){
-        		muroActual.generarCaras();
-        	}
+        	
 			
-		}
+//		}
         
         
         //Se genera el modelo LOD2
