@@ -47,8 +47,8 @@ public class Muro  extends Solido implements ISolido{
 			
 			for (Coordenada coordenadaActual : representation_points) {
 				
-				Coordenada coordAbsoluta = aplicarObjectRepresentation(coordenadaActual);
-				coordAbsoluta = aplicarObjectPlacement(coordAbsoluta);
+				Coordenada coordAbsoluta = transformador.aplicarObjectRepresentation(coordenadaActual, this);
+				coordAbsoluta = transformador.aplicarObjectPlacement(coordAbsoluta, this);
 				coordenadasAbsolutas.add(coordAbsoluta);
 				
 			}
@@ -65,8 +65,8 @@ public class Muro  extends Solido implements ISolido{
 				
 				coordenadaActual = segmentoActual.getP0();
 				
-				Coordenada coordAbsoluta = aplicarObjectRepresentation(coordenadaActual);
-				coordAbsoluta = aplicarObjectPlacement(coordAbsoluta);
+				Coordenada coordAbsoluta = transformador.aplicarObjectRepresentation(coordenadaActual, this);
+				coordAbsoluta = transformador.aplicarObjectPlacement(coordAbsoluta, this);
 				coordenadasAbsolutas.add(coordAbsoluta);
 				
 				contador++;
@@ -79,22 +79,23 @@ public class Muro  extends Solido implements ISolido{
 			
 		}else if(rectangulo!=null){
 			
+			//TODO: SUMAR VALORES QUE FALTAN A LAS COORDENADAS DEL RECTANGULO
 			List<Coordenada> cuatroEsquinas = new ArrayList();
 			
 			double ancho = 0;
 			double alto = 0;
 			
 			//eje X relativo igual a ejex X real
-			if(rectangulo.getPosition_refDirection().getX()!=0){
+			//if(rectangulo.getPosition_refDirection().getX()!=0){
 				ancho = rectangulo.getXDim();
 				alto = rectangulo.getYDim();
-			}
+			//}
 			
 			//eje X relativo igual a eje Y real
-			if(rectangulo.getPosition_refDirection().getY()!=0){
-				ancho = rectangulo.getYDim();
-				alto = rectangulo.getXDim();
-			}
+			//if(rectangulo.getPosition_refDirection().getY()!=0){
+				//ancho = rectangulo.getYDim();
+				//alto = rectangulo.getXDim();
+			//}
 			
 			Coordenada coord = new Coordenada();
 			coord.setX((ancho / 2) * -1);
@@ -118,12 +119,32 @@ public class Muro  extends Solido implements ISolido{
 			
 			coordenadasAbsolutas = new ArrayList();
 			
+			Coordenada locationRectangulo = rectangulo.getPosition_location();
+			//Coordenada refDirectionRectangulo = rectangulo.getPosition_refDirection();
+			
 			int c = 0;
 			Coordenada primera = null;
 			for (Coordenada coordenadaActual : cuatroEsquinas) {
 				
-				Coordenada coordAbsoluta = aplicarObjectRepresentation(coordenadaActual);
-				coordAbsoluta = aplicarObjectPlacement(coordAbsoluta);
+				Coordenada coordAbsoluta = coordenadaActual;
+				
+				if(locationRectangulo != null /*&& refDirectionRectangulo != null*/){
+					
+					double X = locationRectangulo.getX();
+					double Y = locationRectangulo.getY();
+					
+					coordAbsoluta.setX(coordAbsoluta.getX() + X);
+					coordAbsoluta.setY(coordAbsoluta.getY() + Y);
+					
+				}
+				
+				
+				/*Coordenada*/ coordAbsoluta = transformador.aplicarObjectRepresentation(coordenadaActual, this);
+				coordAbsoluta = transformador.aplicarObjectPlacement(coordAbsoluta, this);
+				
+				//coordAbsoluta = transformador.aplicarPositionLocationRectangulo(coordAbsoluta, rectangulo);
+				
+				
 				coordenadasAbsolutas.add(coordAbsoluta);
 				
 				if(c==0){
@@ -141,153 +162,6 @@ public class Muro  extends Solido implements ISolido{
 		
 	}
 	
-	
-	public Coordenada aplicarObjectPlacement(Coordenada original){
-		//Hay que rotar primero, o no funciona bien
-		Coordenada conRotacion = aplicarRotacionSegunObjectPlacement(original);
-		
-		double xActual = conRotacion.getX();
-		
-		
-		xActual += objectPlacement.placementRelTo_placementRelTo.getX();
-		xActual += objectPlacement.placementRelTo_relativePlacement.getX();
-		xActual += objectPlacement.relativePlacement_location.getX();
-		
-		double yActual = conRotacion.getY();
-		
-		
-		yActual += objectPlacement.placementRelTo_placementRelTo.getY();
-		yActual += objectPlacement.placementRelTo_relativePlacement.getY();
-		yActual += objectPlacement.relativePlacement_location.getY();
-		
-		double zActual = conRotacion.getZ();
-		
-		zActual += objectPlacement.placementRelTo_placementRelTo.getZ();
-		zActual += objectPlacement.placementRelTo_relativePlacement.getZ();
-		zActual += objectPlacement.relativePlacement_location.getZ();
-		
-		
-		Coordenada coord = new Coordenada(xActual, yActual, zActual);
-		
-		return coord;
-		
-	}
-	
-	public Coordenada aplicarObjectRepresentation(Coordenada coordOriginal){
-		
-		//Coordenada conRotacion = aplicarRotacionSegunRepresentation(coordOriginal);
-		if(this.getTipo().equals("ROOF")){
-			coordOriginal = aplicarRotacionSegunRepresentation(coordOriginal);
-		}
-		
-		double xActual = coordOriginal.getX();
-		
-		Coordenada refDirection = representation.representation_position_refDirection;
-		
-		if(refDirection!=null && refDirection.getX()!=0){
-			xActual = xActual * refDirection.getX();	
-		}
-		xActual += representation.representation_position_location.getX();
-		
-		double yActual = coordOriginal.getY();
-		
-		if(refDirection!=null && refDirection.getY()!=0){
-			yActual = yActual * refDirection.getY();	
-		}
-		
-		yActual += representation.representation_position_location.getY();
-		
-		double zActual = coordOriginal.getZ();
-		
-		if(refDirection!=null && refDirection.getZ()!=0){
-			zActual = zActual * refDirection.getZ();	
-		}
-		
-		zActual += representation.representation_position_location.getZ();
-		
-		Coordenada coord = new Coordenada(xActual, yActual, zActual);
-		
-		return coord;
-		
-	}
-	
-	
-	public Coordenada aplicarRotacionSegunObjectPlacement(Coordenada coordOriginal){
-		
-		Coordenada r = new Coordenada();
-		
-		Coordenada axis = this.objectPlacement.relativePlacement_axis;
-		Coordenada refDirection = this.objectPlacement.relativePlacement_refDirection;
-		
-		if(axis != null && refDirection != null){
-			
-			Vector3D axisX = new Vector3D(1, 0, 0);
-			//Vector3D axisY = new Vector3D(0, 1, 0);
-			Vector3D axisZ = new Vector3D(0, 0, 1);
-
-			Vector3D deseadoX = new Vector3D(axis.getX(), axis.getY(), axis.getZ()); //(AXIS, eje Z)
-			Vector3D deseadoZ = new Vector3D(refDirection.getX(), refDirection.getY(), refDirection.getZ()); //(refdirection, eje X)
-			//Vector3D deseadoY = Vector3D.crossProduct(deseadoX, deseadoZ); // producto cruz
-			
-			Rotation rotacionX = new Rotation(axisX,deseadoZ);
-			//Rotation rotacionY = new Rotation(axisY,deseadoY);
-			Rotation rotacionZ = new Rotation(axisZ,deseadoX);
-			
-			
-			Vector3D punto = new Vector3D(coordOriginal.getX(), coordOriginal.getY(), coordOriginal.getZ());
-			Vector3D puntoRotado = rotacionX.applyTo(punto);
-			//puntoRotado = rotacionY.applyTo(puntoRotado);
-			puntoRotado = rotacionZ.applyTo(puntoRotado);
-			
-			r.setX(puntoRotado.getX());
-			r.setY(puntoRotado.getY());
-			r.setZ(puntoRotado.getZ());
-		}else{
-			r = coordOriginal;
-		}
-		
-
-		return r;
-	}
-	
-	public Coordenada aplicarRotacionSegunRepresentation(Coordenada coordOriginal){
-		
-		Coordenada r = new Coordenada();
-		
-		Coordenada axis = this.representation.representation_position_axis;
-		Coordenada refDirection = this.representation.representation_position_refDirection;
-		
-		
-		if(axis != null && refDirection != null){
-			
-			Vector3D axisX = new Vector3D(1, 0, 0);
-			//Vector3D axisY = new Vector3D(0, 1, 0);
-			Vector3D axisZ = new Vector3D(0, 0, 1);
-
-			Vector3D deseadoX = new Vector3D(axis.getX(), axis.getY(), axis.getZ()); //(AXIS, eje Z)
-			//Vector3D deseadoZ = new Vector3D(refDirection.getX(), refDirection.getY(), refDirection.getZ()); //(refdirection, eje X)
-			//Vector3D deseadoY = Vector3D.crossProduct(deseadoX, deseadoZ); // producto cruz
-			
-			//Rotation rotacionX = new Rotation(axisX,deseadoZ);
-			//Rotation rotacionY = new Rotation(axisY,deseadoY);
-			Rotation rotacionZ = new Rotation(axisZ,deseadoX);
-			
-			
-			Vector3D punto = new Vector3D(coordOriginal.getX(), coordOriginal.getY(), coordOriginal.getZ());
-			//Vector3D puntoRotado = rotacionX.applyTo(punto);
-			//puntoRotado = rotacionY.applyTo(puntoRotado);
-			Vector3D puntoRotado = rotacionZ.applyTo(punto);
-			
-			r.setX(puntoRotado.getX());
-			r.setY(puntoRotado.getY());
-			r.setZ(puntoRotado.getZ());
-		}else{
-			r = coordOriginal;
-		}
-		
-
-		return r;
-	}
 	
 	/*
 	public Polygon generarPoligono(double easting, double northing){
