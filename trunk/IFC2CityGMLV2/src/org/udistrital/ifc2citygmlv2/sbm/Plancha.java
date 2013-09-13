@@ -314,6 +314,18 @@ public class Plancha extends Solido implements ISolido{
 		if(item.getRepresentationType().toString().equals("SweptSolid")){
 			IfcExtrudedAreaSolid repItem = (IfcExtrudedAreaSolid) item.getItems().iterator().next();
 			profundidad = repItem.getDepth().value;
+			
+			
+			// La extrusion debe hacerse en sentuido contrario en el eje Z si sucede esto
+
+			if(
+					(repItem.getExtrudedDirection().getDirectionRatios().get(2).value == -1)
+					||
+					(repItem.getPosition().getAxis()!=null && repItem.getPosition().getAxis().getDirectionRatios().get(2).value == -1)
+					
+			){
+				profundidad = profundidad * -1;
+			}
 		}
 		
 				
