@@ -32,10 +32,19 @@ public class Plancha extends Solido implements ISolido{
 			
 			coordenadasAbsolutas = new ArrayList();
 			
-			for (Coordenada coordenadaActual : representation_points) {
+			for (Coordenada coordActual : representation_points) {
 				
-				Coordenada coordAbsoluta = aplicarObjectRepresentation(coordenadaActual);
+				Coordenada coordAbsoluta;
+				
+				//Coordenada conRotacion = aplicarRotacionSegunRepresentation(coordOriginal);
+				if(this.getTipo().equals("ROOF")){
+					coordAbsoluta = aplicarObjectRepresentationParaRoof(coordActual);
+				}else{
+					coordAbsoluta = aplicarObjectRepresentation(coordActual);
+				}
+				
 				coordAbsoluta = aplicarObjectPlacement(coordAbsoluta);
+				
 				coordenadasAbsolutas.add(coordAbsoluta);
 				
 			}
@@ -109,8 +118,19 @@ public class Plancha extends Solido implements ISolido{
 			Coordenada primera = null;
 			for (Coordenada coordenadaActual : cuatroEsquinas) {
 				
-				Coordenada coordAbsoluta = aplicarObjectRepresentation(coordenadaActual);
+				Coordenada coordAbsoluta;
+				
+				//Coordenada conRotacion = aplicarRotacionSegunRepresentation(coordOriginal);
+				if(this.getTipo().equals("ROOF")){
+					coordAbsoluta = aplicarObjectRepresentationParaRoof(coordenadaActual);
+				}else{
+					coordAbsoluta = aplicarObjectRepresentation(coordenadaActual);
+				}
+				
 				coordAbsoluta = aplicarObjectPlacement(coordAbsoluta);
+				
+				
+				
 				coordenadasAbsolutas.add(coordAbsoluta);
 				
 				if(c==0){
@@ -159,12 +179,32 @@ public class Plancha extends Solido implements ISolido{
 		
 	}
 	
-	public Coordenada aplicarObjectRepresentation(Coordenada coordOriginal){
+
+	public Coordenada aplicarObjectRepresentationParaRoof(Coordenada coordOriginal){
 		
-		//Coordenada conRotacion = aplicarRotacionSegunRepresentation(coordOriginal);
-		if(this.getTipo().equals("ROOF")){
-			coordOriginal = aplicarRotacionSegunRepresentation(coordOriginal);
-		}
+		coordOriginal = aplicarRotacionSegunRepresentation(coordOriginal);
+		
+		
+		
+		double xActual = coordOriginal.getX();
+		
+		xActual += representation.representation_position_location.getX();
+		
+		double yActual = coordOriginal.getY();
+		
+		yActual += representation.representation_position_location.getY();
+		
+		double zActual = coordOriginal.getZ();
+		
+		zActual += representation.representation_position_location.getZ();
+		
+		Coordenada coord = new Coordenada(xActual, yActual, zActual);
+		
+		return coord;
+		
+	}
+
+	public Coordenada aplicarObjectRepresentation(Coordenada coordOriginal){
 		
 		double xActual = coordOriginal.getX();
 		
