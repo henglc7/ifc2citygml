@@ -70,8 +70,6 @@ public class Transformador {
 		
 	}
 	
-
-	
 	public Coordenada rotarCoordenada(Coordenada coordOriginal, Coordenada axis, Coordenada refDirection){
 		
 		Coordenada r = new Coordenada();
