@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcBooleanClippingResult;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcExtrudedAreaSolid;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRepresentation;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlab;
@@ -222,8 +223,14 @@ public class Muro  extends Solido implements ISolido{
 		//System.err.println("Plancha = " + this.getId());
 		
 		if(this.representation.getStepLineNumber() > 0){
+			
 			if(item.getRepresentationType().toString().equals("SweptSolid")){
 				IfcExtrudedAreaSolid repItem = (IfcExtrudedAreaSolid) item.getItems().iterator().next();
+				profundidad = repItem.getDepth().value;
+			}
+			
+			if(item.getRepresentationType().toString().equals("Clipping")){
+				IfcExtrudedAreaSolid repItem = (IfcExtrudedAreaSolid) ((IfcBooleanClippingResult)item.getItems().iterator().next()).getFirstOperand();
 				profundidad = repItem.getDepth().value;
 			}
 			
