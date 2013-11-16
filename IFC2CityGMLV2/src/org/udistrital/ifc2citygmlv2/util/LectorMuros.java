@@ -12,6 +12,7 @@ import openifctools.com.openifcjavatoolbox.ifc2x3tc1.DOUBLE;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcArbitraryClosedProfileDef;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcAxis2Placement2D;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcAxis2Placement3D;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcBooleanClippingResult;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcBuildingStorey;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcCartesianPoint;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcCompositeCurve;
@@ -277,17 +278,17 @@ public class LectorMuros {
                     	//posible valores = Clipping - Curve2D - SweptSolid
                     	if(repActual.getRepresentationType().toString().equals("SweptSolid")){
                     		
-                    		System.err.println("Procesando representation " + repActual.getStepLineNumber() + " en muro " + muroActual.getId());
+                    		//System.err.println("Procesando representation " + repActual.getStepLineNumber() + " en muro " + muroActual.getId());
                     		procesarSweptSolid(repActual, muroActual);
                     		
                     	}else if (repActual.getRepresentationType().toString().equals("Clipping")){
                     		
-                    		System.err.println("DESCARTADA REPRESENTATION PORQUE ES TIPO \"Clipping\"");
-                    		muroActual.representation.setRepresentation_representationType("DESCARTADA - " + repActual.getRepresentationType().toString());
+                    		//System.err.println("En muro " + muroActual.getId() + " procesando representation tipo Clipping con STEP number = " + repActual.getStepLineNumber());
+                    		procesarClipping(repActual, muroActual);
                     		
                     	}else if (repActual.getRepresentationType().toString().equals("Curve2D")){
                     		
-                    		System.err.println("DESCARTADA REPRESENTATION PORQUE ES TIPO \"Curve2D\"");
+                    		//System.err.println("MURO " + muroActual.getId() + " DESCARTADA REPRESENTATION PORQUE ES TIPO \"Curve2D\" STEP NUMBER = " + repActual.getStepLineNumber());
                     		muroActual.representation.setRepresentation_representationType("DESCARTADA - " + repActual.getRepresentationType().toString());
                     		
                     	}else{
@@ -317,277 +318,15 @@ public class LectorMuros {
 	public static void procesarSweptSolid(IfcRepresentation representationActual, Muro muroActual){
 		
 
-		String representationType = representationActual.getRepresentationType().toString();
-        muroActual.representation.setRepresentation_representationType(representationType);
-        System.err.println("seteado a = " + representationActual.getStepLineNumber());
-        muroActual.representation.setStepLineNumber(representationActual.getStepLineNumber());
-        
-        SET<IfcRepresentationItem> items = representationActual.getItems();
-        Iterator it = items.iterator();
-        //se asume que siempre va a existir UNA sola representacion (SOLO SE LEE EL PRIMER ITEM)
-        IfcExtrudedAreaSolid itemActual = (IfcExtrudedAreaSolid) it.next();
-        
-        
-        
-        
-        IfcAxis2Placement3D position = itemActual.getPosition();
-        IfcCartesianPoint location = position.getLocation();
-        LIST<IfcLengthMeasure> coordinatesD = location.getCoordinates();
-        
-        int coordenadas = coordinatesD.size();
-        
-        Coordenada coord = new Coordenada();
-        for(int n = 0; n<coordenadas;n++){
-            double valor = (Double) coordinatesD.get(n).value;
-            
-            switch (n) {
-			case 0: coord.setX(valor); break;
-			case 1: coord.setY(valor); break;
-			case 2: coord.setZ(valor); break;
-			}
-            
-        }
-        
-        muroActual.representation.setRepresentation_position_location(coord);
-        
-        
-        
-        IfcDirection direction = itemActual.getExtrudedDirection();
-        LIST<DOUBLE> coordinatesF = direction.getDirectionRatios();
-        
-        coordenadas = coordinatesF.size();
-        
-        coord = new Coordenada();
-        for(int n = 0; n<coordenadas;n++){
-            double valor = (Double) coordinatesF.get(n).value;
-            
-            switch (n) {
-			case 0: coord.setX(valor); break;
-			case 1: coord.setY(valor); break;
-			case 2: coord.setZ(valor); break;
-			}
-            
-        }
-        
-        muroActual.representation.setRepresentation_extruded_direction(coord);
-        
-        
-        
-        //Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.]. 
-        if(position.getAxis() != null){
-        	
-        	IfcDirection axis = position.getAxis();
-            LIST<DOUBLE> directionRatios = axis.getDirectionRatios();
-            
-            coordenadas = directionRatios.size();
-            
-            coord = new Coordenada();
-            
-            for(int n = 0; n<coordenadas;n++){
-                double valor = (Double) directionRatios.get(n).value;
-                
-                switch (n) {
-				case 0: coord.setX(valor); break;
-				case 1: coord.setY(valor); break;
-				case 2: coord.setZ(valor); break;
-				}
-                
-            }
-            
-            muroActual.representation.setRepresentation_position_axis(coord);
-            
-            IfcDirection refDirection = position.getRefDirection();
-            directionRatios = refDirection.getDirectionRatios();
-            
-            coordenadas = directionRatios.size();
-            
-            coord = new Coordenada();
-            
-            for(int n = 0; n<coordenadas;n++){
-                double valor = (Double) directionRatios.get(n).value;
-                
-                switch (n) {
-				case 0: coord.setX(valor); break;
-				case 1: coord.setY(valor); break;
-				case 2: coord.setZ(valor); break;
-				}
-                
-            }
-            
-            muroActual.representation.setRepresentation_position_refDirection(coord);
-        }
-        
-        
-        
-        
-        if(itemActual.getSweptArea() instanceof IfcArbitraryClosedProfileDef){
-        	
-        	IfcArbitraryClosedProfileDef sweptArea = (IfcArbitraryClosedProfileDef) itemActual.getSweptArea();
-            //int at = (Integer) sweptAreaAtributos.get("Count");
-            //sobra?
-        	muroActual.representation.setRepresentation_representation_SweptAreaType(sweptArea.getClass().getSimpleName());
-            Object outerCurve = sweptArea.getOuterCurve();
-        	
-            if(outerCurve instanceof IfcPolyline){
-            	
-            	muroActual.setRepresentation_points(new ArrayList());
-            	IfcPolyline outerCurveActual = (IfcPolyline) outerCurve; 
-            	LIST<IfcCartesianPoint> points = outerCurveActual.getPoints();
-            	
-            	int puntos = points.size();
-                
-                for(int n = 0; n<puntos;n++){
-                	
-                	
-                	IfcCartesianPoint pointsActual = points.get(n);
-                	LIST<IfcLengthMeasure> coordinatesE = pointsActual.getCoordinates();
-                    int coordenadasE = coordinatesE.size();
-                    Coordenada coordenada = new Coordenada();
-                    
-                    for(int i = 0; i<coordenadasE;i++){
-                    	
-                        double valor = coordinatesE.get(i).value;
-                        switch (i) {
-						case 0: coordenada.setX(valor); break;
-						case 1: coordenada.setY(valor); break;
-						}
-                    }
-                    
-                    muroActual.getRepresentation_points().add(coordenada);
-                    
-                }                            
-            	
-            }
-        	
-            
-            if(outerCurve instanceof IfcCompositeCurve){
-            	
-            	muroActual.setRepresentation_segmentos(new ArrayList());
-            	IfcCompositeCurve outerCurveActual = (IfcCompositeCurve) outerCurve;
-            	LIST<IfcCompositeCurveSegment> segments = outerCurveActual.getSegments();
-            	int segmentos = segments.size();
-                
-                for(int n = 0; n<segmentos;n++){
-                	
-                	Segmento segmento = new Segmento();
-                	
-                	IfcCompositeCurveSegment segmentoActual = segments.get(n);
-                	IfcCurve parentCurve = segmentoActual.getParentCurve();
-                	
-                    if(parentCurve instanceof IfcPolyline){
-                   	
-                    	IfcPolyline parentCurveActual = (IfcPolyline) parentCurve;
-                    	LIST<IfcCartesianPoint> points = parentCurveActual.getPoints();
-                    	int puntos = points.size();
-                        
-                        Coordenada p0 = new Coordenada();
-                        Coordenada p1 = new Coordenada();
-                        
-                        for(int i = 0; i<puntos;i++){
-                        	
-                        	IfcCartesianPoint puntoActual = points.get(i);
-                        	LIST<IfcLengthMeasure> coordinates = puntoActual.getCoordinates(); 
-                            coordenadas = coordinates.size();
-                            
-                            for(int m = 0; m<coordenadas;m++){
-                            	
-                                double valor = coordinates.get(m).value;
-                                
-                                if(i==0){
-                                	switch (m) {
-									case 0: p0.setX(valor); break;
-									case 1: p0.setY(valor); break;
-									}
-                                	
-                                }
-                                if(i==1){
-                                	switch (m) {
-									case 0: p1.setX(valor); break;
-									case 1: p1.setY(valor); break;
-									}
-                                	
-                                }
-                                
-                            }
-                            
-                            
-                        }
-                        
-                        segmento.setP0(p0);
-                        segmento.setP1(p1);
-                        
-                        muroActual.getRepresentation_segmentos().add(segmento);
-                        
-                    }
-                    
-                    if(parentCurve instanceof IfcTrimmedCurve){
-                    	
-                    	//no se tiene en cuenta IfcTrimmedCurve
-                    }
-                }
-            }
-        }
-        
-        
-        if(itemActual.getSweptArea() instanceof IfcRectangleProfileDef){
-            
-        	
-        	IfcRectangleProfileDef sweptArea = (IfcRectangleProfileDef) itemActual.getSweptArea();
-        	muroActual.representation.setRepresentation_representation_SweptAreaType(sweptArea.getClass().getSimpleName());
-        	
-        	Rectangulo rec = new Rectangulo();
-        	
-        	IfcPositiveLengthMeasure xdim = sweptArea.getXDim();
-            rec.setXDim(xdim.value);
-            
-            IfcPositiveLengthMeasure ydim = sweptArea.getYDim();
-            rec.setYDim(ydim.value);
-            
-            IfcAxis2Placement2D positionD = sweptArea.getPosition();
-            IfcCartesianPoint locationD = positionD.getLocation();
-            LIST<IfcLengthMeasure> coordinates = locationD.getCoordinates();
-            coordenadas = coordinates.size();
-            
-            Coordenada coordenada = new Coordenada();
-            
-            for(int i = 0; i<coordenadas;i++){
-            	
-            	double valor = coordinates.get(i).value;
-                switch (i) {
-				case 0: coordenada.setX(valor); break;
-				case 1: coordenada.setY(valor); break;
-				}
-            }
-            
-            rec.setPosition_location(coordenada);
+		LectorRepresentationMuro.procesarSweptSolid(representationActual, muroActual);
+		        
+	}
 
-            IfcDirection refDirectionD = positionD.getRefDirection();
-            LIST<DOUBLE> directionRatiosD = refDirectionD.getDirectionRatios();
-            coordenadas = directionRatiosD.size();
-            
-            coordenada = new Coordenada();
-            
-            for(int i = 0; i<coordenadas;i++){
-            	
-            	double valor = directionRatiosD.get(i).value;
-                switch (i) {
-				case 0: coordenada.setX(valor); break;
-				case 1: coordenada.setY(valor); break;
-				}
-            }
-            
-            rec.setPosition_refDirection(coordenada);
-            
-            muroActual.setRectangulo(rec);
-            
-            
-        }
-         
-        //se calculan las coordenadas absolutas de la geometria que define el perfil de la plancha
-        muroActual.calcularCoordenadasAbsolutas();
-        
-        
-		
+
+
+	public static void procesarClipping(IfcRepresentation representationActual, Muro muroActual){
+	
+		LectorRepresentationMuro.procesarClipping(representationActual, muroActual);
 		
 	}
 
