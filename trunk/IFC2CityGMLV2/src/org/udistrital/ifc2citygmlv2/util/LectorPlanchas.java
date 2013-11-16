@@ -117,7 +117,7 @@ public class LectorPlanchas {
 								IfcRoof techoVacioAgregado = (IfcRoof) techoAgregado.getRelatingObject();
 								
 								if(techoVacioPiso.getGlobalId().toString().equals(techoVacioAgregado.getGlobalId().toString())){
-									System.err.println("TECHO " + techoVacioPiso.getGlobalId() + " EN PISO " + pisoActual.getNombre());
+									//System.err.println("TECHO " + techoVacioPiso.getGlobalId() + " EN PISO " + pisoActual.getNombre());
 									
 									IfcSlab currentSlab = (IfcSlab) techoAgregado.getRelatedObjects().iterator().next();
 									
