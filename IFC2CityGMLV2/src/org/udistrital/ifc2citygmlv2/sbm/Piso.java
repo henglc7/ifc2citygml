@@ -283,6 +283,18 @@ public class Piso {
 					cadena += coordenadaActual.getX() + " " + coordenadaActual.getY() + " " + coordenadaActual.getZ() + " , ";
 				}
 				cadena += "]";
+				
+			}
+			
+			if(muroActual.getCaras()!=null){
+				
+				Iterator i = muroActual.getCaras().iterator();
+				cadena += "\n          Caras GEOGEBRA 5 3D (" + muroActual.getCaras().size() + ") = ";
+				
+				for (Poligono caraActual : muroActual.getCaras()) {
+					cadena += caraActual + " ";
+				}
+				
 			}
 
 			/*
