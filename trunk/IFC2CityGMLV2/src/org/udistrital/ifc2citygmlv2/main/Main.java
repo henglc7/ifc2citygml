@@ -235,20 +235,10 @@ public class Main {
         lectorMuros.cargarDatosBasicos(ifcModel, edificio);
         lectorMuros.leerMuros(edificio.getPisos(), ifcModel);
         
-        for (Piso pisoA : edificio.getPisos()) {
-        	if(edificio.getPisos().indexOf(pisoA) >= pisoMinimo){
-        		
-        		pisoA.imprimir();
-        		
-        	}
-		}
+        
         
         Coordinate[] coordenadas = unionTodasLasPlanchas.getCoordinates();
         
-
-        
-		
-
 		System.out.println("GEOMETRIA BASE PARA LOD1 = " + unionTodasLasPlanchas);
 		
         
@@ -288,6 +278,14 @@ public class Main {
         	
         	
 			
+		}
+        
+        for (Piso pisoA : edificio.getPisos()) {
+        	if(edificio.getPisos().indexOf(pisoA) >= pisoMinimo){
+        		
+        		pisoA.imprimir();
+        		
+        	}
 		}
         
         
