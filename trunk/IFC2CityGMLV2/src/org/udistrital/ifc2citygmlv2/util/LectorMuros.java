@@ -201,69 +201,7 @@ public class LectorMuros {
                     //Se lee location
                     
                     IfcAxis2Placement3D relativePlacementC = (IfcAxis2Placement3D) objectPlacement.getRelativePlacement();
-                    IfcCartesianPoint locationC = relativePlacementC.getLocation();
-                    LIST<IfcLengthMeasure> coordinatesC = locationC.getCoordinates();
-                    
-                    int coordenadasC = coordinatesC.size();
-                    
-                    Coordenada coordC = new Coordenada();
-                    for(int n = 0; n<coordenadasC;n++){
-                    	double valor = (Double) coordinatesC.get(n).value;
-                        
-                        switch (n) {
-						case 0: coordC.setX(valor); break;
-						case 1: coordC.setY(valor); break;
-						case 2: coordC.setZ(valor); break;
-						}
-                        
-                    }
-                    muroActual.objectPlacement.setRelativePlacement_location(coordC);
-                    
-                    
-                    //Definition from IAI: If the attribute values for Axis and RefDirection are not given, the placement defaults to P[1] (x-axis) as [1.,0.,0.], P[2] (y-axis) as [0.,1.,0.] and P[3] (z-axis) as [0.,0.,1.]. 
-                    if(relativePlacementC.getAxis() != null){
-                    	
-                    	IfcDirection axis = relativePlacementC.getAxis();
-                        LIST<DOUBLE> directionRatios = axis.getDirectionRatios();
-                        
-                        int coordenadas = directionRatios.size();
-                        
-                        Coordenada coord = new Coordenada();
-                        
-                        for(int n = 0; n<coordenadas;n++){
-                            double valor = (Double) directionRatios.get(n).value;
-                            
-                            switch (n) {
-    						case 0: coord.setX(valor); break;
-    						case 1: coord.setY(valor); break;
-    						case 2: coord.setZ(valor); break;
-    						}
-                            
-                        }
-                        
-                        muroActual.objectPlacement.setRelativePlacement_axis(coord);
-                        
-                        IfcDirection refDirection = relativePlacementC.getRefDirection();
-                        directionRatios = refDirection.getDirectionRatios();
-                        
-                        coordenadas = directionRatios.size();
-                        
-                        coord = new Coordenada();
-                        
-                        for(int n = 0; n<coordenadas;n++){
-                            double valor = (Double) directionRatios.get(n).value;
-                            
-                            switch (n) {
-    						case 0: coord.setX(valor); break;
-    						case 1: coord.setY(valor); break;
-    						case 2: coord.setZ(valor); break;
-    						}
-                            
-                        }
-                        
-                        muroActual.objectPlacement.setRelativePlacement_refDirection(coord);
-                    }
-                    
+                    LectorAxis2Placement3D.leerAxis2Placement3D(muroActual.objectPlacement, relativePlacementC);
                     
                     
                     //Se lee Representation
