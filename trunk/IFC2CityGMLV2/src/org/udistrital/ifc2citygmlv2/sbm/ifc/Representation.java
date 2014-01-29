@@ -10,11 +10,7 @@ public class Representation {
 	
 	public String representation_representation_SweptAreaType;
 
-	public Coordenada representation_position_location;
-	
-	public Coordenada representation_position_axis;
-	
-	public Coordenada representation_position_refDirection;
+	public Axis2Placement3D position = new Axis2Placement3D();
 	
 	public Coordenada representation_extruded_direction;
 	
@@ -47,30 +43,30 @@ public class Representation {
 	}
 
 	public Coordenada getRepresentation_position_location() {
-		return representation_position_location;
+		return position.location;
 	}
 
 	public void setRepresentation_position_location(
 			Coordenada representation_position_location) {
-		this.representation_position_location = representation_position_location;
+		this.position.location = representation_position_location;
 	}
 
 	public Coordenada getRepresentation_position_axis() {
-		return representation_position_axis;
+		return position.axis;
 	}
 
 	public void setRepresentation_position_axis(
 			Coordenada representation_position_axis) {
-		this.representation_position_axis = representation_position_axis;
+		this.position.axis = representation_position_axis;
 	}
 
 	public Coordenada getRepresentation_position_refDirection() {
-		return representation_position_refDirection;
+		return position.refDirection;
 	}
 
 	public void setRepresentation_position_refDirection(
 			Coordenada representation_position_refDirection) {
-		this.representation_position_refDirection = representation_position_refDirection;
+		this.position.refDirection = representation_position_refDirection;
 	}
 
 	public String getRepresentation_representationType() {

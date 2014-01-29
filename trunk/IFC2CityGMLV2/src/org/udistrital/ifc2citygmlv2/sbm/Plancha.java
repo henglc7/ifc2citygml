@@ -188,15 +188,15 @@ public class Plancha extends Solido implements ISolido{
 		
 		double xActual = coordOriginal.getX();
 		
-		xActual += representation.representation_position_location.getX();
+		xActual += representation.position.location.getX();
 		
 		double yActual = coordOriginal.getY();
 		
-		yActual += representation.representation_position_location.getY();
+		yActual += representation.position.location.getY();
 		
 		double zActual = coordOriginal.getZ();
 		
-		zActual += representation.representation_position_location.getZ();
+		zActual += representation.position.location.getZ();
 		
 		Coordenada coord = new Coordenada(xActual, yActual, zActual);
 		
@@ -208,12 +208,12 @@ public class Plancha extends Solido implements ISolido{
 		
 		double xActual = coordOriginal.getX();
 		
-		Coordenada refDirection = representation.representation_position_refDirection;
+		Coordenada refDirection = representation.position.refDirection;
 		
 		if(refDirection!=null && refDirection.getX()!=0){
 			xActual = xActual * refDirection.getX();	
 		}
-		xActual += representation.representation_position_location.getX();
+		xActual += representation.position.location.getX();
 		
 		double yActual = coordOriginal.getY();
 		
@@ -221,7 +221,7 @@ public class Plancha extends Solido implements ISolido{
 			yActual = yActual * refDirection.getY();	
 		}
 		
-		yActual += representation.representation_position_location.getY();
+		yActual += representation.position.location.getY();
 		
 		double zActual = coordOriginal.getZ();
 		
@@ -229,7 +229,7 @@ public class Plancha extends Solido implements ISolido{
 			zActual = zActual * refDirection.getZ();	
 		}
 		
-		zActual += representation.representation_position_location.getZ();
+		zActual += representation.position.location.getZ();
 		
 		Coordenada coord = new Coordenada(xActual, yActual, zActual);
 		
@@ -280,8 +280,8 @@ public class Plancha extends Solido implements ISolido{
 		
 		Coordenada r = new Coordenada();
 		
-		Coordenada axis = this.representation.representation_position_axis;
-		Coordenada refDirection = this.representation.representation_position_refDirection;
+		Coordenada axis = this.representation.position.axis;
+		Coordenada refDirection = this.representation.position.refDirection;
 		
 		
 		if(axis != null && refDirection != null){
