@@ -39,8 +39,8 @@ public class Transformador {
 		//Hay que rotar primero, o no funciona bien
 		Coordenada conRotacion = rotarCoordenada(
 				original
-				, muro.objectPlacement.relativePlacement_axis
-				, muro.objectPlacement.relativePlacement_refDirection
+				, muro.objectPlacement.relativePlacement.axis
+				, muro.objectPlacement.relativePlacement.refDirection
 				);
 		
 		double xActual = conRotacion.getX();
@@ -48,20 +48,20 @@ public class Transformador {
 		
 		xActual += muro.objectPlacement.placementRelTo_placementRelTo.getX();
 		xActual += muro.objectPlacement.placementRelTo_relativePlacement.getX();
-		xActual += muro.objectPlacement.relativePlacement_location.getX();
+		xActual += muro.objectPlacement.relativePlacement.location.getX();
 		
 		double yActual = conRotacion.getY();
 		
 		
 		yActual += muro.objectPlacement.placementRelTo_placementRelTo.getY();
 		yActual += muro.objectPlacement.placementRelTo_relativePlacement.getY();
-		yActual += muro.objectPlacement.relativePlacement_location.getY();
+		yActual += muro.objectPlacement.relativePlacement.location.getY();
 		
 		double zActual = conRotacion.getZ();
 		
 		zActual += muro.objectPlacement.placementRelTo_placementRelTo.getZ();
 		zActual += muro.objectPlacement.placementRelTo_relativePlacement.getZ();
-		zActual += muro.objectPlacement.relativePlacement_location.getZ();
+		zActual += muro.objectPlacement.relativePlacement.location.getZ();
 		
 		
 		Coordenada coord = new Coordenada(xActual, yActual, zActual);

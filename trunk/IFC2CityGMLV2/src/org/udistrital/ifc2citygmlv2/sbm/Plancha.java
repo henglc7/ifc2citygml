@@ -158,20 +158,20 @@ public class Plancha extends Solido implements ISolido{
 		
 		xActual += objectPlacement.placementRelTo_placementRelTo.getX();
 		xActual += objectPlacement.placementRelTo_relativePlacement.getX();
-		xActual += objectPlacement.relativePlacement_location.getX();
+		xActual += objectPlacement.relativePlacement.location.getX();
 		
 		double yActual = conRotacion.getY();
 		
 		
 		yActual += objectPlacement.placementRelTo_placementRelTo.getY();
 		yActual += objectPlacement.placementRelTo_relativePlacement.getY();
-		yActual += objectPlacement.relativePlacement_location.getY();
+		yActual += objectPlacement.relativePlacement.location.getY();
 		
 		double zActual = conRotacion.getZ();
 		
 		zActual += objectPlacement.placementRelTo_placementRelTo.getZ();
 		zActual += objectPlacement.placementRelTo_relativePlacement.getZ();
-		zActual += objectPlacement.relativePlacement_location.getZ();
+		zActual += objectPlacement.relativePlacement.location.getZ();
 			
 		Coordenada coord = new Coordenada(xActual, yActual, zActual);
 		
@@ -242,8 +242,8 @@ public class Plancha extends Solido implements ISolido{
 		
 		Coordenada r = new Coordenada();
 		
-		Coordenada axis = this.objectPlacement.relativePlacement_axis;
-		Coordenada refDirection = this.objectPlacement.relativePlacement_refDirection;
+		Coordenada axis = this.objectPlacement.relativePlacement.axis;
+		Coordenada refDirection = this.objectPlacement.relativePlacement.refDirection;
 		
 		if(axis != null && refDirection != null){
 			
