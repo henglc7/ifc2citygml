@@ -14,11 +14,11 @@ public class Transformador {
 		
 		coordOriginal = rotarCoordenada(
 				coordOriginal
-				, muro.representation.representation_position_axis
-				, muro.representation.representation_position_refDirection 
+				, muro.representation.position.axis
+				, muro.representation.position.refDirection 
 				);
 
-		Coordenada location = muro.representation.representation_position_location;
+		Coordenada location = muro.representation.position.location;
 		
 		double xActual = coordOriginal.getX();
 		xActual += location.getX();
