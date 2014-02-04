@@ -5,6 +5,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.udistrital.ifc2citygmlv2.util.LectorCoordenada;
+import org.udistrital.ifc2citygmlv2.util.Transformador;
+
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcHalfSpaceSolid;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPlane;
+
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
@@ -178,6 +185,17 @@ public class Piso {
 			cadena += "\n              Id = " + planchaActual.getPisoPadre().getId();
 			cadena += "\n              Nombre = " + planchaActual.getPisoPadre().getNombre();
 			cadena += "\n              Elevacion = " + planchaActual.getPisoPadre().getElevacion();
+			
+			if(planchaActual.getCaras()!=null){
+				
+				Iterator i = planchaActual.getCaras().iterator();
+				cadena += "\n          Caras GEOGEBRA 5 3D (" + planchaActual.getCaras().size() + ") = ";
+				
+				for (Poligono caraActual : planchaActual.getCaras()) {
+					cadena += caraActual + " ";
+				}
+				
+			}
 
 		}
 		
@@ -296,6 +314,34 @@ public class Piso {
 				}
 				
 			}
+			
+			
+			if(muroActual.getPlanosDeCorte()!=null){
+				cadena += "\n          Planos de corte (" + muroActual.getPlanosDeCorte().size() + ") = [ ";
+				for (IfcHalfSpaceSolid planoActual : muroActual.getPlanosDeCorte()) {
+					
+					IfcPlane plano = (IfcPlane) planoActual.getBaseSurface();
+					
+					planoActual.getAgreementFlag();
+					
+					Coordenada location = LectorCoordenada.Leer(plano.getPosition().getLocation());
+					
+					double x = muroActual.objectPlacement.placementRelTo_relativePlacement.x + muroActual.objectPlacement.relativePlacement.location.x;
+					double y = muroActual.objectPlacement.placementRelTo_relativePlacement.y + muroActual.objectPlacement.relativePlacement.location.y;;
+					double z = muroActual.objectPlacement.placementRelTo_relativePlacement.z + muroActual.objectPlacement.relativePlacement.location.z;;
+					
+					Coordenada locationNueva = new Coordenada (location.x + x, location.y + y , location.z + z);
+					Coordenada nuevoOrigen = new Coordenada (x, y , z);
+					
+					cadena += "location = " + locationNueva + " nuevoOrigen = " + nuevoOrigen;
+					
+				}
+				cadena += "]";
+				
+			}
+			
+			
+			
 
 			/*
 

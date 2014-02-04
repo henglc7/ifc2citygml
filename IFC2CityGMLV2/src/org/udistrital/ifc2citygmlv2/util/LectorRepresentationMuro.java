@@ -71,8 +71,10 @@ public class LectorRepresentationMuro {
             //System.err.println("seteado a = " + representationActual.getStepLineNumber());
             muroActual.representation.setStepLineNumber(representationActual.getStepLineNumber());
             
-            
             extraerCoordenadasDeExtrudedAreaSolid(itemActual, muroActual);
+            
+            //despues de calcular las caras se procede a cortarlas
+            muroActual.cortarCaras((IfcHalfSpaceSolid)opB);
             
 		}else if(opA instanceof IfcBooleanClippingResult && opB instanceof IfcHalfSpaceSolid){
 			
