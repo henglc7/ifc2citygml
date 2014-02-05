@@ -112,11 +112,8 @@ public class LectorRepresentationMuro {
 		Coordenada normalIfc = new Coordenada(0,0,0);
 		
 		Transformador t = new Transformador();
-		locationIfc = t.aplicarObjectRepresentation(locationIfc, muroActual);
-		locationIfc = t.aplicarObjectPlacement(locationIfc, muroActual);
-		
-		normalIfc = t.aplicarObjectRepresentation(normalIfc, muroActual);
-		normalIfc = t.aplicarObjectPlacement(normalIfc, muroActual);
+		locationIfc = t.convertirEnAbsoluta(locationIfc, muroActual);
+		normalIfc = t.convertirEnAbsoluta(normalIfc, muroActual);
 		
 		System.err.println("Muro = " + muroActual.getId() + " locationIfc = " + locationIfc + " normalIfc = " + normalIfc );
 		

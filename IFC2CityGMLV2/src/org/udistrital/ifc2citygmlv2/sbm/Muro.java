@@ -48,8 +48,7 @@ public class Muro  extends Solido implements ISolido{
 			
 			for (Coordenada coordenadaActual : representation_points) {
 				
-				Coordenada coordAbsoluta = transformador.aplicarObjectRepresentation(coordenadaActual, this);
-				coordAbsoluta = transformador.aplicarObjectPlacement(coordAbsoluta, this);
+				Coordenada coordAbsoluta = transformador.convertirEnAbsoluta(coordenadaActual, this);
 				coordenadasAbsolutas.add(coordAbsoluta);
 				
 			}
@@ -66,8 +65,7 @@ public class Muro  extends Solido implements ISolido{
 				
 				coordenadaActual = segmentoActual.getP0();
 				
-				Coordenada coordAbsoluta = transformador.aplicarObjectRepresentation(coordenadaActual, this);
-				coordAbsoluta = transformador.aplicarObjectPlacement(coordAbsoluta, this);
+				Coordenada coordAbsoluta = transformador.convertirEnAbsoluta(coordenadaActual, this);
 				coordenadasAbsolutas.add(coordAbsoluta);
 				
 				contador++;
@@ -140,8 +138,7 @@ public class Muro  extends Solido implements ISolido{
 				}
 				
 				
-				/*Coordenada*/ coordAbsoluta = transformador.aplicarObjectRepresentation(coordenadaActual, this);
-				coordAbsoluta = transformador.aplicarObjectPlacement(coordAbsoluta, this);
+				/*Coordenada*/ coordAbsoluta = transformador.convertirEnAbsoluta(coordenadaActual, this);
 				
 				//coordAbsoluta = transformador.aplicarPositionLocationRectangulo(coordAbsoluta, rectangulo);
 				
