@@ -1,5 +1,7 @@
 package org.udistrital.ifc2citygmlv2.sbm;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
 public class Coordenada {
 	
 	double x;
@@ -40,6 +42,10 @@ public class Coordenada {
 	@Override
 	public String toString(){
 		return "[ " + getX() + ", " + getY() + ", " + getZ() + " ]";
+	}
+	
+	public Vector3D toVector3D(){
+		return new Vector3D(x,y,z);
 	}
 
 }

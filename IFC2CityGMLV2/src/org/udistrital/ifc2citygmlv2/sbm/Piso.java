@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Plane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.udistrital.ifc2citygmlv2.util.LectorCoordenada;
 import org.udistrital.ifc2citygmlv2.util.Transformador;
@@ -318,25 +319,23 @@ public class Piso {
 			
 			if(muroActual.getPlanosDeCorte()!=null){
 				cadena += "\n          Planos de corte (" + muroActual.getPlanosDeCorte().size() + ") = [ ";
-				for (IfcHalfSpaceSolid planoActual : muroActual.getPlanosDeCorte()) {
+				for (Plane planoApache : muroActual.getPlanosDeCorte()) {
 					
-					IfcPlane plano = (IfcPlane) planoActual.getBaseSurface();
+					//Coordenada locationNueva = new Coordenada (location.x + x, location.y + y , location.z + z);
 					
-					planoActual.getAgreementFlag();
+					Vector3D normal = planoApache.getNormal();
+					Coordenada normalApache = new Coordenada (normal.getX(), normal.getY(), normal.getZ());
 					
-					Coordenada location = LectorCoordenada.Leer(plano.getPosition().getLocation());
 					
-					double x = muroActual.objectPlacement.placementRelTo_relativePlacement.x + muroActual.objectPlacement.relativePlacement.location.x;
-					double y = muroActual.objectPlacement.placementRelTo_relativePlacement.y + muroActual.objectPlacement.relativePlacement.location.y;;
-					double z = muroActual.objectPlacement.placementRelTo_relativePlacement.z + muroActual.objectPlacement.relativePlacement.location.z;;
+					Vector3D origen = planoApache.getOrigin();
+					Coordenada origenApache = new Coordenada (origen.getX(), origen.getY(), origen.getZ());
 					
-					Coordenada locationNueva = new Coordenada (location.x + x, location.y + y , location.z + z);
-					Coordenada nuevoOrigen = new Coordenada (x, y , z);
-					
-					cadena += "location = " + locationNueva + " nuevoOrigen = " + nuevoOrigen;
+					cadena += "origenApache = " + origenApache + " normalApache = " + normalApache;
 					
 				}
 				cadena += "]";
+				
+				
 				
 			}
 			
