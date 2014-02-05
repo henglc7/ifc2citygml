@@ -9,8 +9,17 @@ import org.udistrital.ifc2citygmlv2.sbm.ifc.Solido;
 
 public class Transformador {
 
+	
+	
+	public Coordenada convertirEnAbsoluta(Coordenada coordOriginal, Solido muro){
 		
-	public Coordenada aplicarObjectRepresentation(Coordenada coordOriginal, Solido muro){
+		Coordenada coordAbsoluta = aplicarObjectRepresentation(coordOriginal, muro);
+		coordAbsoluta = aplicarObjectPlacement(coordAbsoluta, muro);
+		
+		return coordAbsoluta;
+	}
+		
+	private Coordenada aplicarObjectRepresentation(Coordenada coordOriginal, Solido muro){
 		
 		coordOriginal = rotarCoordenada(
 				coordOriginal
@@ -35,7 +44,7 @@ public class Transformador {
 		
 	}
 	
-	public Coordenada aplicarObjectPlacement(Coordenada original, Solido muro){
+	private Coordenada aplicarObjectPlacement(Coordenada original, Solido muro){
 		//Hay que rotar primero, o no funciona bien
 		Coordenada conRotacion = rotarCoordenada(
 				original
