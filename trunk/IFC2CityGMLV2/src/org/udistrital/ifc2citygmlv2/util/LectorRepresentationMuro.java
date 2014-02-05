@@ -17,6 +17,7 @@ import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcDirection;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcExtrudedAreaSolid;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcHalfSpaceSolid;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcLengthMeasure;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPlane;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPolyline;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPositiveLengthMeasure;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRectangleProfileDef;
@@ -26,6 +27,8 @@ import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcTrimmedCurve;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.LIST;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.SET;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Plane;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Muro;
 import org.udistrital.ifc2citygmlv2.sbm.Rectangulo;
@@ -65,7 +68,6 @@ public class LectorRepresentationMuro {
         	//se asume que siempre va a existir UNA sola representacion (SOLO SE LEE EL PRIMER ITEM)
         	IfcExtrudedAreaSolid itemActual = (IfcExtrudedAreaSolid)opA;
         	
-        	
         	String representationType = representationActual.getRepresentationType().toString();
             muroActual.representation.setRepresentation_representationType(representationType);
             //System.err.println("seteado a = " + representationActual.getStepLineNumber());
@@ -73,8 +75,10 @@ public class LectorRepresentationMuro {
             
             extraerCoordenadasDeExtrudedAreaSolid(itemActual, muroActual);
             
-            //despues de calcular las caras se procede a cortarlas
-            muroActual.cortarCaras((IfcHalfSpaceSolid)opB);
+          //despues de calcular las caras se agrega el plano de corte
+            agregarPlanoDeCorte(muroActual, (IfcHalfSpaceSolid)opB);
+            
+            
             
 		}else if(opA instanceof IfcBooleanClippingResult && opB instanceof IfcHalfSpaceSolid){
 			
@@ -90,6 +94,71 @@ public class LectorRepresentationMuro {
 		
 		
 
+		
+	}
+	
+	public static void agregarPlanoDeCorte(Muro muroActual, IfcHalfSpaceSolid halfSpace){
+		
+		
+		if(muroActual.getPlanosDeCorte() == null){
+			muroActual.setPlanosDeCorte(new ArrayList());
+		}
+		
+		IfcPlane plano = (IfcPlane) halfSpace.getBaseSurface();
+		
+		//halfSpace.getAgreementFlag();
+		
+		Coordenada locationIfc = LectorCoordenada.Leer(plano.getPosition().getLocation());
+		Coordenada normalIfc = new Coordenada(0,0,0);
+		
+		Transformador t = new Transformador();
+		locationIfc = t.aplicarObjectRepresentation(locationIfc, muroActual);
+		locationIfc = t.aplicarObjectPlacement(locationIfc, muroActual);
+		
+		normalIfc = t.aplicarObjectRepresentation(normalIfc, muroActual);
+		normalIfc = t.aplicarObjectPlacement(normalIfc, muroActual);
+		
+		System.err.println("Muro = " + muroActual.getId() + " locationIfc = " + locationIfc + " normalIfc = " + normalIfc );
+		
+		//hasta la linea anterior las coordenadas location y normal tienen los mismos valores que el archivo IFC original
+		//estos valores definen un plano que corta las caras del solido
+		//es necesario redefinir este plano para que concuerde con el plano definido por apache commons math
+		
+		//en apache commons math la normal al plano siempre se define con relación al origen (0,0,0)
+		//se define el origen
+		Coordenada origen = new Coordenada(0,0,0);
+		
+		//se calcula la diferencia entre el origen y la normal definida en IFC
+		Coordenada diferenciaConNormal = new Coordenada(
+				origen.getX() - normalIfc.getX()
+				, origen.getY() - normalIfc.getY()
+				, origen.getZ() - normalIfc.getZ()
+				);
+		
+		//el location de IFC se ajusta para que la nueva normal al plano corresponda al punto (0,0,0,)
+		Coordenada locationAjustada = new Coordenada(
+				locationIfc.getX() + diferenciaConNormal.getX()
+				, locationIfc.getY() + diferenciaConNormal.getY()
+				, locationIfc.getZ() + diferenciaConNormal.getZ()
+				);
+		
+		try {
+			//se define el plano de apache commons
+			//dicho plano pasa por el punto locationAjustada y es normal al origen (0,0,0)
+			Plane planoDeCorteApacheCommons = new Plane(locationAjustada.toVector3D(), locationAjustada.toVector3D());
+			
+			//el plano de apache commons se translada a la posicion original definida en IFC para que concuerde
+			Plane planoTransladado = planoDeCorteApacheCommons.translate(normalIfc.toVector3D());
+			
+			//finalmente el plano se agrega al listado de planos de corte
+			muroActual.getPlanosDeCorte().add(planoTransladado);
+			
+		} catch (Exception e) {
+			System.err.println(" NO SE PUEDE CREAR EL PLANO PORQUE TIENE NORMA = 0");
+		}
+		
+			
+			
 		
 	}
 	

@@ -8,12 +8,14 @@ import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcHalfSpaceSolid;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPlane;
 import openifctools.com.openifcjavatoolbox.ifcmodel.IfcModel;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Plane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Piso;
 import org.udistrital.ifc2citygmlv2.sbm.Poligono;
 import org.udistrital.ifc2citygmlv2.sbm.Rectangulo;
 import org.udistrital.ifc2citygmlv2.sbm.Segmento;
+import org.udistrital.ifc2citygmlv2.util.LectorCoordenada;
 import org.udistrital.ifc2citygmlv2.util.Transformador;
 
 public class Solido {
@@ -47,17 +49,17 @@ public class Solido {
 	protected Rectangulo rectangulo;
 	
 	//solo se usa para imprimir y probar datos
-	public List<IfcHalfSpaceSolid> planosDeCorte;
+	public List<Plane> planosDeCorte;
 	
 	
 	//este atributo contiene las coordenadas absolutas del perfil de la plancha
 	//sin importar si se deriva de representation_points, representation_segmentos o rectangulo
 	
-	public List<IfcHalfSpaceSolid> getPlanosDeCorte() {
+	public List<Plane> getPlanosDeCorte() {
 		return planosDeCorte;
 	}
 
-	public void setPlanosDeCorte(List<IfcHalfSpaceSolid> planosDeCorte) {
+	public void setPlanosDeCorte(List<Plane> planosDeCorte) {
 		this.planosDeCorte = planosDeCorte;
 	}
 
@@ -141,18 +143,7 @@ public class Solido {
 	
 	public void cortarCaras(IfcHalfSpaceSolid planoDeCorte){
 		
-		/*
-		IfcPlane plano = (IfcPlane) planoDeCorte.getBaseSurface();
-		
-		planoDeCorte.getAgreementFlag();
-		plano.getPosition();
-		*/
-		
-		if(planosDeCorte == null){
-			planosDeCorte = new ArrayList();
-		}
-		
-		planosDeCorte.add(planoDeCorte);
+		//implementar
 		
 	}
 
