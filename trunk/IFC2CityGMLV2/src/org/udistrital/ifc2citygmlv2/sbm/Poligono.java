@@ -18,6 +18,12 @@ public class Poligono {
 		coordenadas = new ArrayList();
 	}
 	
+	public Poligono(List<Coordenada> coord){
+		
+		//se clonan las coordenadas
+		coordenadas = new ArrayList<Coordenada>(coord);
+	}
+	
 	public List<Coordenada> getCoordenadas() {
 		return coordenadas;
 	}
@@ -77,6 +83,8 @@ public class Poligono {
 			Coordenada coordenadaA = iA.next();
 			Coordenada coordenadaB = iB.next();
 			
+
+			boolean ultimaCoordenadaB = !iB.hasNext();
 			
 			double posicionA = planoEvaluado.getOffset(coordenadaA.toVector3D());
 			double posicionB = planoEvaluado.getOffset(coordenadaB.toVector3D());
@@ -110,17 +118,18 @@ public class Poligono {
 			}
 			*/
 			
-			
+
 			//A y B debajo del plano
 			if(posicionA < 0 && posicionB < 0){
 				caraCortada.coordenadas.add(coordenadaA);
-				caraCortada.coordenadas.add(coordenadaB);
+				
+				if(ultimaCoordenadaB) caraCortada.coordenadas.add(coordenadaB);
 			}
 			
 			//A debajo y B en el plano
 			if(posicionA < 0 && posicionB == 0){
 				caraCortada.coordenadas.add(coordenadaA);
-				caraCortada.coordenadas.add(coordenadaB);
+				//caraCortada.coordenadas.add(coordenadaB);
 				
 				//if(!caraSuperior.contieneCoordenada(coordenadaB)) caraSuperior.getCoordenadas().add(coordenadaB);
 			}
@@ -156,7 +165,7 @@ public class Poligono {
 			if(posicionA == 0 && posicionB == 0){
 
 				caraCortada.coordenadas.add(coordenadaA);
-				caraCortada.coordenadas.add(coordenadaB);
+				//caraCortada.coordenadas.add(coordenadaB);
 				
 				//if(!caraSuperior.contieneCoordenada(coordenadaA)) caraSuperior.getCoordenadas().add(coordenadaA);
 				//if(!caraSuperior.contieneCoordenada(coordenadaB)) caraSuperior.getCoordenadas().add(coordenadaB);
@@ -171,7 +180,7 @@ public class Poligono {
 			
 			//B debajo y A en el plano
 			if(posicionB < 0 && posicionA == 0){
-				caraCortada.coordenadas.add(coordenadaA);
+				//caraCortada.coordenadas.add(coordenadaA);
 				caraCortada.coordenadas.add(coordenadaB);
 				
 				//if(!caraSuperior.contieneCoordenada(coordenadaA)) caraSuperior.getCoordenadas().add(coordenadaA);
@@ -190,7 +199,7 @@ public class Poligono {
 			}
 			
 			//B en y A encima el plano
-			if(posicionA == 0 && posicionB > 0){
+			if(posicionB == 0 && posicionA > 0){
 				
 				caraCortada.coordenadas.add(coordenadaB);
 				

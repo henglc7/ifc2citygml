@@ -33,6 +33,7 @@ import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Muro;
 import org.udistrital.ifc2citygmlv2.sbm.Rectangulo;
 import org.udistrital.ifc2citygmlv2.sbm.Segmento;
+import org.udistrital.ifc2citygmlv2.sbm.ifc.PlanoDeCorte;
 
 public class LectorRepresentationMuro {
 
@@ -112,10 +113,25 @@ public class LectorRepresentationMuro {
 		Coordenada normalIfc = new Coordenada(0,0,0);
 		
 		Transformador t = new Transformador();
+		
+		/*
+		//Si existe una rotacion definida se aplica
+		if(plano.getPosition().getAxis()!= null && plano.getPosition().getRefDirection()!= null){
+			
+			Coordenada axisIfc = LectorCoordenada.Leer(plano.getPosition().getAxis());
+			Coordenada refDirectionIfc = LectorCoordenada.Leer(plano.getPosition().getRefDirection());
+			
+			locationIfc = t.rotarCoordenada(locationIfc, axisIfc, refDirectionIfc);
+			normalIfc = t.rotarCoordenada(normalIfc, axisIfc, refDirectionIfc);
+		}
+		*/
+		
+		
+		
 		locationIfc = t.convertirEnAbsoluta(locationIfc, muroActual);
 		normalIfc = t.convertirEnAbsoluta(normalIfc, muroActual);
 		
-		System.err.println("Muro = " + muroActual.getId() + " locationIfc = " + locationIfc + " normalIfc = " + normalIfc );
+		//System.err.println("Muro = " + muroActual.getId() + " locationIfc = " + locationIfc + " normalIfc = " + normalIfc );
 		
 		//hasta la linea anterior las coordenadas location y normal tienen los mismos valores que el archivo IFC original
 		//estos valores definen un plano que corta las caras del solido
@@ -147,8 +163,14 @@ public class LectorRepresentationMuro {
 			//el plano de apache commons se translada a la posicion original definida en IFC para que concuerde
 			Plane planoTransladado = planoDeCorteApacheCommons.translate(normalIfc.toVector3D());
 			
+			PlanoDeCorte p = new PlanoDeCorte(plano, planoTransladado);
+			
+			p.setLocationAbsolutaIfc(locationIfc);
+			p.setNormalAbsolutaIfc(normalIfc);
+			
+			
 			//finalmente el plano se agrega al listado de planos de corte
-			muroActual.getPlanosDeCorte().add(planoTransladado);
+			muroActual.getPlanosDeCorte().add(p);
 			
 		} catch (Exception e) {
 			System.err.println(" NO SE PUEDE CREAR EL PLANO PORQUE TIENE NORMA = 0");
