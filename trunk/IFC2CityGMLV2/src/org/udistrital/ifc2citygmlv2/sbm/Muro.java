@@ -280,6 +280,13 @@ public class Muro  extends Solido implements ISolido{
 			this.setCaras(todasLasCaras);			
 		}
 		
+		//si hay planos de corte se procede a cortar las caras
+		if(this.getPlanosDeCorte() != null){
+
+			this.cortarCaras();
+				
+		}
+		
 		}// else otros tipos de muro diferentes a IfcWallStandardCase
 	
 	}

@@ -2,14 +2,21 @@
 package org.udistrital.ifc2citygmlv2.sbm.ifc;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcHalfSpaceSolid;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPlane;
 import openifctools.com.openifcjavatoolbox.ifcmodel.IfcModel;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Euclidean3D;
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
+import org.apache.commons.math3.geometry.euclidean.threed.PolyhedronsSet;
+import org.apache.commons.math3.geometry.euclidean.threed.SubLine;
+import org.apache.commons.math3.geometry.euclidean.threed.SubPlane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.commons.math3.geometry.partitioning.BSPTree;
+import org.apache.commons.math3.geometry.partitioning.SubHyperplane;
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Piso;
 import org.udistrital.ifc2citygmlv2.sbm.Poligono;
@@ -141,10 +148,135 @@ public class Solido {
 		this.caras = caras;
 	}
 	
-	public void cortarCaras(IfcHalfSpaceSolid planoDeCorte){
+	public void cortarCaras(){
 		
-		//implementar
+		List<Poligono> nuevasCaras = new ArrayList();
 		
+		PolyhedronsSet boundingBox = obtenerBoundingBox();
+		
+		Poligono nuevaCaraSuperior = new Poligono();
+		
+		for (Poligono caraActual : caras) {
+			
+			//System.err.println("CARA " + c + " = " +  caraActual);
+			
+			for(Plane planoActual : planosDeCorte){
+				
+				Poligono caraCortada = caraActual.cortar(caraActual, planoActual, boundingBox/*, nuevaCaraSuperior*/);
+				
+				//cualquier poligono debe tener al menos 4 puntos (minimo 3 más el primero repetido para cerrar el poligono)
+				if(caraCortada.getCoordenadas().size() >= 4){
+					
+					nuevasCaras.add(caraCortada);
+					
+				}
+				
+				
+				//System.err.println("CARA CORTADA = " + caraCortada);
+				
+			}
+			//System.err.println("\n");
+		}
+		
+		if(this.getId().equals("3Ttjr$59XEWfWN1WUHjelZ")){
+			
+			//la cara superior deberia calcularse con el metodo intersect del plano de APACHE (intersectar 3 planos)
+			//http://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math3/geometry/euclidean/threed/Plane.html#intersection(org.apache.commons.math3.geometry.euclidean.threed.Plane, org.apache.commons.math3.geometry.euclidean.threed.Plane, org.apache.commons.math3.geometry.euclidean.threed.Plane)
+			
+			//System.err.println("NUEVA CARA SUPERIOR = " + nuevaCaraSuperior);
+		}
+			
+		this.caras = nuevasCaras;
+		
+	}
+	
+	public PolyhedronsSet obtenerBoundingBox(){
+		
+		/*
+		List<SubHyperplane> subPlanos = new ArrayList(); 
+		 
+		 for (Poligono caraActual : caras){
+			 
+			 Iterator<Coordenada> i = caraActual.getCoordenadas().iterator();
+			 
+			 int c = 0;
+			 
+			 Coordenada pa = caraActual.getCoordenadas().get(0);
+			 Coordenada pb = caraActual.getCoordenadas().get(1);
+			 Coordenada pc = caraActual.getCoordenadas().get(2);
+			 
+			 Plane planoActual = new Plane(pa.toVector3D(), pb.toVector3D(), pc.toVector3D());
+			 
+			 SubPlane hiperPlano = planoActual.wholeHyperplane();
+			 
+			 subPlanos.add(hiperPlano);
+			 
+		 }
+		 
+		 PolyhedronsSet poliHedros = new PolyhedronsSet((BSPTree<Euclidean3D>) subPlanos);
+		 
+		 return poliHedros;
+		 
+		 */
+		
+		
+		
+		Double xMin = null;
+		Double yMin = null;
+		Double zMin = null;
+        
+		Double xMax = null;
+		Double yMax = null;
+		Double zMax = null;
+        
+        
+		 for (Poligono caraActual : caras){
+			 
+			 Iterator<Coordenada> i = caraActual.getCoordenadas().iterator();
+			 
+			 int c = 0;
+			 
+			 while(i.hasNext()){
+				 
+				 Coordenada coordenadaActual = i.next();
+				 
+				//minimos
+				 
+				 if(xMin == null || coordenadaActual.getX() < xMin){
+					 xMin = coordenadaActual.getX(); 
+				 }
+				 
+				 if(yMin == null || coordenadaActual.getY() < yMin){
+					 yMin = coordenadaActual.getY(); 
+				 }
+				 
+				 if(zMin == null || coordenadaActual.getZ() < zMin){
+					 zMin = coordenadaActual.getZ(); 
+				 }
+				 
+				 //maximos
+				 
+				 if(xMax == null || coordenadaActual.getX() > xMax){
+					 xMax = coordenadaActual.getX(); 
+				 }
+				 
+				 if(yMax == null || coordenadaActual.getY() > yMax){
+					 yMax = coordenadaActual.getY(); 
+				 }
+				 
+				 if(zMax == null || coordenadaActual.getZ() > zMax){
+					 zMax = coordenadaActual.getZ(); 
+				 }
+			 }
+			 
+			 
+		 }
+		 
+		 PolyhedronsSet r = new PolyhedronsSet(xMin, xMax, yMin, yMax, zMin, zMax);
+		 
+		 return r;
+
+		 
 	}
 
 }

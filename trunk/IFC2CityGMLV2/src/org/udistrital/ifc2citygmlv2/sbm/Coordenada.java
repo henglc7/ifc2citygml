@@ -20,6 +20,12 @@ public class Coordenada {
 		z = Z;
 	}
 	
+	public Coordenada(Vector3D vector){
+		x = vector.getX();
+		y = vector.getY();
+		z = vector.getZ();
+	}
+	
 	public double getX() {
 		return x;
 	}
@@ -41,11 +47,19 @@ public class Coordenada {
 	
 	@Override
 	public String toString(){
-		return "[ " + getX() + ", " + getY() + ", " + getZ() + " ]";
+		return "( " + getX() + ", " + getY() + ", " + getZ() + " )";
 	}
 	
 	public Vector3D toVector3D(){
 		return new Vector3D(x,y,z);
+	}
+	
+	public boolean esIgual(Coordenada c){
+		boolean r = false;
+		
+		if( x==c.x && y==c.y && z == c.z) r = true;
+		
+		return r;
 	}
 
 }
