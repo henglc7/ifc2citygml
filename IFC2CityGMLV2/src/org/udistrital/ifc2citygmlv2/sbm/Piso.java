@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.udistrital.ifc2citygmlv2.sbm.ifc.PlanoDeCorte;
 import org.udistrital.ifc2citygmlv2.util.LectorCoordenada;
 import org.udistrital.ifc2citygmlv2.util.Transformador;
 
@@ -318,22 +319,41 @@ public class Piso {
 			
 			
 			if(muroActual.getPlanosDeCorte()!=null){
-				cadena += "\n          Planos de corte (" + muroActual.getPlanosDeCorte().size() + ") = [ ";
-				for (Plane planoApache : muroActual.getPlanosDeCorte()) {
+				cadena += "\n          Planos de corte (" + muroActual.getPlanosDeCorte().size() + ") = ";
+				int c = 0;
+				for (PlanoDeCorte planoActual : muroActual.getPlanosDeCorte()) {
 					
-					//Coordenada locationNueva = new Coordenada (location.x + x, location.y + y , location.z + z);
+					c++;
+					cadena += "\n          |__ Plano " + c;
 					
-					Vector3D normal = planoApache.getNormal();
+					cadena += "\n              Step Line = " + planoActual.getPlanoIfc().getStepLineNumber();
+					cadena += "\n              Ifc : origen = " + planoActual.getLocationAbsolutaIfc() + " normal = " + planoActual.getNormalAbsolutaIfc();
+					
+					Vector3D normal = planoActual.getPlanoApache().getNormal();
 					Coordenada normalApache = new Coordenada (normal.getX(), normal.getY(), normal.getZ());
-					
-					
-					Vector3D origen = planoApache.getOrigin();
+					Vector3D origen = planoActual.getPlanoApache().getOrigin();
 					Coordenada origenApache = new Coordenada (origen.getX(), origen.getY(), origen.getZ());
 					
-					cadena += "origenApache = " + origenApache + " normalApache = " + normalApache;
+					cadena +=  "\n              Apache : origen = " + origenApache + " normal = " + normalApache;
+					
+					cadena +=  "\n              Caras A Cortar = ";
+					
+					for (Poligono caraActual : planoActual.getCarasACortar() ) {
+						
+						cadena += " " + caraActual;
+						
+					}
+					
+					cadena +=  "\n              Caras Resultado = ";
+
+					for (Poligono caraActual : planoActual.getCarasResultado() ) {
+						
+						cadena += " " + caraActual;
+						
+					}
 					
 				}
-				cadena += "]";
+				//cadena += "]";
 				
 				
 				

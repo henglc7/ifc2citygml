@@ -56,17 +56,17 @@ public class Solido {
 	protected Rectangulo rectangulo;
 	
 	//solo se usa para imprimir y probar datos
-	public List<Plane> planosDeCorte;
+	public List<PlanoDeCorte> planosDeCorte;
 	
 	
 	//este atributo contiene las coordenadas absolutas del perfil de la plancha
 	//sin importar si se deriva de representation_points, representation_segmentos o rectangulo
 	
-	public List<Plane> getPlanosDeCorte() {
+	public List<PlanoDeCorte> getPlanosDeCorte() {
 		return planosDeCorte;
 	}
 
-	public void setPlanosDeCorte(List<Plane> planosDeCorte) {
+	public void setPlanosDeCorte(List<PlanoDeCorte> planosDeCorte) {
 		this.planosDeCorte = planosDeCorte;
 	}
 
@@ -160,17 +160,21 @@ public class Solido {
 			
 			//System.err.println("CARA " + c + " = " +  caraActual);
 			
-			for(Plane planoActual : planosDeCorte){
+			for(PlanoDeCorte planoActual : planosDeCorte){
 				
-				Poligono caraCortada = caraActual.cortar(caraActual, planoActual, boundingBox/*, nuevaCaraSuperior*/);
+				planoActual.getCarasACortar().add(new Poligono(caraActual.getCoordenadas()));
+				
+				Poligono caraCortada = caraActual.cortar(caraActual, planoActual.getPlanoApache(), boundingBox/*, nuevaCaraSuperior*/);
 				
 				//cualquier poligono debe tener al menos 4 puntos (minimo 3 más el primero repetido para cerrar el poligono)
 				if(caraCortada.getCoordenadas().size() >= 4){
 					
 					nuevasCaras.add(caraCortada);
 					
+					//se guarda el historico de las caras que se cortaron solo para imprimir en pantalla
+					planoActual.getCarasResultado().add(new Poligono(caraCortada.getCoordenadas()));
+					
 				}
-				
 				
 				//System.err.println("CARA CORTADA = " + caraCortada);
 				
