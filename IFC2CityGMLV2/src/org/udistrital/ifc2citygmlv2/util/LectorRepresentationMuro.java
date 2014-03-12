@@ -126,8 +126,6 @@ public class LectorRepresentationMuro {
 		}
 		*/
 		
-		
-		
 		locationIfc = t.convertirEnAbsoluta(locationIfc, muroActual);
 		normalIfc = t.convertirEnAbsoluta(normalIfc, muroActual);
 		
@@ -142,18 +140,10 @@ public class LectorRepresentationMuro {
 		Coordenada origen = new Coordenada(0,0,0);
 		
 		//se calcula la diferencia entre el origen y la normal definida en IFC
-		Coordenada diferenciaConNormal = new Coordenada(
-				origen.getX() - normalIfc.getX()
-				, origen.getY() - normalIfc.getY()
-				, origen.getZ() - normalIfc.getZ()
-				);
+		Coordenada diferenciaConNormal = new Coordenada(origen.toVector3D().subtract(normalIfc.toVector3D()));
 		
 		//el location de IFC se ajusta para que la nueva normal al plano corresponda al punto (0,0,0,)
-		Coordenada locationAjustada = new Coordenada(
-				locationIfc.getX() + diferenciaConNormal.getX()
-				, locationIfc.getY() + diferenciaConNormal.getY()
-				, locationIfc.getZ() + diferenciaConNormal.getZ()
-				);
+		Coordenada locationAjustada = new Coordenada(locationIfc.toVector3D().add(diferenciaConNormal.toVector3D()));
 		
 		try {
 			//se define el plano de apache commons
