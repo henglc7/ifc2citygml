@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcBooleanClippingResult;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcBooleanOperand;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcExtrudedAreaSolid;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcRepresentation;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcSlab;
@@ -227,8 +228,23 @@ public class Muro  extends Solido implements ISolido{
 			}
 			
 			if(item.getRepresentationType().toString().equals("Clipping")){
-				IfcExtrudedAreaSolid repItem = (IfcExtrudedAreaSolid) ((IfcBooleanClippingResult)item.getItems().iterator().next()).getFirstOperand();
-				profundidad = repItem.getDepth().value;
+				
+				
+				IfcBooleanOperand primerOperando = ((IfcBooleanClippingResult)item.getItems().iterator().next()).getFirstOperand();
+				
+				if(primerOperando instanceof IfcExtrudedAreaSolid){
+					
+					IfcExtrudedAreaSolid repItem = (IfcExtrudedAreaSolid) primerOperando;
+					profundidad = repItem.getDepth().value;
+					
+				}else if(primerOperando instanceof IfcBooleanClippingResult){
+					
+					IfcExtrudedAreaSolid repItem = (IfcExtrudedAreaSolid) ((IfcBooleanClippingResult)primerOperando).getFirstOperand();
+					profundidad = repItem.getDepth().value;
+					
+				}
+				
+				
 			}
 			
 			

@@ -160,8 +160,8 @@ public class Main {
 		edificio.getPisos().removeAll(borrar);
 		lectorPlanchas.leerPlanchas(ifcModel, edificio.getPisos());
         
-        int pisoMinimo = edificio.getPisos().size() - 4;
-        //int pisoMinimo = 3;
+        //int pisoMinimo = edificio.getPisos().size() - 4;
+        int pisoMinimo = 0;
         
 /************************ CALCULO DE COORDENADAS GEOGRAFICAS UTM BASADO EN GRADOS MINUTOS Y SEGUNDOS ************************************************************/
         

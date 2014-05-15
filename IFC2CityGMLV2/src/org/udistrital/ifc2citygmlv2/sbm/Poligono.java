@@ -58,23 +58,23 @@ public class Poligono {
 		
 	}
 	
-	public Poligono cortar(Poligono caraActual, Plane planoEvaluado, PolyhedronsSet cajaFrontera/*, Poligono caraSuperior*/){
+	public Poligono cortar(/*Poligono caraActual,*/ Plane planoDeCorte /*, PolyhedronsSet cajaFrontera*/){
 		
 		
-		Vector3D normal = planoEvaluado.getNormal();
+		Vector3D normal = planoDeCorte.getNormal();
 		
 		Poligono caraCortada = new Poligono();
 		
-		Iterator<Coordenada> iA = caraActual.getCoordenadas().iterator();
-		Iterator<Coordenada> iB = caraActual.getCoordenadas().iterator();
+		Iterator<Coordenada> iA = this.getCoordenadas().iterator();
+		Iterator<Coordenada> iB = this.getCoordenadas().iterator();
 		
 		iB.next();
 		
-		PolyhedronsSet planoComoSolido = planoEvaluado.wholeSpace();
+		PolyhedronsSet planoComoSolido = planoDeCorte.wholeSpace();
 		
 		boolean agregarA = true;
 		
-		System.err.println("ORIGEN = " + new Coordenada(planoEvaluado.getOrigin()) );
+		//System.err.println("ORIGEN = " + new Coordenada(planoEvaluado.getOrigin()) );
 		
 		
 		
@@ -86,14 +86,14 @@ public class Poligono {
 
 			boolean ultimaCoordenadaB = !iB.hasNext();
 			
-			double posicionA = planoEvaluado.getOffset(coordenadaA.toVector3D());
-			double posicionB = planoEvaluado.getOffset(coordenadaB.toVector3D());
+			double posicionA = planoDeCorte.getOffset(coordenadaA.toVector3D());
+			double posicionB = planoDeCorte.getOffset(coordenadaB.toVector3D());
 			
 		
 			
 			Line lineaDeAHastaB = new Line(coordenadaA.toVector3D(), coordenadaB.toVector3D());
 			
-			Vector3D interseccion = planoEvaluado.intersection(lineaDeAHastaB);
+			Vector3D interseccion = planoDeCorte.intersection(lineaDeAHastaB);
 			
 			/*
 			Boolean interseccionDentroDeCajaFrontera = null;
@@ -181,6 +181,7 @@ public class Poligono {
 			//B debajo y A en el plano
 			if(posicionB < 0 && posicionA == 0){
 				//caraCortada.coordenadas.add(coordenadaA);
+				if(ultimaCoordenadaB) caraCortada.coordenadas.add(coordenadaA);
 				caraCortada.coordenadas.add(coordenadaB);
 				
 				//if(!caraSuperior.contieneCoordenada(coordenadaA)) caraSuperior.getCoordenadas().add(coordenadaA);

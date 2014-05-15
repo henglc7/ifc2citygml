@@ -164,7 +164,7 @@ public class Solido {
 				
 				planoActual.getCarasACortar().add(new Poligono(caraActual.getCoordenadas()));
 				
-				Poligono caraCortada = caraActual.cortar(caraActual, planoActual.getPlanoApache(), boundingBox/*, nuevaCaraSuperior*/);
+				Poligono caraCortada = caraActual.cortar(/*caraActual, */planoActual.getPlanoApache()/*, boundingBox*/);
 				
 				//cualquier poligono debe tener al menos 4 puntos (minimo 3 más el primero repetido para cerrar el poligono)
 				if(caraCortada.getCoordenadas().size() >= 4){
