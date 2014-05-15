@@ -62,41 +62,67 @@ public class LectorRepresentationMuro {
         //se asume que siempre va a existir UNA sola representacion (SOLO SE LEE EL PRIMER ITEM)
         IfcBooleanClippingResult clipping = (IfcBooleanClippingResult) it.next();
         
-        IfcBooleanOperand opA = clipping.getFirstOperand();
-        IfcBooleanOperand opB = clipping.getSecondOperand();
+        IfcBooleanOperand operadorA = clipping.getFirstOperand();
+        IfcBooleanOperand operadorB = clipping.getSecondOperand();
         
-    	if(opA instanceof IfcExtrudedAreaSolid && opB instanceof IfcHalfSpaceSolid){
+        //operadorA es un Solido y operadorB un Plano
+    	if(operadorA instanceof IfcExtrudedAreaSolid && operadorB instanceof IfcHalfSpaceSolid){
 
-        	//se asume que siempre va a existir UNA sola representacion (SOLO SE LEE EL PRIMER ITEM)
-        	IfcExtrudedAreaSolid itemActual = (IfcExtrudedAreaSolid)opA;
-        	
-        	String representationType = representationActual.getRepresentationType().toString();
-            muroActual.representation.setRepresentation_representationType(representationType);
-            //System.err.println("seteado a = " + representationActual.getStepLineNumber());
-            muroActual.representation.setStepLineNumber(representationActual.getStepLineNumber());
-            
-            extraerCoordenadasDeExtrudedAreaSolid(itemActual, muroActual);
-            
-          //despues de calcular las caras se agrega el plano de corte
-            agregarPlanoDeCorte(muroActual, (IfcHalfSpaceSolid)opB);
-            
-            
-            
-		}else if(opA instanceof IfcBooleanClippingResult && opB instanceof IfcHalfSpaceSolid){
+    		extraerCoordenadasYAgregarPlano(representationActual, muroActual, operadorA, operadorB);
+        
+    		
+		}
+    	//operadorA es un Clipping 3D y operadorB un Plano
+    	else if(operadorA instanceof IfcBooleanClippingResult && operadorB instanceof IfcHalfSpaceSolid){
 			
-			System.err.println("PENDIENTE DE IMPLEMENTAR" );
+	        IfcBooleanOperand opC = ((IfcBooleanClippingResult)operadorA).getFirstOperand();
+	        IfcBooleanOperand opD = ((IfcBooleanClippingResult)operadorA).getSecondOperand();
+			
+	        //opC es un Solido
+	        if(opC instanceof IfcExtrudedAreaSolid){
+
+	        	extraerCoordenadasYAgregarPlano(representationActual, muroActual, opC, opD);
+	        	
+	        	//opC es un Plano
+	        	if(opD instanceof IfcHalfSpaceSolid){
+	        		
+	        		//FALTA IMPLEMENTAR EL CORTE CUANDO HAY MAS DE UN PLANO
+	        		//agregarPlanoDeCorte(muroActual, (IfcHalfSpaceSolid) opD);
+	        		
+	        	}
+	        	
+	        }else{
+				
+				System.err.println("PENDIENTE DE IMPLEMENTAR !" + muroActual.getId() + "( opC = " + opC.getClass() + " opD = " + opD.getClass() + " )");
+				
+			}
+	        	
+	        
+	        
+			//System.err.println("REVISAR MURO " + muroActual.getId() );
 			
 		}else{
 			
 			System.err.println("ESTO NUNCA DEBERIA SALIR" );
 		}
 		
+	}
+	
+	public static void extraerCoordenadasYAgregarPlano(IfcRepresentation representationActual, Muro muroActual, IfcBooleanOperand opA, IfcBooleanOperand opB){
 		
-		
-		
-		
+			//se asume que siempre va a existir UNA sola representacion (SOLO SE LEE EL PRIMER ITEM)
+	    	IfcExtrudedAreaSolid itemActual = (IfcExtrudedAreaSolid)opA;
+	    	
+	    	String representationType = representationActual.getRepresentationType().toString();
+	        muroActual.representation.setRepresentation_representationType(representationType);
+	        //System.err.println("seteado a = " + representationActual.getStepLineNumber());
+	        muroActual.representation.setStepLineNumber(representationActual.getStepLineNumber());
+	        
+	        extraerCoordenadasDeExtrudedAreaSolid(itemActual, muroActual);
 
-		
+	        //despues de calcular las caras se agrega el plano de corte
+	        agregarPlanoDeCorte(muroActual, (IfcHalfSpaceSolid)opB);
+			
 	}
 	
 	public static void agregarPlanoDeCorte(Muro muroActual, IfcHalfSpaceSolid halfSpace){
@@ -146,7 +172,7 @@ public class LectorRepresentationMuro {
 			muroActual.getPlanosDeCorte().add(p);
 			
 		} catch (Exception e) {
-			System.err.println(" NO SE PUEDE CREAR EL PLANO PORQUE TIENE NORMA = 0");
+			System.err.println(" NO SE PUEDE CREAR EL PLANO PORQUE TIENE NORMA = 0" );
 		}
 		
 	}
