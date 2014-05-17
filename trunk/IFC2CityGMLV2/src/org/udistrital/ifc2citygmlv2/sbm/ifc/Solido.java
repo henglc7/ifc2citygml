@@ -2,6 +2,7 @@
 package org.udistrital.ifc2citygmlv2.sbm.ifc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.PolyhedronsSet;
 import org.apache.commons.math3.geometry.euclidean.threed.SubLine;
 import org.apache.commons.math3.geometry.euclidean.threed.SubPlane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.commons.math3.geometry.partitioning.AbstractRegion;
 import org.apache.commons.math3.geometry.partitioning.BSPTree;
 import org.apache.commons.math3.geometry.partitioning.SubHyperplane;
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
@@ -164,7 +166,7 @@ public class Solido {
 				
 				planoActual.getCarasACortar().add(new Poligono(caraActual.getCoordenadas()));
 				
-				Poligono caraCortada = caraActual.cortar(/*caraActual, */planoActual.getPlanoApache()/*, boundingBox*/);
+				Poligono caraCortada = caraActual.cortar(/*caraActual, */planoActual/*, boundingBox*/);
 				
 				//cualquier poligono debe tener al menos 4 puntos (minimo 3 más el primero repetido para cerrar el poligono)
 				if(caraCortada.getCoordenadas().size() >= 4){
@@ -182,13 +184,34 @@ public class Solido {
 			//System.err.println("\n");
 		}
 		
-		if(this.getId().equals("3Ttjr$59XEWfWN1WUHjelZ")){
+		//if(this.getId().equals("3Ttjr$59XEWfWN1WUHjelZ")){
 			
-			//la cara superior deberia calcularse con el metodo intersect del plano de APACHE (intersectar 3 planos)
-			//http://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math3/geometry/euclidean/threed/Plane.html#intersection(org.apache.commons.math3.geometry.euclidean.threed.Plane, org.apache.commons.math3.geometry.euclidean.threed.Plane, org.apache.commons.math3.geometry.euclidean.threed.Plane)
-			
-			//System.err.println("NUEVA CARA SUPERIOR = " + nuevaCaraSuperior);
-		}
+
+			for(PlanoDeCorte planoActual : planosDeCorte){
+				
+				//Collections.sort(planoActual.getCaraDeCorte().getCoordenadas());
+				if(planoActual.getCaraDeCorte().getCoordenadas().size() >= 4){
+					
+					planoActual.getCaraDeCorte().ordenarVerticesRespectoACentroide();
+					
+					nuevasCaras.add( planoActual.getCaraDeCorte());
+					
+				}
+				
+				
+				/*
+				for(Coordenada coordenadaActual : planoActual.getCaraDeCorte().getCoordenadas()){
+					
+					System.err.println(coordenadaActual + " - ");
+					
+				}
+				*/
+				
+				
+			}
+	
+		//}
+
 			
 		this.caras = nuevasCaras;
 		

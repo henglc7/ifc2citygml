@@ -352,6 +352,7 @@ public class Piso {
 						
 					}
 					
+					cadena += " cara de corte = " + planoActual.getCaraDeCorte();
 				}
 				//cadena += "]";
 				

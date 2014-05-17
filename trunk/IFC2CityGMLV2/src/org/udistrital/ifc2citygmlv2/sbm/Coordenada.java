@@ -2,11 +2,14 @@ package org.udistrital.ifc2citygmlv2.sbm;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
-public class Coordenada {
+public class Coordenada /*implements Comparable<Coordenada>*/ {
 	
 	double x;
 	double y;
 	double z;
+	
+	//si dos coordenadas tienen una distancia menor a la tolerancia se consideran iguales
+	double tolerancia = 0.001;
 	
 	public Coordenada(){
 		x = 0;
@@ -61,5 +64,51 @@ public class Coordenada {
 		
 		return r;
 	}
+	
+	
+	//se usa para evitar coordenadas repetidas dentro del mismo poligono
+	@Override
+	public boolean equals(Object otraCoordenada){
+		
+		boolean r = false;
+		
+		Coordenada otra = (Coordenada) otraCoordenada;
+		double distancia = this.toVector3D().distance(otra.toVector3D());
+		
+		if(distancia <= tolerancia){
+			r = true;
+		}
+		
+		
+		return r;
+		
+		
+	}
+	
+
+	/*
+	@Override
+	public int compareTo(Coordenada otraCoordenada) {
+
+		int r = 0;
+		
+		Coordenada origen = new Coordenada (0,0,0);
+		
+		double distanciaEstaCoordenada = this.toVector3D().distance(origen.toVector3D()); 
+		
+		double distanciaOtraCoordenada = otraCoordenada.toVector3D().distance(origen.toVector3D());
+		
+		if(distanciaEstaCoordenada > distanciaOtraCoordenada) r = 1;
+		
+		if(distanciaEstaCoordenada == distanciaOtraCoordenada) r = 0;
+		
+		if(distanciaEstaCoordenada < distanciaOtraCoordenada) r = -1;
+
+		
+		return r;
+	};
+	
+	*/
+	
 
 }

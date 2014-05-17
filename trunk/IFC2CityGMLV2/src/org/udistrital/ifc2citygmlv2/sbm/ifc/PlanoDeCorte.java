@@ -2,6 +2,7 @@ package org.udistrital.ifc2citygmlv2.sbm.ifc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcHalfSpaceSolid;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPlane;
@@ -17,11 +18,26 @@ public class PlanoDeCorte {
 	Coordenada normalAbsolutaIfc;
 	
 	Plane planoApache;
+	Poligono caraDeCorte; //es la cara que corta al solido, es diferente del plano porque el plano es infinito, la cara de corte está limitada al
+	//polígono que corta exactamente al sólido y está definida por sus vertices
 	
 	
+	
+
+
 	//caras que se van a cortar
 	private List<Poligono> carasACortar = new ArrayList();
 	
+	public Poligono getCaraDeCorte() {
+		return caraDeCorte;
+	}
+
+
+	public void setCaraDeCorte(Poligono caraDeCorte) {
+		this.caraDeCorte = caraDeCorte;
+	}
+
+
 	//caras resultado del corte
 	private List<Poligono> carasResultado = new ArrayList();
 	

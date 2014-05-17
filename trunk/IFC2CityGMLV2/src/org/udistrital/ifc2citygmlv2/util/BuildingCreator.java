@@ -214,7 +214,14 @@ public class BuildingCreator {
         			}
         			
 
-       				poligonosMuros.add(geom.createLinearPolygon(coordenadasEstePoligono, 3));
+        			try {
+        				
+        				poligonosMuros.add(geom.createLinearPolygon(coordenadasEstePoligono, 3));
+						
+					} catch (Exception e) {
+					System.err.println("EXCEPECION EN MURO id = " + muroActual.getId() + " poligono vacio = " + poligonoActual);
+					}
+       				
         			
         		}
         	}
