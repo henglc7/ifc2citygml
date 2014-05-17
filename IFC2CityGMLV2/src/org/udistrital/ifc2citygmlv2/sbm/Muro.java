@@ -249,6 +249,7 @@ public class Muro  extends Solido implements ISolido{
 			
 			
 			Poligono caraSuperior = new Poligono();
+			//caraSuperior.setTipo("superior");
 			
 			for (Coordenada coordenadaActual : coordenadasAbsolutas) {
 				
@@ -258,6 +259,7 @@ public class Muro  extends Solido implements ISolido{
 			}
 			
 			Poligono caraInferior = new Poligono();
+			//caraInferior.setTipo("inferior");
 			
 			for (Coordenada coordenadaActual : coordenadasAbsolutas) {
 				
@@ -272,6 +274,7 @@ public class Muro  extends Solido implements ISolido{
 			
 			for(int i=0; i<puntos-1; i++){
 				Poligono estaCara = new Poligono();
+				//estaCara.setTipo("lateral");
 				
 				estaCara.getCoordenadas().add(caraSuperior.getCoordenadas().get(i));
 				estaCara.getCoordenadas().add(caraSuperior.getCoordenadas().get(i+1));
