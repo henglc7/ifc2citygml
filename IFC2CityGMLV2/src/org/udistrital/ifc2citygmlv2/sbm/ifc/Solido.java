@@ -151,70 +151,65 @@ public class Solido {
 	}
 	
 	public void cortarCaras(){
+
+		//PolyhedronsSet boundingBox = obtenerBoundingBox();
 		
-		List<Poligono> nuevasCaras = new ArrayList();
+		List<Poligono> carasACortar = null;
+		List<Poligono> carasCortadas = null;
 		
-		PolyhedronsSet boundingBox = obtenerBoundingBox();
-		
-		Poligono nuevaCaraSuperior = new Poligono();
-		
-		for (Poligono caraActual : caras) {
+		//se hacen cortes con cada plano de corte existente
+		for(PlanoDeCorte planoActual : planosDeCorte){
 			
-			//System.err.println("CARA " + c + " = " +  caraActual);
+			if(carasACortar == null){
+				carasACortar = this.caras;
+			}else{
+				carasACortar = carasCortadas;
+			}
 			
-			for(PlanoDeCorte planoActual : planosDeCorte){
+			//las originales
+			planoActual.setCarasACortar(carasACortar);
+			carasCortadas = cortarCarasConPlano(carasACortar, planoActual);
+			//se guarda el historico de las caras que se cortaron solo para imprimir en pantalla
+			planoActual.setCarasResultado(carasCortadas);
+			
+			if(planoActual.getCaraDeCorte().getCoordenadas().size() >= 4){
 				
-				planoActual.getCarasACortar().add(new Poligono(caraActual.getCoordenadas()));
+				planoActual.getCaraDeCorte().ordenarVerticesRespectoACentroide();
 				
-				Poligono caraCortada = caraActual.cortar(/*caraActual, */planoActual/*, boundingBox*/);
+				//es necesario agregar la coordenada inicial para cerrar el poligono
+				//esto debido a que la cara de corte se calcula SIN vertices repetidos
+				Coordenada inicial = planoActual.getCaraDeCorte().getCoordenadas().get(0);
+				planoActual.getCaraDeCorte().getCoordenadas().add(new Coordenada(inicial.getX(), inicial.getY(), inicial.getZ()));
 				
-				//cualquier poligono debe tener al menos 4 puntos (minimo 3 más el primero repetido para cerrar el poligono)
-				if(caraCortada.getCoordenadas().size() >= 4){
-					
-					nuevasCaras.add(caraCortada);
-					
-					//se guarda el historico de las caras que se cortaron solo para imprimir en pantalla
-					planoActual.getCarasResultado().add(new Poligono(caraCortada.getCoordenadas()));
-					
-				}
-				
-				//System.err.println("CARA CORTADA = " + caraCortada);
+				carasCortadas.add( planoActual.getCaraDeCorte());
 				
 			}
-			//System.err.println("\n");
+			
+			this.caras = carasCortadas;
+			
 		}
 		
-		//if(this.getId().equals("3Ttjr$59XEWfWN1WUHjelZ")){
-			
-
-			for(PlanoDeCorte planoActual : planosDeCorte){
-				
-				//Collections.sort(planoActual.getCaraDeCorte().getCoordenadas());
-				if(planoActual.getCaraDeCorte().getCoordenadas().size() >= 4){
-					
-					planoActual.getCaraDeCorte().ordenarVerticesRespectoACentroide();
-					
-					nuevasCaras.add( planoActual.getCaraDeCorte());
-					
-				}
-				
-				
-				/*
-				for(Coordenada coordenadaActual : planoActual.getCaraDeCorte().getCoordenadas()){
-					
-					System.err.println(coordenadaActual + " - ");
-					
-				}
-				*/
-				
-				
-			}
-	
-		//}
-
-			
-		this.caras = nuevasCaras;
 		
+		
+		
+	}
+	
+	public List<Poligono> cortarCarasConPlano(List<Poligono> pCaras, PlanoDeCorte pPlano){
+		
+		List<Poligono> r = new ArrayList();
+		
+		for (Poligono caraActual : pCaras) {
+
+//			System.err.println("ERROR EN " + this.getId());
+			Poligono caraCortada = caraActual.cortar(pPlano);
+			//cualquier poligono debe tener al menos 4 puntos (minimo 3 más el primero repetido para cerrar el poligono)
+			if(caraCortada.getCoordenadas().size() >= 4){
+				r.add(caraCortada);
+			}
+			
+		}
+		
+		return r;
 	}
 	
 	public PolyhedronsSet obtenerBoundingBox(){

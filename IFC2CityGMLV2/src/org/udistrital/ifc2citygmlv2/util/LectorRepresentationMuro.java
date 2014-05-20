@@ -65,15 +65,18 @@ public class LectorRepresentationMuro {
         IfcBooleanOperand operadorA = clipping.getFirstOperand();
         IfcBooleanOperand operadorB = clipping.getSecondOperand();
         
-        //operadorA es un Solido y operadorB un Plano
+        
     	if(operadorA instanceof IfcExtrudedAreaSolid && operadorB instanceof IfcHalfSpaceSolid){
+    		
+    		//operadorA es un Solido y operadorB un Plano
 
     		extraerCoordenadasYAgregarPlano(representationActual, muroActual, operadorA, operadorB);
         
     		
-		}
-    	//operadorA es un Clipping 3D y operadorB un Plano
-    	else if(operadorA instanceof IfcBooleanClippingResult && operadorB instanceof IfcHalfSpaceSolid){
+		}else if(operadorA instanceof IfcBooleanClippingResult && operadorB instanceof IfcHalfSpaceSolid){ 
+    	    
+			//operadorA es un Clipping 3D y operadorB un Plano
+    	
 			
 	        IfcBooleanOperand opC = ((IfcBooleanClippingResult)operadorA).getFirstOperand();
 	        IfcBooleanOperand opD = ((IfcBooleanClippingResult)operadorA).getSecondOperand();
@@ -82,14 +85,11 @@ public class LectorRepresentationMuro {
 	        if(opC instanceof IfcExtrudedAreaSolid){
 
 	        	extraerCoordenadasYAgregarPlano(representationActual, muroActual, opC, opD);
-	        	
-	        	//opC es un Plano
-	        	if(opD instanceof IfcHalfSpaceSolid){
+
+	        	//FALTA IMPLEMENTAR EL CORTE CUANDO HAY MAS DE UN PLANO
+	        	agregarPlanoDeCorte(muroActual, (IfcHalfSpaceSolid) operadorB);
 	        		
-	        		//FALTA IMPLEMENTAR EL CORTE CUANDO HAY MAS DE UN PLANO
-	        		//agregarPlanoDeCorte(muroActual, (IfcHalfSpaceSolid) opD);
-	        		
-	        	}
+
 	        	
 	        }else{
 				
