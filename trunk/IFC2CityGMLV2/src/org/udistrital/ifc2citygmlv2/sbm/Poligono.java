@@ -104,7 +104,20 @@ public class Poligono {
 			double posicionA = planoDeCorte.getOffset(coordenadaA.toVector3D());
 			double posicionB = planoDeCorte.getOffset(coordenadaB.toVector3D());
 			
-		
+		    // si un poligono contiene dos coordenadas contiguas exactamente iguales
+			// se pasa a las siguientes coordenadas porque si son iguales no puede existir una linea
+			if(coordenadaA.equals(coordenadaB)){
+				
+				coordenadaA = iA.next();
+				coordenadaB = iB.next();
+				
+
+				ultimaCoordenadaB = !iB.hasNext();
+				
+				posicionA = planoDeCorte.getOffset(coordenadaA.toVector3D());
+				posicionB = planoDeCorte.getOffset(coordenadaB.toVector3D());
+
+			}
 			
 			Line lineaDeAHastaB = new Line(coordenadaA.toVector3D(), coordenadaB.toVector3D());
 			
@@ -179,6 +192,7 @@ public class Poligono {
 			if(posicionA > 0 && posicionB > 0){
 
 				//nada
+				
 
 			}
 			
@@ -192,6 +206,8 @@ public class Poligono {
 				//if(!caraSuperior.contieneCoordenada(coordenadaB)) caraSuperior.getCoordenadas().add(coordenadaB);
 				
 				coordenadasDeCorte.add(coordenadaA);
+				
+				
 
 			}
 			
