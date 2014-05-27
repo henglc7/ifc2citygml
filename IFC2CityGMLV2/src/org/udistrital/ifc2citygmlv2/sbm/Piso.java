@@ -336,6 +336,8 @@ public class Piso {
 					
 					cadena +=  "\n              Apache : origen = " + origenApache + " normal = " + normalApache;
 					
+					cadena += "\n              agreementFlagIfc = " + planoActual.getAgreementFlagIfc();
+					
 					cadena +=  "\n              Caras A Cortar = ";
 					
 					for (Poligono caraActual : planoActual.getCarasACortar() ) {

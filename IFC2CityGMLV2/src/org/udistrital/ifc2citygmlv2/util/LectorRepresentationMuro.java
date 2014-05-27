@@ -133,8 +133,6 @@ public class LectorRepresentationMuro {
 		
 		IfcPlane plano = (IfcPlane) halfSpace.getBaseSurface();
 		
-		//halfSpace.getAgreementFlag();
-		
 		Coordenada locationIfc = LectorCoordenada.Leer(plano.getPosition().getLocation());
 		Coordenada axisIfc = null;
 		Coordenada refDirectionIfc = null;
@@ -164,6 +162,8 @@ public class LectorRepresentationMuro {
 			//el plano de apache commons se translada a la posicion original definida en locationIfc para que concuerde
 			Plane planoTransladado = planoDeCorteApacheCommons.translate(locationIfc.toVector3D());
 			PlanoDeCorte p = new PlanoDeCorte(plano, planoTransladado);
+			
+			p.setAgreementFlagIfc(halfSpace.getAgreementFlag().value);
 			
 			p.setLocationAbsolutaIfc(locationIfc);
 			p.setNormalAbsolutaIfc(normalIfc);

@@ -21,8 +21,19 @@ public class PlanoDeCorte {
 	Poligono caraDeCorte; //es la cara que corta al solido, es diferente del plano porque el plano es infinito, la cara de corte está limitada al
 	//polígono que corta exactamente al sólido y está definida por sus vertices
 	
+	// AgreementFlag : The agreement flag is TRUE if the normal to the BaseSurface points away from the material of the IfcHalfSpaceSolid. Otherwise it is FALSE.
+	boolean agreementFlagIfc;
 	
-	
+
+
+	public boolean getAgreementFlagIfc() {
+		return agreementFlagIfc;
+	}
+
+
+	public void setAgreementFlagIfc(boolean agreementFlagIfc) {
+		this.agreementFlagIfc = agreementFlagIfc;
+	}
 
 
 	//caras que se van a cortar

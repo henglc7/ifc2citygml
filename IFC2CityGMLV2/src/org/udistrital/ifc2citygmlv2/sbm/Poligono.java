@@ -147,115 +147,142 @@ public class Poligono {
 			*/
 			
 
-			//A y B debajo del plano
-			if(posicionA < 0 && posicionB < 0){
-				caraCortada.coordenadas.add(coordenadaA);
+			//se toma lo que esta DEBAJO del plano o en el plano
+			if(pPlano.getAgreementFlagIfc() == false){
 				
-				if(ultimaCoordenadaB) caraCortada.coordenadas.add(coordenadaB);
+				//A y B debajo del plano
+				if(posicionA < 0 && posicionB < 0){
+					caraCortada.coordenadas.add(coordenadaA);
+					if(ultimaCoordenadaB) caraCortada.coordenadas.add(coordenadaB);
+				}
+				
+				//A debajo y B en el plano
+				if(posicionA < 0 && posicionB == 0){
+					caraCortada.coordenadas.add(coordenadaA);
+					coordenadasDeCorte.add(coordenadaB);
+				}
+				
+				//A debajo y B encima el plano
+				if(posicionA < 0 && posicionB > 0){
+					Coordenada i = new Coordenada(interseccion);
+					caraCortada.coordenadas.add(coordenadaA);
+					caraCortada.coordenadas.add(i);
+					coordenadasDeCorte.add(new Coordenada(interseccion));
+				}
+				
+				//A en y B encima el plano
+				if(posicionA == 0 && posicionB > 0){
+					caraCortada.coordenadas.add(coordenadaA);
+					coordenadasDeCorte.add(coordenadaA);
+				}
+				
+				//A encima y B encima del plano
+				if(posicionA > 0 && posicionB > 0){
+					//nada
+				}
+				
+				//A y B en el plano
+				if(posicionA == 0 && posicionB == 0){
+					caraCortada.coordenadas.add(coordenadaA);
+					coordenadasDeCorte.add(coordenadaA);
+				}
+				
+				//ahora para B primero y A despues
+				
+				//B debajo y A en el plano
+				if(posicionB < 0 && posicionA == 0){
+					if(ultimaCoordenadaB) caraCortada.coordenadas.add(coordenadaA);
+					caraCortada.coordenadas.add(coordenadaB);
+					coordenadasDeCorte.add(coordenadaA);
+				}
+				
+				//B debajo y A encima el plano
+				if(posicionB < 0 && posicionA > 0){
+					Coordenada i = new Coordenada(interseccion);
+					caraCortada.coordenadas.add(i);
+					caraCortada.coordenadas.add(coordenadaB);
+					coordenadasDeCorte.add(new Coordenada(interseccion));
+				}
+				
+				//B en y A encima el plano
+				if(posicionB == 0 && posicionA > 0){
+					caraCortada.coordenadas.add(coordenadaB);
+					coordenadasDeCorte.add(coordenadaB);
+				}
+				
 			}
 			
-			//A debajo y B en el plano
-			if(posicionA < 0 && posicionB == 0){
-				caraCortada.coordenadas.add(coordenadaA);
-				//caraCortada.coordenadas.add(coordenadaB);
+			//se toma lo que esta ENCIMA del plano o en el plano
+			if(pPlano.getAgreementFlagIfc() == true){
 				
-				//if(!caraSuperior.contieneCoordenada(coordenadaB)) caraSuperior.getCoordenadas().add(coordenadaB);
+				//A y B debajo del plano
+				if(posicionA < 0 && posicionB < 0){
+					//nada
+				}
 				
-				coordenadasDeCorte.add(coordenadaB);
+				//A debajo y B en el plano
+				if(posicionA < 0 && posicionB == 0){
+					caraCortada.coordenadas.add(coordenadaB);
+					coordenadasDeCorte.add(coordenadaB);
+				}
+				
+				//A debajo y B encima el plano
+				if(posicionA < 0 && posicionB > 0){
+					Coordenada i = new Coordenada(interseccion);
+					caraCortada.coordenadas.add(i);
+					caraCortada.coordenadas.add(coordenadaB);
+					coordenadasDeCorte.add(new Coordenada(interseccion));
+				}
+				
+				//A en y B encima el plano
+				if(posicionA == 0 && posicionB > 0){
+					caraCortada.coordenadas.add(coordenadaA);
+					caraCortada.coordenadas.add(coordenadaB);
+					coordenadasDeCorte.add(coordenadaA);
+				}
+				
+				//A encima y B encima del plano
+				if(posicionA > 0 && posicionB > 0){
+					caraCortada.coordenadas.add(coordenadaA);
+					if(ultimaCoordenadaB) caraCortada.coordenadas.add(coordenadaB);
+				}
+				
+				//A y B en el plano
+				if(posicionA == 0 && posicionB == 0){
+					caraCortada.coordenadas.add(coordenadaA);
+					coordenadasDeCorte.add(coordenadaA);
+				}
+				
+				//ahora para B primero y A despues
+				
+				//B debajo y A en el plano
+				if(posicionB < 0 && posicionA == 0){
+					//if(ultimaCoordenadaB) caraCortada.coordenadas.add(coordenadaA);
+					caraCortada.coordenadas.add(coordenadaA);
+					coordenadasDeCorte.add(coordenadaA);
+				}
+				
+				//B debajo y A encima el plano
+				if(posicionB < 0 && posicionA > 0){
+					Coordenada i = new Coordenada(interseccion);
+					caraCortada.coordenadas.add(coordenadaA);
+					caraCortada.coordenadas.add(i);
+					coordenadasDeCorte.add(new Coordenada(interseccion));
+				}
+				
+				//B en y A encima el plano
+				if(posicionB == 0 && posicionA > 0){
+					caraCortada.coordenadas.add(coordenadaA);
+					caraCortada.coordenadas.add(coordenadaB);
+					
+					coordenadasDeCorte.add(coordenadaB);
+				}
+				
 			}
 			
-			//A debajo y B encima el plano
-			if(posicionA < 0 && posicionB > 0){
-				
-				Coordenada i = new Coordenada(interseccion);
-				
-				caraCortada.coordenadas.add(coordenadaA);
-				caraCortada.coordenadas.add(i);
-				
-				//if(!caraSuperior.contieneCoordenada(i)) caraSuperior.getCoordenadas().add(i);
-				
-				coordenadasDeCorte.add(new Coordenada(interseccion));
-			}
-			
-			//A en y B encima el plano
-			if(posicionA == 0 && posicionB > 0){
-				
-				caraCortada.coordenadas.add(coordenadaA);
-				
-				//if(!caraSuperior.contieneCoordenada(coordenadaA)) caraSuperior.getCoordenadas().add(coordenadaA);
-				
-				coordenadasDeCorte.add(coordenadaA);
-
-			}
-			
-			//A encima y B encima del plano
-			if(posicionA > 0 && posicionB > 0){
-
-				//nada
-				
-
-			}
-			
-			//A y B en el plano
-			if(posicionA == 0 && posicionB == 0){
-
-				caraCortada.coordenadas.add(coordenadaA);
-				//caraCortada.coordenadas.add(coordenadaB);
-				
-				//if(!caraSuperior.contieneCoordenada(coordenadaA)) caraSuperior.getCoordenadas().add(coordenadaA);
-				//if(!caraSuperior.contieneCoordenada(coordenadaB)) caraSuperior.getCoordenadas().add(coordenadaB);
-				
-				coordenadasDeCorte.add(coordenadaA);
-				
-				
-
-			}
-			
-			
-			//ahora para B primero y A despues
-
-
-			
-			//B debajo y A en el plano
-			if(posicionB < 0 && posicionA == 0){
-				//caraCortada.coordenadas.add(coordenadaA);
-				if(ultimaCoordenadaB) caraCortada.coordenadas.add(coordenadaA);
-				caraCortada.coordenadas.add(coordenadaB);
-				
-				//if(!caraSuperior.contieneCoordenada(coordenadaA)) caraSuperior.getCoordenadas().add(coordenadaA);
-				
-				coordenadasDeCorte.add(coordenadaA);
-			}
-			
-			//B debajo y A encima el plano
-			if(posicionB < 0 && posicionA > 0){
-				
-				Coordenada i = new Coordenada(interseccion);
-				
-				caraCortada.coordenadas.add(i);
-				caraCortada.coordenadas.add(coordenadaB);
-				
-				//if(!caraSuperior.contieneCoordenada(i)) caraSuperior.getCoordenadas().add(i);
-				
-				coordenadasDeCorte.add(new Coordenada(interseccion));
-			}
-			
-			//B en y A encima el plano
-			if(posicionB == 0 && posicionA > 0){
-				
-				caraCortada.coordenadas.add(coordenadaB);
-				
-				//if(!caraSuperior.contieneCoordenada(coordenadaB)) caraSuperior.getCoordenadas().add(coordenadaB);
-				
-				coordenadasDeCorte.add(coordenadaB);
-
-			}
 			
 					
 		}
-		
-		//caraCortada.setTipo(this.getTipo());
-		
 		
 		if(pPlano.getCaraDeCorte() == null){
 			pPlano.setCaraDeCorte(new Poligono());
@@ -308,7 +335,15 @@ public class Poligono {
 			//si las 3 primeras coordenadas generan error se escogen las 3 ultimas
 			//esto podria hacerse mas sofisticado verificando que las 3 coordenadas no compartan la misma linea que es cuando no se puede crear el pano
 			//y se genera la excepcion
-			plano = new Plane(this.getCoordenadas().get(n-1).toVector3D(), this.getCoordenadas().get(n-2).toVector3D(), this.getCoordenadas().get(n-3).toVector3D());
+			//si las 3 ultimas tambien generan excepcion simplemente se aborta el metodo y los vertices no veran alterado su orden
+			try {
+				
+				plano = new Plane(this.getCoordenadas().get(n-1).toVector3D(), this.getCoordenadas().get(n-2).toVector3D(), this.getCoordenadas().get(n-3).toVector3D());
+				
+			} catch (Exception e2) {
+				return;
+			}
+			
 		}
 		
 		
