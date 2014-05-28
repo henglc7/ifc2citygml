@@ -145,7 +145,7 @@ public class BuildingCreator {
 		System.out.println(df.format(new Date()) + "sample citygml4j application successfully finished");
 	}
 	//deberia recibir, caras de planchas y techos
-	public void crearModeloLOD2(Edificio edificio/*, String archivoSalida*/) throws Exception {
+	public void crearModeloLOD2(Edificio edificio, String archivoSalida) throws Exception {
 		
 		SimpleDateFormat df = new SimpleDateFormat("[HH:mm:ss] "); 
 
@@ -279,7 +279,7 @@ public class BuildingCreator {
 
 		System.out.println(df.format(new Date()) + "writing citygml4j object tree");
 		CityGMLOutputFactory out = builder.createCityGMLOutputFactory(CityGMLVersion.v1_0_0);
-		CityGMLWriter writer = out.createCityGMLWriter(new File("LOD2_TEST_Building_v100.xml"));
+		CityGMLWriter writer = out.createCityGMLWriter(new File(archivoSalida));
 
 		writer.setPrefixes(CityGMLVersion.v1_0_0);
 		writer.setSchemaLocations(CityGMLVersion.v1_0_0);
@@ -287,7 +287,7 @@ public class BuildingCreator {
 		writer.write(cityModel);
 		writer.close();	
 		
-		System.out.println(df.format(new Date()) + "CityGML file LOD2_Building_v100.xml written");
+		System.out.println(df.format(new Date()) + "CityGML file " + archivoSalida + " written");
 		System.out.println(df.format(new Date()) + "sample citygml4j application successfully finished");
 	}
 	

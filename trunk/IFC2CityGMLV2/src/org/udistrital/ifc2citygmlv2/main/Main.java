@@ -292,7 +292,7 @@ public class Main {
         //Se genera el modelo LOD2
         //BuildingCreator creador = new BuildingCreator();
         try {
-			creador.crearModeloLOD2(edificio);
+			creador.crearModeloLOD2(edificio, args[2]);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
