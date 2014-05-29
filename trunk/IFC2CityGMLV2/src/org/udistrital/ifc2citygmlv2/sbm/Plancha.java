@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.udistrital.ifc2citygmlv2.sbm.ifc.ISolido;
 import org.udistrital.ifc2citygmlv2.sbm.ifc.Solido;
 
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcExtrudedAreaSolid;
@@ -22,7 +21,7 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-public class Plancha extends Solido implements ISolido{
+public class Plancha extends Solido {
 	
 	
 	public void calcularCoordenadasAbsolutas(){

@@ -11,23 +11,23 @@ public class Transformador {
 
 	
 	
-	public Coordenada convertirEnAbsoluta(Coordenada coordOriginal, Solido muro){
+	public Coordenada convertirEnAbsoluta(Coordenada coordOriginal, Solido pSolido){
 		
-		Coordenada coordAbsoluta = aplicarObjectRepresentation(coordOriginal, muro);
-		coordAbsoluta = aplicarObjectPlacement(coordAbsoluta, muro);
+		Coordenada coordAbsoluta = aplicarObjectRepresentation(coordOriginal, pSolido);
+		coordAbsoluta = aplicarObjectPlacement(coordAbsoluta, pSolido);
 		
 		return coordAbsoluta;
 	}
 		
-	private Coordenada aplicarObjectRepresentation(Coordenada coordOriginal, Solido muro){
+	private Coordenada aplicarObjectRepresentation(Coordenada coordOriginal, Solido pSolido){
 		
 		coordOriginal = rotarCoordenada(
 				coordOriginal
-				, muro.representation.position.axis
-				, muro.representation.position.refDirection 
+				, pSolido.representation.position.axis
+				, pSolido.representation.position.refDirection 
 				);
 
-		Coordenada location = muro.representation.position.location;
+		Coordenada location = pSolido.representation.position.location;
 		
 		double xActual = coordOriginal.getX();
 		xActual += location.getX();
@@ -44,33 +44,33 @@ public class Transformador {
 		
 	}
 	
-	private Coordenada aplicarObjectPlacement(Coordenada original, Solido muro){
+	private Coordenada aplicarObjectPlacement(Coordenada original, Solido pSolido){
 		//Hay que rotar primero, o no funciona bien
 		Coordenada conRotacion = rotarCoordenada(
 				original
-				, muro.objectPlacement.relativePlacement.axis
-				, muro.objectPlacement.relativePlacement.refDirection
+				, pSolido.objectPlacement.relativePlacement.axis
+				, pSolido.objectPlacement.relativePlacement.refDirection
 				);
 		
 		double xActual = conRotacion.getX();
 		
 		
-		xActual += muro.objectPlacement.placementRelTo_placementRelTo.getX();
-		xActual += muro.objectPlacement.placementRelTo_relativePlacement.getX();
-		xActual += muro.objectPlacement.relativePlacement.location.getX();
+		xActual += pSolido.objectPlacement.placementRelTo_placementRelTo.getX();
+		xActual += pSolido.objectPlacement.placementRelTo_relativePlacement.getX();
+		xActual += pSolido.objectPlacement.relativePlacement.location.getX();
 		
 		double yActual = conRotacion.getY();
 		
 		
-		yActual += muro.objectPlacement.placementRelTo_placementRelTo.getY();
-		yActual += muro.objectPlacement.placementRelTo_relativePlacement.getY();
-		yActual += muro.objectPlacement.relativePlacement.location.getY();
+		yActual += pSolido.objectPlacement.placementRelTo_placementRelTo.getY();
+		yActual += pSolido.objectPlacement.placementRelTo_relativePlacement.getY();
+		yActual += pSolido.objectPlacement.relativePlacement.location.getY();
 		
 		double zActual = conRotacion.getZ();
 		
-		zActual += muro.objectPlacement.placementRelTo_placementRelTo.getZ();
-		zActual += muro.objectPlacement.placementRelTo_relativePlacement.getZ();
-		zActual += muro.objectPlacement.relativePlacement.location.getZ();
+		zActual += pSolido.objectPlacement.placementRelTo_placementRelTo.getZ();
+		zActual += pSolido.objectPlacement.placementRelTo_relativePlacement.getZ();
+		zActual += pSolido.objectPlacement.relativePlacement.location.getZ();
 		
 		
 		Coordenada coord = new Coordenada(xActual, yActual, zActual);
