@@ -154,48 +154,14 @@ public class LectorMuros {
             		//Se lee PlacementRelTo
             		IfcLocalPlacement placementRelToB = (IfcLocalPlacement) placementRelToA.getPlacementRelTo();
             		IfcAxis2Placement3D relativePlacementA = (IfcAxis2Placement3D) placementRelToB.getRelativePlacement();
-            		IfcCartesianPoint locationA = relativePlacementA.getLocation();
-            		LIST<IfcLengthMeasure> coordinatesA = locationA.getCoordinates();
-                    
-                    int coordenadasA = coordinatesA.size();
-                    
-                    Coordenada coordA = new Coordenada();
-                    for(int n = 0; n<coordenadasA; n++){
-
-                        double valor = (Double) coordinatesA.get(n).value;
-                        
-                        switch (n) {
-						case 0: coordA.setX(valor); break;
-						case 1: coordA.setY(valor); break;
-						case 2: coordA.setZ(valor); break;
-						}
-                        
-                    }
-                    muroActual.objectPlacement.setPlacementRelTo_placementRelTo(coordA);
+                    muroActual.objectPlacement.setPlacementRelTo_placementRelTo(LectorCoordenada.Leer(relativePlacementA.getLocation()));
 
                     
                     
                     //Se lee RelativePlacement
                     
                     IfcAxis2Placement3D relativePlacementB = (IfcAxis2Placement3D) placementRelToA.getRelativePlacement();
-                    IfcCartesianPoint locationB = relativePlacementB.getLocation();
-                    LIST<IfcLengthMeasure> coordinatesB = locationB.getCoordinates();
-                    
-                    int coordenadasB = coordinatesB.size();
-                    
-                    Coordenada coordB = new Coordenada();
-                    for(int n = 0; n<coordenadasB;n++){
-                    	
-                        double valor = (Double) coordinatesB.get(n).value;
-                        
-                        switch (n) {
-						case 0: coordB.setX(valor); break;
-						case 1: coordB.setY(valor); break;
-						case 2: coordB.setZ(valor); break;
-						}
-
-                    }
-                    muroActual.objectPlacement.setPlacementRelTo_relativePlacement(coordB);
+                    muroActual.objectPlacement.setPlacementRelTo_relativePlacement(LectorCoordenada.Leer(relativePlacementB.getLocation()));
                     
                     
                     //Se lee location
@@ -256,7 +222,7 @@ public class LectorMuros {
 	public static void procesarSweptSolid(IfcRepresentation representationActual, Muro muroActual){
 		
 
-		LectorRepresentationMuro.procesarSweptSolid(representationActual, muroActual);
+		LectorRepresentation.procesarSweptSolid(representationActual, muroActual);
 		        
 	}
 
@@ -264,7 +230,7 @@ public class LectorMuros {
 
 	public static void procesarClipping(IfcRepresentation representationActual, Muro muroActual){
 	
-		LectorRepresentationMuro.procesarClipping(representationActual, muroActual);
+		LectorRepresentation.procesarClipping(representationActual, muroActual);
 		
 	}
 

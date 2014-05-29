@@ -362,7 +362,16 @@ public class Piso {
 				
 			}
 			
-			
+			if(muroActual.getVacios()!=null){
+				
+				Iterator i = muroActual.getCaras().iterator();
+				cadena += "\n          VACIOS (" + muroActual.getVacios().size() + ") = ";
+				
+				for (String vacioActual : muroActual.getVacios()) {
+					cadena += vacioActual + " , ";
+				}
+				
+			}
 			
 
 			/*

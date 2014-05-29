@@ -11,6 +11,7 @@ import org.udistrital.ifc2citygmlv2.util.LatLonConvert;
 import org.udistrital.ifc2citygmlv2.util.LectorModeloIfc;
 import org.udistrital.ifc2citygmlv2.util.LectorMuros;
 import org.udistrital.ifc2citygmlv2.util.LectorPlanchas;
+import org.udistrital.ifc2citygmlv2.util.LectorVacios;
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Muro;
 import org.udistrital.ifc2citygmlv2.sbm.Plancha;
@@ -44,6 +45,7 @@ public class Main {
 	private static LectorModeloIfc lectorModeloIfc = new LectorModeloIfc();
 	private static LectorPlanchas lectorPlanchas = new LectorPlanchas();
 	private static LectorMuros lectorMuros = new LectorMuros();
+	private static LectorVacios lectorVacios = new LectorVacios();
 
 	private static IfcModel ifcModel = null;
 	private static Edificio edificio;
@@ -234,6 +236,8 @@ public class Main {
         
         lectorMuros.cargarDatosBasicos(ifcModel, edificio);
         lectorMuros.leerMuros(edificio.getPisos(), ifcModel);
+        
+        lectorVacios.cargarDatosBasicos(ifcModel, edificio);
         
         
         
