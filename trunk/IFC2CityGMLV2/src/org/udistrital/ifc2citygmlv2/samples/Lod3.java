@@ -35,16 +35,23 @@ import org.citygml4j.builder.jaxb.JAXBBuilder;
 import org.citygml4j.factory.CityGMLFactory;
 import org.citygml4j.factory.GMLFactory;
 import org.citygml4j.factory.geometry.GMLGeometryFactory;
+import org.citygml4j.impl.gml.geometry.primitives.InteriorImpl;
 import org.citygml4j.model.citygml.CityGMLClass;
 import org.citygml4j.model.citygml.building.AbstractBoundarySurface;
 import org.citygml4j.model.citygml.building.BoundarySurfaceProperty;
 import org.citygml4j.model.citygml.building.Building;
 import org.citygml4j.model.citygml.building.Door;
+import org.citygml4j.model.citygml.building.InteriorWallSurface;
 import org.citygml4j.model.citygml.building.OpeningProperty;
 import org.citygml4j.model.citygml.building.WallSurface;
+import org.citygml4j.model.citygml.building.Window;
 import org.citygml4j.model.citygml.core.CityModel;
 import org.citygml4j.model.gml.geometry.complexes.CompositeSurface;
+import org.citygml4j.model.gml.geometry.primitives.AbstractRingProperty;
+import org.citygml4j.model.gml.geometry.primitives.Interior;
+import org.citygml4j.model.gml.geometry.primitives.LinearRing;
 import org.citygml4j.model.gml.geometry.primitives.Polygon;
+import org.citygml4j.model.gml.geometry.primitives.Ring;
 import org.citygml4j.model.gml.geometry.primitives.Solid;
 import org.citygml4j.model.gml.geometry.primitives.SurfaceProperty;
 import org.citygml4j.model.module.citygml.CityGMLVersion;
@@ -80,6 +87,17 @@ public class Lod3 {
 
 		// second create a wall surface and add it to the building
 		WallSurface wallSurface = citygml.createWallSurface();
+		
+		Polygon wall_3 = geom.createLinearPolygon(new double[] {0,0,0, 6,0,0, 6,0,6, 3,0,9, 0,0,6, 0,0,0}, 3);
+		
+		LinearRing opening_3 = geom.createLinearRing(new double[] {2,0,2, 4,0,2, 4,0,4, 2,0,4, 2,0,2}, 3);
+		Interior interior = new InteriorImpl();
+		interior.setRing(opening_3);
+		wall_3.addInterior(interior);
+		
+		wallSurface.setLod3MultiSurface(gml.createMultiSurfaceProperty(gml.createMultiSurface(wall_3)));
+		
+		
 		BoundarySurfaceProperty boundedBy = citygml.createBoundarySurfaceProperty();
 		boundedBy.setObject(wallSurface);
 		
@@ -87,9 +105,15 @@ public class Lod3 {
 		
 		// finally, create a door and associate it with the wall surface
 		// similar steps are necessary for adding a window
-		Door door = citygml.createDoor();
+		//Door door = citygml.createDoor();
+		Window ventana = citygml.createWindow();
+		
+		Polygon superficieVentana = geom.createLinearPolygon(new double[] {2,0,2, 4,0,2, 4,0,4, 2,0,4, 2,0,2}, 3);
+		ventana.setLod3MultiSurface(gml.createMultiSurfaceProperty(gml.createMultiSurface(superficieVentana)));
+		
 		OpeningProperty openingProperty = citygml.createOpeningProperty();
-		openingProperty.setObject(door);
+		//openingProperty.setOpening(door);
+		openingProperty.setObject(ventana);
 		
 		wallSurface.addOpening(openingProperty);
 
@@ -134,5 +158,6 @@ public class Lod3 {
 
 		return null;
 	}
+	
 
 }
