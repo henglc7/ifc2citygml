@@ -3,64 +3,50 @@
   <gml:boundedBy>
     <gml:Envelope srsDimension="3">
       <gml:lowerCorner>0.0 0.0 0.0</gml:lowerCorner>
-      <gml:upperCorner>12.0 10.0 2.7</gml:upperCorner>
+      <gml:upperCorner>6.0 0.0 9.0</gml:upperCorner>
     </gml:Envelope>
   </gml:boundedBy>
   <core:cityObjectMember>
     <bldg:Building>
-      <bldg:lod1Solid>
-        <gml:Solid>
-          <gml:exterior>
-            <gml:CompositeSurface>
+      <bldg:boundedBy>
+        <bldg:WallSurface>
+          <bldg:lod3MultiSurface>
+            <gml:MultiSurface>
               <gml:surfaceMember>
                 <gml:Polygon>
                   <gml:exterior>
                     <gml:LinearRing>
-                      <gml:posList srsDimension="3">0.0 10.0 0.0 0.0 10.0 2.7 12.0 10.0 2.7 12.0 10.0 0.0 0.0 10.0 0.0 0.0 10.0 0.0</gml:posList>
+                      <gml:posList srsDimension="3">0.0 0.0 0.0 6.0 0.0 0.0 6.0 0.0 6.0 3.0 0.0 9.0 0.0 0.0 6.0 0.0 0.0 0.0 0.0 0.0 0.0</gml:posList>
                     </gml:LinearRing>
                   </gml:exterior>
-                </gml:Polygon>
-              </gml:surfaceMember>
-              <gml:surfaceMember>
-                <gml:Polygon>
-                  <gml:exterior>
+                  <gml:interior>
                     <gml:LinearRing>
-                      <gml:posList srsDimension="3">12.0 10.0 0.0 12.0 10.0 2.7 12.0 0.0 2.7 12.0 0.0 0.0 12.0 10.0 0.0 12.0 10.0 0.0</gml:posList>
+                      <gml:posList srsDimension="3">2.0 0.0 2.0 4.0 0.0 2.0 4.0 0.0 4.0 2.0 0.0 4.0 2.0 0.0 2.0 2.0 0.0 2.0</gml:posList>
                     </gml:LinearRing>
-                  </gml:exterior>
+                  </gml:interior>
                 </gml:Polygon>
               </gml:surfaceMember>
-              <gml:surfaceMember>
-                <gml:Polygon>
-                  <gml:exterior>
-                    <gml:LinearRing>
-                      <gml:posList srsDimension="3">12.0 0.0 0.0 12.0 0.0 2.7 0.0 0.0 2.7 0.0 0.0 0.0 12.0 0.0 0.0 12.0 0.0 0.0</gml:posList>
-                    </gml:LinearRing>
-                  </gml:exterior>
-                </gml:Polygon>
-              </gml:surfaceMember>
-              <gml:surfaceMember>
-                <gml:Polygon>
-                  <gml:exterior>
-                    <gml:LinearRing>
-                      <gml:posList srsDimension="3">0.0 0.0 0.0 0.0 0.0 2.7 0.0 10.0 2.7 0.0 10.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0</gml:posList>
-                    </gml:LinearRing>
-                  </gml:exterior>
-                </gml:Polygon>
-              </gml:surfaceMember>
-              <gml:surfaceMember>
-                <gml:Polygon>
-                  <gml:exterior>
-                    <gml:LinearRing>
-                      <gml:posList srsDimension="3">0.0 10.0 2.7 0.0 0.0 2.7 12.0 0.0 2.7 12.0 10.0 2.7 0.0 10.0 2.7 0.0 10.0 2.7</gml:posList>
-                    </gml:LinearRing>
-                  </gml:exterior>
-                </gml:Polygon>
-              </gml:surfaceMember>
-            </gml:CompositeSurface>
-          </gml:exterior>
-        </gml:Solid>
-      </bldg:lod1Solid>
+            </gml:MultiSurface>
+          </bldg:lod3MultiSurface>
+          <bldg:opening>
+            <bldg:Window>
+              <bldg:lod3MultiSurface>
+                <gml:MultiSurface>
+                  <gml:surfaceMember>
+                    <gml:Polygon>
+                      <gml:exterior>
+                        <gml:LinearRing>
+                          <gml:posList srsDimension="3">2.0 0.0 2.0 4.0 0.0 2.0 4.0 0.0 4.0 2.0 0.0 4.0 2.0 0.0 2.0 2.0 0.0 2.0</gml:posList>
+                        </gml:LinearRing>
+                      </gml:exterior>
+                    </gml:Polygon>
+                  </gml:surfaceMember>
+                </gml:MultiSurface>
+              </bldg:lod3MultiSurface>
+            </bldg:Window>
+          </bldg:opening>
+        </bldg:WallSurface>
+      </bldg:boundedBy>
     </bldg:Building>
   </core:cityObjectMember>
 </core:CityModel>

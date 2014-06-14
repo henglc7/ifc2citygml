@@ -312,7 +312,7 @@ public class Piso {
 				cadena += "\n          Caras GEOGEBRA 5 3D (" + muroActual.getCaras().size() + ") = ";
 				
 				for (Poligono caraActual : muroActual.getCaras()) {
-					cadena += caraActual + " ";
+					cadena +=  "\n                                " + caraActual;
 				}
 				
 			}
@@ -365,11 +365,127 @@ public class Piso {
 			if(muroActual.getVacios()!=null){
 				
 				Iterator i = muroActual.getCaras().iterator();
-				cadena += "\n          VACIOS (" + muroActual.getVacios().size() + ") = ";
 				
-				for (String vacioActual : muroActual.getVacios()) {
-					cadena += vacioActual + " , ";
+				cadena += "\n      " + muroActual.getVacios().size() + " Vacios:";
+				for (Vacio vacioActual : muroActual.getVacios()) {
+
+
+					cadena += "\n      |__ Vacio";
+					cadena += "\n          id = " + vacioActual.getId();
+					cadena += "\n          tipo = " + vacioActual.getTipo();
+					cadena += "\n          placementRelTo";
+					cadena += "\n              placementRelTo = [ ";
+					
+					cadena += vacioActual.objectPlacement.getPlacementRelTo_placementRelTo().getX() + " ";
+					cadena += vacioActual.objectPlacement.getPlacementRelTo_placementRelTo().getY() + " ";
+					cadena += vacioActual.objectPlacement.getPlacementRelTo_placementRelTo().getZ() + " ";
+					cadena += "]";
+					
+					cadena += "\n              relativePlacement = [ ";
+					cadena += vacioActual.objectPlacement.getPlacementRelTo_relativePlacement().getX() + " ";
+					cadena += vacioActual.objectPlacement.getPlacementRelTo_relativePlacement().getY() + " ";
+					cadena += vacioActual.objectPlacement.getPlacementRelTo_relativePlacement().getZ() + " ";
+					cadena += "]";
+					
+					cadena += "\n          relativePlacement";
+					cadena += "\n              location = [ ";
+					cadena += vacioActual.objectPlacement.getRelativePlacement_location().getX() + " ";
+					cadena += vacioActual.objectPlacement.getRelativePlacement_location().getY() + " ";
+					cadena += vacioActual.objectPlacement.getRelativePlacement_location().getZ() + " ";
+					cadena += "]";
+					
+					cadena += "\n              Axis = [ ";
+					cadena += (( vacioActual.objectPlacement.getRelativePlacement_axis() !=null) ? vacioActual.objectPlacement.getRelativePlacement_axis().getX() : "null") + " ";
+					cadena += (( vacioActual.objectPlacement.getRelativePlacement_axis() !=null) ? vacioActual.objectPlacement.getRelativePlacement_axis().getY() : "null") + " ";
+					cadena += (( vacioActual.objectPlacement.getRelativePlacement_axis() !=null) ? vacioActual.objectPlacement.getRelativePlacement_axis().getZ() : "null") + " ";
+					cadena += "]";
+					
+					cadena += "\n              RefDirection = [ ";
+					cadena += (( vacioActual.objectPlacement.getRelativePlacement_refDirection() !=null) ? vacioActual.objectPlacement.getRelativePlacement_refDirection().getX() : "null") + " ";
+					cadena += (( vacioActual.objectPlacement.getRelativePlacement_refDirection() !=null) ? vacioActual.objectPlacement.getRelativePlacement_refDirection().getY() : "null") + " ";
+					cadena += (( vacioActual.objectPlacement.getRelativePlacement_refDirection() !=null) ? vacioActual.objectPlacement.getRelativePlacement_refDirection().getZ() : "null") + " ";
+					cadena += "]";
+					
+					cadena += "\n          Representation";
+					cadena += "\n              STEP Line number = " + vacioActual.representation.getStepLineNumber();
+					cadena += "\n              RepresentationType = " + vacioActual.representation.getRepresentation_representationType();
+					cadena += "\n              SweptAreaType = " + vacioActual.representation.getRepresentation_representation_SweptAreaType();
+					cadena += "\n              Position ";
+					cadena += "\n                  Location = [ ";
+					cadena += vacioActual.representation.getRepresentation_position_location().getX() + " ";
+					cadena += vacioActual.representation.getRepresentation_position_location().getY() + " ";
+					cadena += vacioActual.representation.getRepresentation_position_location().getZ() + " ";
+					cadena += "]";
+					
+					cadena += "\n                  Axis = [ ";
+					cadena += (( vacioActual.representation.getRepresentation_position_axis()!=null) ? vacioActual.representation.getRepresentation_position_axis().getX() : "null") + " ";
+					cadena += (( vacioActual.representation.getRepresentation_position_axis()!=null) ? vacioActual.representation.getRepresentation_position_axis().getY() : "null") + " ";
+					cadena += (( vacioActual.representation.getRepresentation_position_axis()!=null) ? vacioActual.representation.getRepresentation_position_axis().getZ() : "null") + " ";
+					cadena += "]";
+					
+					cadena += "\n                  RefDirection = [ ";
+					cadena += (( vacioActual.representation.getRepresentation_position_refDirection()!=null) ? vacioActual.representation.getRepresentation_position_refDirection().getX() : "null") + " ";
+					cadena += (( vacioActual.representation.getRepresentation_position_refDirection()!=null) ? vacioActual.representation.getRepresentation_position_refDirection().getY() : "null") + " ";
+					cadena += (( vacioActual.representation.getRepresentation_position_refDirection()!=null) ? vacioActual.representation.getRepresentation_position_refDirection().getZ() : "null") + " ";
+					cadena += "]";
+					
+					
+					cadena += "\n              ExtrudedDirection = [ ";
+					cadena += vacioActual.representation.getRepresentation_extruded_direction().getX() + " ";
+					cadena += vacioActual.representation.getRepresentation_extruded_direction().getY() + " ";
+					cadena += vacioActual.representation.getRepresentation_extruded_direction().getZ() + " ";
+					cadena += "]";
+
+					
+					if(vacioActual.getRepresentation_points()!=null){
+						cadena += "\n              Puntos (" + vacioActual.getRepresentation_points().size() + ") = [ ";
+						for (Coordenada coordenadaActual : vacioActual.getRepresentation_points()) {
+							cadena += coordenadaActual.getX() + " " + coordenadaActual.getY() + " , ";
+						}
+						cadena += "]";
+					}
+					
+					if(vacioActual.getRepresentation_segmentos()!=null){
+						cadena += "\n              Segmentos (" + vacioActual.getRepresentation_segmentos().size() + ") = [ ";
+						for (Segmento segmentoActual : vacioActual.getRepresentation_segmentos()) {
+							cadena += segmentoActual.getP0().getX() + " " + segmentoActual.getP0().getY() + " , ";
+							cadena += segmentoActual.getP1().getX() + " " + segmentoActual.getP1().getY() + " , ";
+						}
+						cadena += "]";
+					}
+					
+					if(vacioActual.getRectangulo()!=null){
+						Rectangulo rec = vacioActual.getRectangulo(); 
+						cadena += "\n              Rectangulo";
+						cadena += "\n                  Location = [ " + rec.getPosition_location().getX() + " " + rec.getPosition_location().getY() + " ]";
+						cadena += "\n                  RefDirection = [ " + rec.getPosition_refDirection().getX() + " " + rec.getPosition_refDirection().getY() + " ]";
+						cadena += "\n                  XDim = " + rec.getXDim();
+						cadena += "\n                  YDim = " + rec.getYDim();
+					}
+					
+					if(vacioActual.getCoordenadasAbsolutas()!=null){
+						cadena += "\n              Absolutas (" + vacioActual.getCoordenadasAbsolutas().size() + ") = [ ";
+						for (Coordenada coordenadaActual : vacioActual.getCoordenadasAbsolutas()) {
+							cadena += coordenadaActual + " ";
+						}
+						cadena += "]";
+						
+					}
+					
+					if(vacioActual.getCaras()!=null){
+						
+						//Iterator i2 = vacioActual.getCaras().iterator();
+						cadena += "\n              Caras GEOGEBRA 5 3D (" + vacioActual.getCaras().size() + ") = \n";
+						
+						for (Poligono caraActual : vacioActual.getCaras()) {
+							cadena += "\n                                " + caraActual ;
+						}
+						
+					}
+
+					
 				}
+				
 				
 			}
 			

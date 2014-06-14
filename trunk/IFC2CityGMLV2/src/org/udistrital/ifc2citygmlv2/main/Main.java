@@ -17,6 +17,7 @@ import org.udistrital.ifc2citygmlv2.sbm.Muro;
 import org.udistrital.ifc2citygmlv2.sbm.Plancha;
 import org.udistrital.ifc2citygmlv2.sbm.Edificio;
 import org.udistrital.ifc2citygmlv2.sbm.Piso;
+import org.udistrital.ifc2citygmlv2.sbm.Vacio;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -238,6 +239,8 @@ public class Main {
         lectorMuros.leerMuros(edificio.getPisos(), ifcModel);
         
         lectorVacios.cargarDatosBasicos(ifcModel, edificio);
+        lectorVacios.leerVacios(ifcModel, edificio);
+        
         
         
         
@@ -284,15 +287,6 @@ public class Main {
 			
 		}
         
-        for (Piso pisoA : edificio.getPisos()) {
-        	if(edificio.getPisos().indexOf(pisoA) >= pisoMinimo){
-        		
-        		pisoA.imprimir();
-        		
-        	}
-		}
-        
-        
         //Se genera el modelo LOD2
         //BuildingCreator creador = new BuildingCreator();
         try {
@@ -303,6 +297,38 @@ public class Main {
 		}
 		
 		
+		
+// ------------------------------------------ PARA GENERAR LOD3
+        
+        System.out.println("\n\n");
+        
+        for (Piso pisoActual : edificio.getPisos()) {
+        	
+        	for(Muro muroActual : pisoActual.getMuros()){
+        		
+        		if(muroActual.getVacios() != null){
+					
+					for (Vacio vacioActual : muroActual.getVacios()){
+						
+						vacioActual.generarCaras();
+						
+					}
+					
+				}
+        		
+        	}
+        	
+		}
+        
+        
+        //Se imprime el edificio para visualizar sus valores
+        for (Piso pisoA : edificio.getPisos()) {
+        	if(edificio.getPisos().indexOf(pisoA) >= pisoMinimo){
+        		
+        		pisoA.imprimir();
+        		
+        	}
+		}
 	}
 
 }
