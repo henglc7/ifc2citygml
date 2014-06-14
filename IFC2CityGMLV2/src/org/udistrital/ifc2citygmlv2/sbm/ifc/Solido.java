@@ -13,6 +13,7 @@ import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcAxis2Placement3D;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcBooleanClippingResult;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcBooleanOperand;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcCartesianPoint;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcClass;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcCompositeCurve;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcCompositeCurveSegment;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcCurve;
@@ -20,6 +21,7 @@ import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcDirection;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcExtrudedAreaSolid;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcHalfSpaceSolid;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcLengthMeasure;
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcOpeningElement;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPlane;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPolyline;
 import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcPositiveLengthMeasure;
@@ -44,6 +46,7 @@ import org.udistrital.ifc2citygmlv2.sbm.Piso;
 import org.udistrital.ifc2citygmlv2.sbm.Poligono;
 import org.udistrital.ifc2citygmlv2.sbm.Rectangulo;
 import org.udistrital.ifc2citygmlv2.sbm.Segmento;
+import org.udistrital.ifc2citygmlv2.sbm.Vacio;
 import org.udistrital.ifc2citygmlv2.util.LectorCoordenada;
 import org.udistrital.ifc2citygmlv2.util.Transformador;
 
@@ -295,13 +298,26 @@ public class Solido {
 	
 	public void generarCaras() {
 		
+		//inicialmente se obtiene la instancia del solido
+		
+		//System.err.println("BUSCANDO OBJETO + " + getId());
+		
+		IfcClass objetoIfc = getIfcModel().getIfcObjectByID(getId());
+		
+		Iterator<IfcRepresentation> it = null;
+		
 		if(getIfcModel().getIfcObjectByID(getId()) instanceof IfcWallStandardCase){
 			
+			it = ((IfcWallStandardCase)objetoIfc).getRepresentation().getRepresentations().iterator();
+			
+		}
 		
-		//inicialmente se obtiene la instancia de la plancha en el modelo IFC
-		IfcWallStandardCase muroIfc = (IfcWallStandardCase) getIfcModel().getIfcObjectByID(getId());
+		if(getIfcModel().getIfcObjectByID(getId()) instanceof IfcOpeningElement){
+			
+			it = ((IfcOpeningElement)objetoIfc).getRepresentation().getRepresentations().iterator();
+			
+		}
 		
-		Iterator<IfcRepresentation> it = muroIfc.getRepresentation().getRepresentations().iterator();
 		
 		IfcRepresentation item = null;
 		
@@ -353,6 +369,9 @@ public class Solido {
 				
 			}
 			
+			//si por alguna razon el solido aun no tiene sus coordenadas calculadas se cancela el prodecimiento
+			//por ejemplo los vacios cuya forma es circular no se estan calculando
+			if(coordenadasAbsolutas == null) return;
 			
 			Poligono caraSuperior = new Poligono();
 			//caraSuperior.setTipo("superior");
@@ -367,9 +386,37 @@ public class Solido {
 			Poligono caraInferior = new Poligono();
 			//caraInferior.setTipo("inferior");
 			
+			//es necesario evaluar en que eje se agrega la profundidad
+			Double profundidadX = 0d;
+			Double profundidadY = 0d;
+			Double profundidadZ = 0d;
+			
+			//a quien le agrego la profundidad
+			boolean aX = false;
+			boolean aY = false;
+			boolean aZ = false;
+			
+			if(this.representation.position.axis!=null){
+				aX = this.representation.position.axis.getX() != 0;
+				aY = this.representation.position.axis.getY() != 0;
+				aZ = this.representation.position.axis.getZ() != 0;	
+			}else{
+				//por defecto se le agrega a Z
+				aZ = true;
+			}
+			
+			if(aX){
+				profundidadX = profundidad;
+			}else if(aY){
+				profundidadY = profundidad;
+			}else if(aZ){
+				profundidadZ = profundidad;
+			}
+			
+			
 			for (Coordenada coordenadaActual : coordenadasAbsolutas) {
 				
-				Coordenada c = new Coordenada(coordenadaActual.getX(), coordenadaActual.getY(), coordenadaActual.getZ() + profundidad);
+				Coordenada c = new Coordenada(coordenadaActual.getX() + profundidadX, coordenadaActual.getY() + profundidadY, coordenadaActual.getZ() + profundidadZ);
 				caraInferior.getCoordenadas().add(c);
 				
 			}
@@ -399,10 +446,8 @@ public class Solido {
 			todasLasCaras.addAll(carasLaterales);
 			todasLasCaras.add(caraInferior);
 			
-			//se aplica la primera rotacion
-					
+			this.setCaras(todasLasCaras);
 			
-			this.setCaras(todasLasCaras);			
 		}
 		
 		//si hay planos de corte se procede a cortar las caras
@@ -412,8 +457,11 @@ public class Solido {
 				
 		}
 		
-		}// else otros tipos de muro diferentes a IfcWallStandardCase
-	
+		//los vacios necesitan una rotacion adicional
+		if(this.getTipo().equals("ventana") || this.getTipo().equals("puerta")){
+			rotarVacio();
+		}
+		
 	}
 	
 	public void cortarCaras(){
@@ -876,6 +924,47 @@ public class Solido {
 		} catch (Exception e) {
 			System.err.println(" NO SE PUEDE CREAR EL PLANO PORQUE TIENE NORMA = 0" );
 		}
+		
+	}
+	
+	public void rotarVacio(){
+		
+		Vacio vacio = (Vacio) this;
+		
+		Coordenada locationMuro = vacio.getMuroAlQueVacia().objectPlacement.getRelativePlacement_location();
+		Coordenada axisMuro = vacio.getMuroAlQueVacia().objectPlacement.getRelativePlacement_axis();
+		Coordenada refDirectionMuro = vacio.getMuroAlQueVacia().objectPlacement.getRelativePlacement_refDirection();
+		Coordenada origen = new Coordenada(0,0,0);
+		
+		Vector3D vectorOrigen = Vector3D.ZERO;
+		Vector3D diferenciaConOrigen = vectorOrigen.subtract(locationMuro.toVector3D());
+		
+		
+		List<Poligono> carasOriginales = this.getCaras();
+		
+		List<Poligono> carasRotadas = new ArrayList();
+		
+		for (Poligono caraActual : carasOriginales) {
+			
+			Poligono caraRotada = new Poligono();
+			
+			for (Coordenada coordenadaActual : caraActual.getCoordenadas()) {
+				
+				Coordenada axis = axisMuro;//this.representation.position.axis;
+				Coordenada refDirection = refDirectionMuro;//this.representation.position.refDirection;
+				
+				Vector3D coordenadaTrasladada = coordenadaActual.toVector3D().add(diferenciaConOrigen); 
+				Coordenada coordenadaRotada = Transformador.rotarCoordenada(new Coordenada(coordenadaTrasladada), axis, refDirection);
+				Vector3D coordenadaRotadaReubicada = coordenadaRotada.toVector3D().subtract(diferenciaConOrigen); 
+				
+				caraRotada.getCoordenadas().add(new Coordenada(coordenadaRotadaReubicada));
+				
+			}
+			
+			carasRotadas.add(caraRotada);
+		}
+		
+		this.setCaras(carasRotadas);
 		
 	}
 }

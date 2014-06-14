@@ -23,14 +23,14 @@ import com.vividsolutions.jts.geom.Polygon;
 
 public class Muro  extends Solido {
 	
-	List<String> vacios = null;
+	List<Vacio> vacios = null;
 
-	public List<String> getVacios() {
+	public List<Vacio> getVacios() {
 		return vacios;
 	}
 
 
-	public void setVacios(List<String> vacios) {
+	public void setVacios(List<Vacio> vacios) {
 		this.vacios = vacios;
 	}
 
