@@ -21,7 +21,7 @@
                   </gml:exterior>
                   <gml:interior>
                     <gml:LinearRing>
-                      <gml:posList srsDimension="3">2.0 0.0 2.0 4.0 0.0 2.0 4.0 0.0 4.0 2.0 0.0 4.0 2.0 0.0 2.0 2.0 0.0 2.0</gml:posList>
+                      <gml:posList srsDimension="3">2.0 0.0 2.0 2.0 0.0 4.0 4.0 0.0 4.0 4.0 0.0 2.0 2.0 0.0 2.0 2.0 0.0 2.0</gml:posList>
                     </gml:LinearRing>
                   </gml:interior>
                 </gml:Polygon>
