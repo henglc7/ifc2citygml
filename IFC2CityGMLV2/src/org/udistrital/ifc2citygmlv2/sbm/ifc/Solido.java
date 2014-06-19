@@ -458,7 +458,7 @@ public class Solido {
 		}
 		
 		//los vacios necesitan una rotacion adicional
-		if(this.getTipo().equals("ventana") || this.getTipo().equals("puerta")){
+		if(this.getTipo()!=null && (this.getTipo().equals("ventana") || this.getTipo().equals("puerta"))){
 			rotarVacio();
 		}
 		
@@ -950,11 +950,28 @@ public class Solido {
 			
 			for (Coordenada coordenadaActual : caraActual.getCoordenadas()) {
 				
-				Coordenada axis = axisMuro;//this.representation.position.axis;
-				Coordenada refDirection = refDirectionMuro;//this.representation.position.refDirection;
+				Coordenada axisVacio = this.representation.position.axis;
+				Coordenada refDirectionVacio = this.representation.position.refDirection;
 				
-				Vector3D coordenadaTrasladada = coordenadaActual.toVector3D().add(diferenciaConOrigen); 
-				Coordenada coordenadaRotada = Transformador.rotarCoordenada(new Coordenada(coordenadaTrasladada), axis, refDirection);
+				Vector3D coordenadaTrasladada = coordenadaActual.toVector3D().add(diferenciaConOrigen);
+				
+				
+				Coordenada coordenadaRotada; 
+				
+				
+				if(axisMuro!=null && refDirectionMuro!=null){
+					
+					//se aplica la rotacion que indica el muro padre
+					coordenadaRotada = Transformador.rotarCoordenada(new Coordenada(coordenadaTrasladada), axisMuro, refDirectionMuro);
+					
+				}else{
+					
+					//se aplica la rotacion que indica el vacio
+					coordenadaRotada = Transformador.rotarCoordenada(new Coordenada(coordenadaTrasladada), axisVacio, refDirectionVacio);
+				}
+				
+				
+				
 				Vector3D coordenadaRotadaReubicada = coordenadaRotada.toVector3D().subtract(diferenciaConOrigen); 
 				
 				caraRotada.getCoordenadas().add(new Coordenada(coordenadaRotadaReubicada));

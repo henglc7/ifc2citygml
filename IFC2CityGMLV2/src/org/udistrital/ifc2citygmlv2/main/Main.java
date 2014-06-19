@@ -1,5 +1,6 @@
 package org.udistrital.ifc2citygmlv2.main;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -311,6 +312,7 @@ public class Main {
 					for (Vacio vacioActual : muroActual.getVacios()){
 						
 						vacioActual.generarCaras();
+						vacioActual.calcularCarasInternas();
 						
 					}
 					
@@ -318,6 +320,15 @@ public class Main {
         		
         	}
         	
+		}
+        
+      //Se genera el modelo LOD3
+        //BuildingCreator creador = new BuildingCreator();
+        try {
+			creador.crearModeloLOD3(edificio, args[3]);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
         
         
@@ -329,6 +340,9 @@ public class Main {
         		
         	}
 		}
+        
+        //BEEP
+        Toolkit.getDefaultToolkit().beep();
 	}
 
 }

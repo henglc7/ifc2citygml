@@ -475,10 +475,16 @@ public class Piso {
 					if(vacioActual.getCaras()!=null){
 						
 						//Iterator i2 = vacioActual.getCaras().iterator();
-						cadena += "\n              Caras GEOGEBRA 5 3D (" + vacioActual.getCaras().size() + ") = \n";
+						cadena += "\n              Caras GEOGEBRA 5 3D (" + vacioActual.getCaras().size() + ") = ";
 						
 						for (Poligono caraActual : vacioActual.getCaras()) {
-							cadena += "\n                                " + caraActual ;
+							
+							if(caraActual.getInterno()){
+								cadena += "\n                                I " + caraActual ;
+							}else{
+								cadena += "\n                                " + caraActual ;
+							}
+							
 						}
 						
 					}

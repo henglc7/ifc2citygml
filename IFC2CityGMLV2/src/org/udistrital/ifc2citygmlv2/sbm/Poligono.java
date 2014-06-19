@@ -23,9 +23,29 @@ public class Poligono {
 	
 	private List<Coordenada> coordenadas;
 	
+	private boolean interno = false;
+	
+	private List<Poligono> carasInternas;
+
+	public List<Poligono> getCarasInternas() {
+		return carasInternas;
+	}
+
+	public void setCarasInternas(List<Poligono> carasInternas) {
+		this.carasInternas = carasInternas;
+	}
+
+	public boolean getInterno() {
+		return interno;
+	}
+
+	public void setInterno(boolean interno) {
+		this.interno = interno;
+	}
 
 	public Poligono(){
 		coordenadas = new ArrayList();
+		carasInternas = new ArrayList();
 	}
 	
 	public Poligono(List<Coordenada> coord){
@@ -65,6 +85,21 @@ public class Poligono {
 		cadena += "]"; 
 			
 		return cadena;
+		
+	}
+	
+	public boolean compartePlanoCon(Poligono poligonoEvaluado){
+		
+		//se crea un plano que contiene las 3 primeras coordenadas del poligono
+		
+		Plane planoActual = this.toPlane();
+		Plane planoEvaluado = poligonoEvaluado.toPlane();
+		try {
+			return planoActual.isSimilarTo(planoEvaluado);
+			
+		} catch (Exception e) {
+			return false;
+		}
 		
 	}
 	
@@ -323,30 +358,10 @@ public class Poligono {
 		
 		//se crea un plano que contiene las 3 primeras coordenadas del poligono
 		
-		Plane plano = null; 
-
-		int n = this.getCoordenadas().size();
-		try {
-			
-			plano = new Plane(this.getCoordenadas().get(0).toVector3D(), this.getCoordenadas().get(1).toVector3D(), this.getCoordenadas().get(2).toVector3D());
-			
-		} catch (Exception e) {
-
-			//si las 3 primeras coordenadas generan error se escogen las 3 ultimas
-			//esto podria hacerse mas sofisticado verificando que las 3 coordenadas no compartan la misma linea que es cuando no se puede crear el pano
-			//y se genera la excepcion
-			//si las 3 ultimas tambien generan excepcion simplemente se aborta el metodo y los vertices no veran alterado su orden
-			try {
-				
-				plano = new Plane(this.getCoordenadas().get(n-1).toVector3D(), this.getCoordenadas().get(n-2).toVector3D(), this.getCoordenadas().get(n-3).toVector3D());
-				
-			} catch (Exception e2) {
-				return;
-			}
-			
-		}
+		Plane plano = this.toPlane();
 		
-		
+		if(plano==null) return;
+
 		Vector3D ejeZ = new Vector3D(0,0,1); //Vector que representa al eje Z 
 		Rotation rotacionRespectoAZ = new Rotation(plano.getNormal(),ejeZ);
 		Rotation rotacionOriginal = new Rotation(ejeZ,plano.getNormal());
@@ -394,4 +409,34 @@ public class Poligono {
 		
 	}
 
+	public Plane toPlane(){
+		
+
+		//se crea un plano que contiene las 3 primeras coordenadas del poligono
+		
+		Plane plano = null; 
+
+		int n = this.getCoordenadas().size();
+		try {
+			
+			plano = new Plane(this.getCoordenadas().get(0).toVector3D(), this.getCoordenadas().get(1).toVector3D(), this.getCoordenadas().get(2).toVector3D());
+			
+		} catch (Exception e) {
+
+			//si las 3 primeras coordenadas generan error se escogen las 3 ultimas
+			//esto podria hacerse mas sofisticado verificando que las 3 coordenadas no compartan la misma linea que es cuando no se puede crear el pano
+			//y se genera la excepcion
+			//si las 3 ultimas tambien generan excepcion simplemente se aborta el metodo y los vertices no veran alterado su orden
+			try {
+				
+				plano = new Plane(this.getCoordenadas().get(n-1).toVector3D(), this.getCoordenadas().get(n-2).toVector3D(), this.getCoordenadas().get(n-3).toVector3D());
+				
+			} catch (Exception e2) {
+				return plano;
+			}
+			
+		}
+		
+		return plano;
+	}
 }
