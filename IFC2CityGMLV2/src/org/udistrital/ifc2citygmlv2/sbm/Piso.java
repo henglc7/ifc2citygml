@@ -300,7 +300,7 @@ public class Piso {
 			if(muroActual.getCoordenadasAbsolutas()!=null){
 				cadena += "\n          Absolutas (" + muroActual.getCoordenadasAbsolutas().size() + ") = [ ";
 				for (Coordenada coordenadaActual : muroActual.getCoordenadasAbsolutas()) {
-					cadena += coordenadaActual.getX() + " " + coordenadaActual.getY() + " " + coordenadaActual.getZ() + " , ";
+					cadena += coordenadaActual + " ";
 				}
 				cadena += "]";
 				
