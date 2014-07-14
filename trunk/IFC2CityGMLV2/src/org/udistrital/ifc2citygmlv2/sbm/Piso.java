@@ -464,11 +464,10 @@ public class Piso {
 					}
 					
 					if(vacioActual.getCoordenadasAbsolutas()!=null){
-						cadena += "\n              Absolutas (" + vacioActual.getCoordenadasAbsolutas().size() + ") = [ ";
+						cadena += "\n              Absolutas (" + vacioActual.getCoordenadasAbsolutas().size() + ") =";
 						for (Coordenada coordenadaActual : vacioActual.getCoordenadasAbsolutas()) {
-							cadena += coordenadaActual + " ";
+							cadena += "\n                         " + coordenadaActual;
 						}
-						cadena += "]";
 						
 					}
 					

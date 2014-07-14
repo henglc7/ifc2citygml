@@ -1,10 +1,17 @@
 package org.udistrital.ifc2citygmlv2.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import openifctools.com.openifcjavatoolbox.ifc2x3tc1.IfcOpeningElement;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.udistrital.ifc2citygmlv2.sbm.Coordenada;
 import org.udistrital.ifc2citygmlv2.sbm.Muro;
+import org.udistrital.ifc2citygmlv2.sbm.Poligono;
 import org.udistrital.ifc2citygmlv2.sbm.Rectangulo;
+import org.udistrital.ifc2citygmlv2.sbm.Vacio;
 import org.udistrital.ifc2citygmlv2.sbm.ifc.Solido;
 
 public class Transformador {
@@ -15,10 +22,99 @@ public class Transformador {
 		
 		Coordenada coordAbsoluta = aplicarObjectRepresentation(coordOriginal, pSolido);
 		coordAbsoluta = aplicarObjectPlacement(coordAbsoluta, pSolido);
+		/*
+		if(pSolido.getIfcModel().getIfcObjectByID(pSolido.getId()) instanceof IfcOpeningElement){
+			coordAbsoluta = rotarCoordenadaVacio(coordAbsoluta, pSolido);
+		}*/
 		
 		return coordAbsoluta;
 	}
 		
+	public static Coordenada rotarCoordenadaVacio(Coordenada original, Solido pSolido) {
+		/*
+		 * 
+		 * 
+		 * 
+         
+        if(esVacio && pSolido.objectPlacement.relativePlacement.axis == null){
+			original = ...
+		}
+		
+		Coordenada r = rotarCoordenada(
+				original
+				, pSolido.representation.position.axis
+				, pSolido.representation.position.refDirection
+				);
+		
+		return r;
+
+		
+		
+		LECTOR VACIOS
+
+		 //Se lee RelativePlacement
+				                    
+				                    IfcAxis2Placement3D relativePlacementB = (IfcAxis2Placement3D) placementRelToA.getRelativePlacement();
+				                    vacioActual.objectPlacement.setPlacementRelTo_relativePlacement(LectorCoordenada.Leer(relativePlacementB.getLocation()));
+				                    
+				                    if(relativePlacementB.getAxis()!=null && relativePlacementB.getRefDirection()!=null){
+				                    	
+					                    //vacioActual.objectPlacement.setPlacementRelTo_relativePlacement_axis(LectorCoordenada.Leer(relativePlacementB.getAxis()));
+					                    //vacioActual.objectPlacement.setPlacementRelTo_relativePlacement_refDirection(LectorCoordenada.Leer(relativePlacementB.getRefDirection()));
+
+				                    	
+				                    }
+
+
+		PLACEMENT
+
+		// inicia para vacios
+			
+			public Coordenada placementRelTo_relativePlacement_axis;
+			
+			public Coordenada placementRelTo_relativePlacement_refDirection;
+			
+
+
+		*/
+		
+		//////////
+		
+
+		Vacio vacio = (Vacio) pSolido;
+		
+		Coordenada locationMuro = vacio.getMuroAlQueVacia().objectPlacement.getRelativePlacement_location();
+		Coordenada axisMuro = vacio.getMuroAlQueVacia().objectPlacement.getRelativePlacement_axis();
+		Coordenada refDirectionMuro = vacio.getMuroAlQueVacia().objectPlacement.getRelativePlacement_refDirection();
+		Coordenada origen = new Coordenada(0,0,0);
+		
+		Vector3D vectorOrigen = Vector3D.ZERO;
+		Vector3D diferenciaConOrigen = vectorOrigen.subtract(locationMuro.toVector3D());
+		
+		Coordenada axisVacio = pSolido.representation.position.axis;
+		Coordenada refDirectionVacio = pSolido.representation.position.refDirection;
+		
+		Vector3D coordenadaTrasladada = original.toVector3D().add(diferenciaConOrigen);
+
+		Coordenada coordenadaRotada; 
+		
+		if(axisMuro!=null && refDirectionMuro!=null){
+			
+			//se aplica la rotacion que indica el muro padre
+			coordenadaRotada = rotarCoordenada(new Coordenada(coordenadaTrasladada), axisMuro, refDirectionMuro);
+			
+		}else{
+			
+			//se aplica la rotacion que indica el vacio
+			coordenadaRotada = rotarCoordenada(new Coordenada(coordenadaTrasladada), axisVacio, refDirectionVacio);
+		}
+		
+		Vector3D coordenadaRotadaReubicada = coordenadaRotada.toVector3D().subtract(diferenciaConOrigen); 
+		
+		return new Coordenada(coordenadaRotadaReubicada);
+
+	}
+
 	private Coordenada aplicarObjectRepresentation(Coordenada coordOriginal, Solido pSolido){
 		
 		coordOriginal = rotarCoordenada(
