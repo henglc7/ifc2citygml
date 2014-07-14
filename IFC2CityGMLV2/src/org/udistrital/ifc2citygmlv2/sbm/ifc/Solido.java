@@ -459,7 +459,7 @@ public class Solido {
 		
 		//los vacios necesitan una rotacion adicional
 		if(this.getTipo()!=null && (this.getTipo().equals("ventana") || this.getTipo().equals("puerta"))){
-			rotarVacio();
+			((Vacio)this).rotarCoordenadasVacio();
 		}
 		
 	}
@@ -927,61 +927,4 @@ public class Solido {
 		
 	}
 	
-	public void rotarVacio(){
-		
-		Vacio vacio = (Vacio) this;
-		
-		Coordenada locationMuro = vacio.getMuroAlQueVacia().objectPlacement.getRelativePlacement_location();
-		Coordenada axisMuro = vacio.getMuroAlQueVacia().objectPlacement.getRelativePlacement_axis();
-		Coordenada refDirectionMuro = vacio.getMuroAlQueVacia().objectPlacement.getRelativePlacement_refDirection();
-		Coordenada origen = new Coordenada(0,0,0);
-		
-		Vector3D vectorOrigen = Vector3D.ZERO;
-		Vector3D diferenciaConOrigen = vectorOrigen.subtract(locationMuro.toVector3D());
-		
-		
-		List<Poligono> carasOriginales = this.getCaras();
-		
-		List<Poligono> carasRotadas = new ArrayList();
-		
-		for (Poligono caraActual : carasOriginales) {
-			
-			Poligono caraRotada = new Poligono();
-			
-			for (Coordenada coordenadaActual : caraActual.getCoordenadas()) {
-				
-				Coordenada axisVacio = this.representation.position.axis;
-				Coordenada refDirectionVacio = this.representation.position.refDirection;
-				
-				Vector3D coordenadaTrasladada = coordenadaActual.toVector3D().add(diferenciaConOrigen);
-				
-				
-				Coordenada coordenadaRotada; 
-				
-				
-				if(axisMuro!=null && refDirectionMuro!=null){
-					
-					//se aplica la rotacion que indica el muro padre
-					coordenadaRotada = Transformador.rotarCoordenada(new Coordenada(coordenadaTrasladada), axisMuro, refDirectionMuro);
-					
-				}else{
-					
-					//se aplica la rotacion que indica el vacio
-					coordenadaRotada = Transformador.rotarCoordenada(new Coordenada(coordenadaTrasladada), axisVacio, refDirectionVacio);
-				}
-				
-				
-				
-				Vector3D coordenadaRotadaReubicada = coordenadaRotada.toVector3D().subtract(diferenciaConOrigen); 
-				
-				caraRotada.getCoordenadas().add(new Coordenada(coordenadaRotadaReubicada));
-				
-			}
-			
-			carasRotadas.add(caraRotada);
-		}
-		
-		this.setCaras(carasRotadas);
-		
-	}
 }
