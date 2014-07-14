@@ -48,43 +48,45 @@ public class Vacio extends Solido{
 	
 	public void rotarCoordenadasVacio(){
 		
-		//inicialmente se rotan las coordenadas absolutas
-		//esto simplemente sirve para hacer que coincidan con la ubicacion final de las caras
-		//las caras ya estaban calculadas anteriormente con base en las coordenadas absolutas sin rotar
-		List absolutasOriginales = this.coordenadasAbsolutas;
-		List absolutasRotadas = new ArrayList();
-		
-		for (Coordenada coordenadaActual : coordenadasAbsolutas) {
+		if(coordenadasAbsolutas !=null){
+			//inicialmente se rotan las coordenadas absolutas
+			//esto simplemente sirve para hacer que coincidan con la ubicacion final de las caras
+			//las caras ya estaban calculadas anteriormente con base en las coordenadas absolutas sin rotar
+			List absolutasOriginales = this.coordenadasAbsolutas;
+			List absolutasRotadas = new ArrayList();
 			
-			Coordenada rotada = Transformador.rotarCoordenadaVacio(coordenadaActual, this);
-			absolutasRotadas.add(rotada);
-			
-		}
-		
-		this.setCoordenadasAbsolutas(absolutasRotadas);
-		
-		
-		//posteriormente se rota cada una de las coordenadas que somponen las caras del vacio
-
-		List<Poligono> carasOriginales = this.getCaras();
-		List<Poligono> carasRotadas = new ArrayList();
-		
-		for (Poligono caraActual : carasOriginales) {
-			
-			Poligono caraRotada = new Poligono();
-			
-			for (Coordenada coordenadaActual : caraActual.getCoordenadas()) {
+			for (Coordenada coordenadaActual : coordenadasAbsolutas) {
 				
 				Coordenada rotada = Transformador.rotarCoordenadaVacio(coordenadaActual, this);
-				
-				caraRotada.getCoordenadas().add(rotada);
+				absolutasRotadas.add(rotada);
 				
 			}
 			
-			carasRotadas.add(caraRotada);
+			this.setCoordenadasAbsolutas(absolutasRotadas);
+			
+			
+			//posteriormente se rota cada una de las coordenadas que somponen las caras del vacio
+
+			List<Poligono> carasOriginales = this.getCaras();
+			List<Poligono> carasRotadas = new ArrayList();
+			
+			for (Poligono caraActual : carasOriginales) {
+				
+				Poligono caraRotada = new Poligono();
+				
+				for (Coordenada coordenadaActual : caraActual.getCoordenadas()) {
+					
+					Coordenada rotada = Transformador.rotarCoordenadaVacio(coordenadaActual, this);
+					
+					caraRotada.getCoordenadas().add(rotada);
+					
+				}
+				
+				carasRotadas.add(caraRotada);
+			}
+			
+			this.setCaras(carasRotadas);
+			
 		}
-		
-		this.setCaras(carasRotadas);
-		
 	}
 }
