@@ -303,6 +303,7 @@ public class Main {
         
         System.out.println("\n\n");
         
+        //se generan las caras de todos lo vacios
         for (Piso pisoActual : edificio.getPisos()) {
         	
         	for(Muro muroActual : pisoActual.getMuros()){
@@ -312,14 +313,22 @@ public class Main {
 					for (Vacio vacioActual : muroActual.getVacios()){
 						
 						vacioActual.generarCaras();
-						vacioActual.calcularCarasInternas();
-						
 					}
-					
 				}
-        		
         	}
+		}
+        
+      //se generan las caras de todos lo vacios
+        for (Piso pisoActual : edificio.getPisos()) {
         	
+        	for(Muro muroActual : pisoActual.getMuros()){
+        		
+        		if(muroActual.getVacios() != null){
+					
+        			muroActual.abrirVaciosParaPuertasYVentanas();
+        			
+				}
+        	}
 		}
         
       //Se genera el modelo LOD3
