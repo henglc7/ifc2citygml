@@ -9,7 +9,7 @@ public class Coordenada /*implements Comparable<Coordenada>*/ {
 	double z;
 	
 	//si dos coordenadas tienen una distancia menor a la tolerancia se consideran iguales
-	double tolerancia = 0.001;
+	public static double tolerancia = 0.001;
 	
 	public Coordenada(){
 		x = 0;

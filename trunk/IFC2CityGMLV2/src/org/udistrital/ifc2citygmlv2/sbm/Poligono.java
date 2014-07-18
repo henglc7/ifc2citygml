@@ -18,6 +18,10 @@ import org.udistrital.ifc2citygmlv2.util.ComparadorAngulos;
 
 import com.vividsolutions.jts.algorithm.CentroidPoint;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 
 public class Poligono {
 	
@@ -25,6 +29,19 @@ public class Poligono {
 	
 	private boolean interno = false;
 	
+	//por defecto todas las caras de un vacio son adicionales
+	//a menos que compartan plano con alguna cara del muro
+	private boolean adicional = true;
+	
+	public boolean getAdicional() {
+		return adicional;
+	}
+
+	public void setAdicional(boolean adicional) {
+		this.adicional = adicional;
+	}
+
+
 	private List<Poligono> carasInternas;
 
 	public List<Poligono> getCarasInternas() {
@@ -101,6 +118,35 @@ public class Poligono {
 			return false;
 		}
 		
+	}
+	
+	public boolean comparteBordeCon(Poligono poligonoEvaluado){
+		
+		Iterator<Coordenada> i = coordenadas.iterator();
+		Iterator<Coordenada> t = coordenadas.iterator();
+		t.next();
+		boolean contienePunto = false;
+		
+		while(contienePunto==false && t.hasNext()) {
+			
+			Line linea = new Line(i.next().toVector3D(), t.next().toVector3D());
+			
+			Iterator<Coordenada> s = poligonoEvaluado.coordenadas.iterator();
+			
+			while(s.hasNext()){
+				
+				if(linea.contains(s.next().toVector3D())){
+					
+					contienePunto = true;
+					break;
+					
+				}
+				
+			}
+			
+		}
+		
+		return contienePunto;
 	}
 	
 	public Poligono cortar(/*Poligono caraActual,*/ PlanoDeCorte pPlano /*, PolyhedronsSet cajaFrontera*/){
@@ -438,5 +484,141 @@ public class Poligono {
 		}
 		
 		return plano;
+	}
+
+
+	private List<Coordenada> coordenadasParalelasAPlanoXY;
+	private double coordenadaZParalelaAPlanoXY;
+	private Rotation rotacionOriginal = null;
+	
+	//esta funcion rota cualquier poligono haciendo que su nueva ubicacion sea paralela al plano XY
+	//el nuevo poligono tiene constante la coordenada Z en todos sus puntos
+	//se usa cuando se necesita utilizar Java Topology Suite porque dicha librería solo trabaja en 2D
+	//retorna el valor de Z para todos los puntos del polígono
+	public boolean calcularPoligonoParaleloAPlanoXY(Poligono pPoligonoEvaluado){
+		
+		Vector3D ejeZ = new Vector3D(0,0,1); //Vector que representa al eje Z
+		
+		Plane planoMuro = this.toPlane();
+
+		//si se recibio pPoligonoEvaluado se debe evaluar que la normal del muro sea identica
+		//a la normal de pPoligonoEvaluado
+		//esto garantiza que los dos poligonos serán rotados hacia el mismo plano
+		//si las normales son contrarias las coordenadas Z de cada polígono serán opuestas
+		//y no puede realizarse el recorte de la silueta
+		if(pPoligonoEvaluado!= null){
+			Plane planoPoligonoEvaluado = pPoligonoEvaluado.toPlane();
+			//los dos planos deben tener la misma normal para que al rotarlos ocupen el mismo plano
+			//System.out.println("normal muro = " + planoMuro.getNormal() + " normal tijera = " + planoPoligonoEvaluado.getNormal() + " angulo = " + Vector3D.angle( planoMuro.getNormal() , planoPoligonoEvaluado.getNormal()));
+		
+			double angulo = 0;
+				
+			try {
+				angulo = Vector3D.angle( planoMuro.getNormal() , planoPoligonoEvaluado.getNormal());
+			} catch (Exception e) {
+				return false;
+			}
+			
+			
+		
+			if( angulo > 0.001 ){
+			
+				//System.out.println("Invirtiendo plano");
+				planoMuro.revertSelf();
+				
+			}
+			
+		}
+
+		
+		Rotation rotacionRespectoAZ = new Rotation(planoMuro.getNormal(),ejeZ);
+		//se debe guardar la rotacion original para restaurar las coordenadas a su ubicación 3D original
+		rotacionOriginal = new Rotation(ejeZ,planoMuro.getNormal()) ;
+		
+		List<Coordenada> coordenadasRotadas = new ArrayList<Coordenada>();
+		
+		//System.out.println("Rotadas = ");
+		for (Coordenada coordActual : this.getCoordenadas()) {
+			
+			Coordenada rotada = new Coordenada(rotacionRespectoAZ.applyTo(coordActual.toVector3D()));
+			coordenadasRotadas.add(rotada);
+			
+			//System.out.println(rotada);
+
+		}
+		//la coordenada Z es igual para todos los puntos, se toma del primero
+		coordenadaZParalelaAPlanoXY = coordenadasRotadas.get(0).getZ();
+		
+		coordenadasParalelasAPlanoXY = coordenadasRotadas;
+		
+		return true;
+	}
+	
+	public static Polygon obtenerPolygonJTS(List<Coordenada> pCoordenadas){
+		
+		GeometryFactory geometryFactory = new GeometryFactory();
+		
+		Coordinate[] coordenadas = new Coordinate[pCoordenadas.size()];
+		int c =  0;
+		for (Coordenada actual : pCoordenadas) {
+			
+			Coordinate coord = new Coordinate(actual.getX(), actual.getY());
+			coordenadas [c] = coord; 
+			c++;
+		}
+		
+		LinearRing anillo = geometryFactory.createLinearRing(coordenadas);
+		Polygon poligono = geometryFactory.createPolygon(anillo, null); //se asume que no hay HUECOS en el poligono y por eso se envía NULL 
+		
+		return poligono;
+		
+	}
+	
+	public List<Poligono> diferencia(Poligono poligonoEvaluado){
+		
+		List<Poligono> r = null;
+		
+		//se envia el poligonoEvaluado como parametro para evaluar que la normal del plano sea identica
+		boolean sePudoA = this.calcularPoligonoParaleloAPlanoXY(poligonoEvaluado);
+		boolean sePudoB = poligonoEvaluado.calcularPoligonoParaleloAPlanoXY(null);
+		
+		if(sePudoA && sePudoB){
+			Polygon poligonoA = obtenerPolygonJTS(coordenadasParalelasAPlanoXY);
+			Polygon poligonoB = obtenerPolygonJTS(poligonoEvaluado.coordenadasParalelasAPlanoXY);
+			
+			//se usa la tolerancia porque hay ciertas geometrias que aunque ocupan el mismo plano
+			//no cortan a la linea que se necesita del poligono del muro porque están alejadas unas milesimas 
+			//si no se usa el buffer de la tolerancia definida en la clase Coordenada los muros no quedan bien cortados
+			//para ubicar las puertas
+			Geometry diferencia = poligonoA.difference(poligonoB.buffer(Coordenada.tolerancia));
+			
+			int geometriasResultantes = diferencia.getNumGeometries();
+			
+			if(geometriasResultantes > 0) {
+				r = new ArrayList();
+				
+				for (int i = 0; i < geometriasResultantes; i++) {
+					
+					Geometry geomActual = diferencia.getGeometryN(i);
+					
+					Coordinate[] coordenadasResultado = geomActual.getCoordinates();
+					
+					Poligono poligonoResultado = new Poligono();
+					
+					for (int p = 0; p < coordenadasResultado.length; p++) {
+						
+						Coordinate actual = coordenadasResultado[p];
+						Coordenada coorRes = new Coordenada(actual.x, actual.y, this.coordenadaZParalelaAPlanoXY);
+						coorRes = new Coordenada(rotacionOriginal.applyTo(coorRes.toVector3D()));
+						poligonoResultado.getCoordenadas().add(coorRes);
+					}
+					
+					r.add(poligonoResultado);
+				}
+			}
+		}
+		
+		
+		return r;
 	}
 }
