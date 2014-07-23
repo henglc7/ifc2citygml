@@ -32,12 +32,16 @@ import org.citygml4j.CityGMLContext;
 import org.citygml4j.builder.jaxb.JAXBBuilder;
 import org.citygml4j.factory.CityGMLFactory;
 import org.citygml4j.factory.GMLFactory;
+import org.citygml4j.factory.geometry.DimensionMismatchException;
 import org.citygml4j.factory.geometry.GMLGeometryFactory;
 import org.citygml4j.impl.gml.geometry.primitives.InteriorImpl;
 import org.citygml4j.model.citygml.CityGMLClass;
 import org.citygml4j.model.citygml.building.AbstractBoundarySurface;
+import org.citygml4j.model.citygml.building.AbstractOpening;
 import org.citygml4j.model.citygml.building.BoundarySurfaceProperty;
 import org.citygml4j.model.citygml.building.Building;
+import org.citygml4j.model.citygml.building.OpeningProperty;
+import org.citygml4j.model.citygml.building.Window;
 import org.citygml4j.model.citygml.core.CityModel;
 import org.citygml4j.model.gml.geometry.complexes.CompositeSurface;
 import org.citygml4j.model.gml.geometry.primitives.AbstractSurface;
@@ -63,8 +67,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 
 public class BuildingCreator {
-	private CityGMLFactory citygml;
-	private GMLFactory gml;
+	private static CityGMLFactory citygml;
+	private static GMLFactory gml;
 
 	public void crearModeloLOD1(Coordinate[] coordenadas, double elevacion, String archivoSalida) throws Exception {
 		SimpleDateFormat df = new SimpleDateFormat("[HH:mm:ss] "); 
@@ -263,15 +267,15 @@ public class BuildingCreator {
 		List<BoundarySurfaceProperty> boundedBy = new ArrayList<BoundarySurfaceProperty>();
 		
 		for (Polygon polygonActual : poligonosPlanchas) {
-			boundedBy.add(createBoundarySurface(CityGMLClass.FLOOR_SURFACE, polygonActual));
+			boundedBy.add(createBoundarySurface(CityGMLClass.FLOOR_SURFACE, polygonActual, null, null));
 		}
 		
 		for (Polygon polygonActual : poligonosTechos) {
-			boundedBy.add(createBoundarySurface(CityGMLClass.ROOF_SURFACE, polygonActual));
+			boundedBy.add(createBoundarySurface(CityGMLClass.ROOF_SURFACE, polygonActual, null, null));
 		}
 		
 		for (Polygon polygonActual : poligonosMuros) {
-			boundedBy.add(createBoundarySurface(CityGMLClass.WALL_SURFACE, polygonActual));
+			boundedBy.add(createBoundarySurface(CityGMLClass.WALL_SURFACE, polygonActual, null, null));
 		}
 		
 		building.setBoundedBySurface(boundedBy);
@@ -294,7 +298,7 @@ public class BuildingCreator {
 		System.out.println(df.format(new Date()) + "sample citygml4j application successfully finished");
 	}
 	
-	private BoundarySurfaceProperty createBoundarySurface(CityGMLClass type, Polygon geometry) {
+	private BoundarySurfaceProperty createBoundarySurface(CityGMLClass type, Polygon geometry, List<Poligono> pCarasInternas, List<Poligono> pCarasTijera) {
 		AbstractBoundarySurface boundarySurface = null;
 
 		switch (type) {
@@ -313,14 +317,116 @@ public class BuildingCreator {
 		}
 
 		if (boundarySurface != null) {
-			boundarySurface.setLod2MultiSurface(gml.createMultiSurfaceProperty(gml.createMultiSurface(geometry)));
+			boundarySurface.setLod3MultiSurface(gml.createMultiSurfaceProperty(gml.createMultiSurface(geometry)));
+			agregarCarasDeVentanaOPuerta(type, boundarySurface,pCarasInternas,pCarasTijera);
 			return citygml.createBoundarySurfaceProperty(boundarySurface);
 		}
 
 		return null;
 	}
 	
-public void crearModeloLOD3(Edificio edificio, String archivoSalida) throws Exception {
+	
+	
+	private AbstractBoundarySurface agregarCarasDeVentanaOPuerta(CityGMLClass type, AbstractBoundarySurface boundarySurface, List<Poligono> pCarasInternas, List<Poligono> pCarasTijera) {
+		
+		
+		//si hay caras internas dentro de esta cara, se deben agregar superficies bien sea de ventana o de puerta a la cara generada
+		if(pCarasInternas!=null){
+			if(type==CityGMLClass.WALL_SURFACE) {
+				for (Poligono poligonoActual : pCarasInternas) {
+					if(poligonoActual.getVacioPadre().getTipo().equals("ventana")){
+						
+						OpeningProperty superficieVentana = null;
+						try {
+							superficieVentana = createOpeningSurface(CityGMLClass.WINDOW, poligonoActual.getPoligonoGML());
+						} catch (DimensionMismatchException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						boundarySurface.addOpening(superficieVentana);
+						
+					}
+					
+					if(poligonoActual.getVacioPadre().getTipo().equals("puerta")){
+						
+						OpeningProperty superficiePuerta = null;
+						try {
+							superficiePuerta = createOpeningSurface(CityGMLClass.DOOR, poligonoActual.getPoligonoGML());
+						} catch (DimensionMismatchException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						boundarySurface.addOpening(superficiePuerta);
+						
+					}
+				}
+			}
+		}
+		
+		
+		//si hay caras tijera para esta cara, se deben agregar superficies bien sea de ventana o de puerta a la cara generada
+		if(pCarasTijera!=null){
+			if(type==CityGMLClass.WALL_SURFACE) {
+				for (Poligono poligonoActual : pCarasTijera) {
+					if(poligonoActual.getVacioPadre().getTipo().equals("ventana")){
+						
+						OpeningProperty superficieVentana = null;
+						try {
+							superficieVentana = createOpeningSurface(CityGMLClass.WINDOW, poligonoActual.getPoligonoGML());
+						} catch (DimensionMismatchException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						boundarySurface.addOpening(superficieVentana);
+						
+					}
+					
+					if(poligonoActual.getVacioPadre().getTipo().equals("puerta")){
+						
+						OpeningProperty superficiePuerta = null;
+						try {
+							superficiePuerta = createOpeningSurface(CityGMLClass.DOOR, poligonoActual.getPoligonoGML());
+						} catch (DimensionMismatchException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						boundarySurface.addOpening(superficiePuerta);
+						
+					}
+				}
+			}
+		}
+		
+		return boundarySurface;
+		
+	}
+	
+	
+	public static OpeningProperty createOpeningSurface(CityGMLClass type, Polygon geometry) {
+		AbstractOpening opening = null;
+
+		switch (type) {
+		case WINDOW:
+			opening = citygml.createWindow();
+			break;
+		case DOOR:
+			opening = citygml.createDoor();
+			break;
+		}
+		
+		if (opening != null) {
+			opening.setLod3MultiSurface(gml.createMultiSurfaceProperty(gml.createMultiSurface(geometry)));
+			
+			OpeningProperty openingProperty = citygml.createOpeningProperty();
+			openingProperty.setObject(opening);
+			
+			return openingProperty;
+		}
+
+		return null;
+	}	
+	
+	public void crearModeloLOD3(Edificio edificio, String archivoSalida) throws Exception {
 		
 		SimpleDateFormat df = new SimpleDateFormat("[HH:mm:ss] "); 
 
@@ -342,7 +448,8 @@ public void crearModeloLOD3(Edificio edificio, String archivoSalida) throws Exce
 		
 		List<Polygon> poligonosTechos = new ArrayList();
 		
-		List<Polygon> poligonosMuros = new ArrayList();
+		//List<Polygon> poligonosMuros = new ArrayList();
+		List<Poligono> poligonosMurosNew = new ArrayList();
 		
 		
 		for (Piso pisoActual : edificio.getPisos()) {
@@ -373,40 +480,10 @@ public void crearModeloLOD3(Edificio edificio, String archivoSalida) throws Exce
 		for (Piso pisoActual : edificio.getPisos()) {
         	for(Muro muroActual : pisoActual.getMuros()){
         		for(Poligono poligonoActual : muroActual.getCaras()){
-        			
-        			List<Double> coordenadasEstePoligono = new ArrayList(); 
-        			
-        			for(Coordenada coordenadaActual : poligonoActual.getCoordenadas()){
-        				coordenadasEstePoligono.add(coordenadaActual.getX());
-        				coordenadasEstePoligono.add(coordenadaActual.getY());
-        				coordenadasEstePoligono.add(coordenadaActual.getZ());
-        			}
-        			
-
         			try {
-        				
-        				Polygon caraMuroActual = geom.createLinearPolygon(coordenadasEstePoligono, 3);
-
-        				for (Poligono caraInternaActual : poligonoActual.getCarasInternas()) {
-        					
-        					List<Double> coordenadasEstaCaraInterna = new ArrayList(); 
-                			
-                			for(Coordenada coordenadaActual : caraInternaActual.getCoordenadas()){
-                				coordenadasEstaCaraInterna.add(coordenadaActual.getX());
-                				coordenadasEstaCaraInterna.add(coordenadaActual.getY());
-                				coordenadasEstaCaraInterna.add(coordenadaActual.getZ());
-                			}
-        					
-        					LinearRing anillo = geom.createLinearRing(coordenadasEstaCaraInterna, 3);
-        					Interior interior = new InteriorImpl();
-            				interior.setRing(anillo);
-            				
-            				caraMuroActual.addInterior(interior);
-							
-						}
-        				
-        				poligonosMuros.add(caraMuroActual);
-						
+        				//poligonosMuros.add(poligonoActual.obtenerPolygonGML());
+        				poligonoActual.calcularPolygonGML();
+        				poligonosMurosNew.add(poligonoActual);
 					} catch (Exception e) {
 					System.err.println("EXCEPECION EN MURO id = " + muroActual.getId() + " poligono vacio = " + poligonoActual);
 					}
@@ -425,8 +502,10 @@ public void crearModeloLOD3(Edificio edificio, String archivoSalida) throws Exce
 		for (Polygon polygonActual : poligonosTechos) {
 			polygonActual.setId(gmlIdManager.generateGmlId());
 		}
-		for (Polygon polygonActual : poligonosMuros) {
-			polygonActual.setId(gmlIdManager.generateGmlId());
+		for (Poligono poligonoActual : poligonosMurosNew) {
+			
+			poligonoActual.getPoligonoGML().setId(gmlIdManager.generateGmlId());
+
 		}
 
 		// lod2 solid
@@ -440,8 +519,8 @@ public void crearModeloLOD3(Edificio edificio, String archivoSalida) throws Exce
 			surfaceMember.add(gml.createSurfaceProperty('#' + polygonActual.getId()));
 		}
 		
-		for (Polygon polygonActual : poligonosMuros) {
-			surfaceMember.add(gml.createSurfaceProperty('#' + polygonActual.getId()));
+		for (Poligono poligonoActual : poligonosMurosNew) {
+			surfaceMember.add(gml.createSurfaceProperty('#' + poligonoActual.getPoligonoGML().getId()));
 		}
 		
 		CompositeSurface compositeSurface = gml.createCompositeSurface();
@@ -455,15 +534,16 @@ public void crearModeloLOD3(Edificio edificio, String archivoSalida) throws Exce
 		List<BoundarySurfaceProperty> boundedBy = new ArrayList<BoundarySurfaceProperty>();
 		
 		for (Polygon polygonActual : poligonosPlanchas) {
-			boundedBy.add(createBoundarySurface(CityGMLClass.FLOOR_SURFACE, polygonActual));
+			boundedBy.add(createBoundarySurface(CityGMLClass.FLOOR_SURFACE, polygonActual, null, null));
 		}
 		
 		for (Polygon polygonActual : poligonosTechos) {
-			boundedBy.add(createBoundarySurface(CityGMLClass.ROOF_SURFACE, polygonActual));
+			boundedBy.add(createBoundarySurface(CityGMLClass.ROOF_SURFACE, polygonActual, null, null));
 		}
 		
-		for (Polygon polygonActual : poligonosMuros) {
-			boundedBy.add(createBoundarySurface(CityGMLClass.WALL_SURFACE, polygonActual));
+		for (Poligono poligonoActual : poligonosMurosNew) {
+			BoundarySurfaceProperty muro = createBoundarySurface(CityGMLClass.WALL_SURFACE, poligonoActual.getPoligonoGML(), poligonoActual.getCarasInternas(), poligonoActual.getCarasTijera()) ;
+			boundedBy.add(muro);
 		}
 		
 		building.setBoundedBySurface(boundedBy);
