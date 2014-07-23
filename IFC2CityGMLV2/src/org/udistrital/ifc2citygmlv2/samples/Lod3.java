@@ -76,7 +76,7 @@ public class Lod3 {
 		CityGMLContext ctx = new CityGMLContext();
 		JAXBBuilder builder = ctx.createJAXBBuilder();
 
-		System.out.println(df.format(new Date()) + "creating LOD2 building as citygml4j in-memory object tree");
+		System.out.println(df.format(new Date()) + "creating LOD3 building as citygml4j in-memory object tree");
 		GMLGeometryFactory geom = new GMLGeometryFactory();
 		citygml = new CityGMLFactory();
 		gml = new GMLFactory();

@@ -13,6 +13,11 @@ import org.apache.commons.math3.geometry.euclidean.threed.PolyhedronsSet;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.geometry.partitioning.Region;
+import org.citygml4j.factory.geometry.DimensionMismatchException;
+import org.citygml4j.factory.geometry.GMLGeometryFactory;
+import org.citygml4j.impl.gml.geometry.primitives.InteriorImpl;
+import org.citygml4j.model.gml.geometry.primitives.Interior;
+import org.citygml4j.model.gml.geometry.primitives.Polygon;
 import org.udistrital.ifc2citygmlv2.sbm.ifc.PlanoDeCorte;
 import org.udistrital.ifc2citygmlv2.util.ComparadorAngulos;
 
@@ -21,7 +26,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
 
 public class Poligono {
 	
@@ -33,6 +37,33 @@ public class Poligono {
 	//a menos que compartan plano con alguna cara del muro
 	private boolean adicional = true;
 	
+	GMLGeometryFactory geom = new GMLGeometryFactory();
+	
+	private List<Poligono> carasInternas;
+	
+	private List<Poligono> carasTijera;
+	
+	private org.citygml4j.model.gml.geometry.primitives.Polygon poligonoGML = null;
+	
+	private Vacio vacioPadre = null;
+
+	
+	public List<Poligono> getCarasTijera() {
+		return carasTijera;
+	}
+
+	public void setCarasTijera(List<Poligono> carasTijera) {
+		this.carasTijera = carasTijera;
+	}
+	
+	public Vacio getVacioPadre() {
+		return vacioPadre;
+	}
+
+	public void setVacioPadre(Vacio vacioPadre) {
+		this.vacioPadre = vacioPadre;
+	}
+
 	public boolean getAdicional() {
 		return adicional;
 	}
@@ -41,8 +72,19 @@ public class Poligono {
 		this.adicional = adicional;
 	}
 
+	public org.citygml4j.model.gml.geometry.primitives.Polygon getPoligonoGML() throws DimensionMismatchException {
+		
+		if(poligonoGML==null){
+			calcularPolygonGML();
+		}
+			
+		return poligonoGML;
+	}
 
-	private List<Poligono> carasInternas;
+	public void setPoligonoGML(
+			org.citygml4j.model.gml.geometry.primitives.Polygon poligonoGML) {
+		this.poligonoGML = poligonoGML;
+	}
 
 	public List<Poligono> getCarasInternas() {
 		return carasInternas;
@@ -63,6 +105,7 @@ public class Poligono {
 	public Poligono(){
 		coordenadas = new ArrayList();
 		carasInternas = new ArrayList();
+		carasTijera = new ArrayList();
 	}
 	
 	public Poligono(List<Coordenada> coord){
@@ -554,7 +597,7 @@ public class Poligono {
 		return true;
 	}
 	
-	public static Polygon obtenerPolygonJTS(List<Coordenada> pCoordenadas){
+	public static com.vividsolutions.jts.geom.Polygon obtenerPolygonJTS(List<Coordenada> pCoordenadas){
 		
 		GeometryFactory geometryFactory = new GeometryFactory();
 		
@@ -568,7 +611,7 @@ public class Poligono {
 		}
 		
 		LinearRing anillo = geometryFactory.createLinearRing(coordenadas);
-		Polygon poligono = geometryFactory.createPolygon(anillo, null); //se asume que no hay HUECOS en el poligono y por eso se envía NULL 
+		com.vividsolutions.jts.geom.Polygon poligono = geometryFactory.createPolygon(anillo, null); //se asume que no hay HUECOS en el poligono y por eso se envía NULL 
 		
 		return poligono;
 		
@@ -583,8 +626,8 @@ public class Poligono {
 		boolean sePudoB = poligonoEvaluado.calcularPoligonoParaleloAPlanoXY(null);
 		
 		if(sePudoA && sePudoB){
-			Polygon poligonoA = obtenerPolygonJTS(coordenadasParalelasAPlanoXY);
-			Polygon poligonoB = obtenerPolygonJTS(poligonoEvaluado.coordenadasParalelasAPlanoXY);
+			com.vividsolutions.jts.geom.Polygon poligonoA = obtenerPolygonJTS(coordenadasParalelasAPlanoXY);
+			com.vividsolutions.jts.geom.Polygon poligonoB = obtenerPolygonJTS(poligonoEvaluado.coordenadasParalelasAPlanoXY);
 			
 			//se usa la tolerancia porque hay ciertas geometrias que aunque ocupan el mismo plano
 			//no cortan a la linea que se necesita del poligono del muro porque están alejadas unas milesimas 
@@ -620,5 +663,40 @@ public class Poligono {
 		
 		
 		return r;
+	}
+	
+	public void calcularPolygonGML() throws DimensionMismatchException{
+		
+		List<Double> coordenadasEstePoligono = new ArrayList();
+		
+		for(Coordenada coordenadaActual : this.getCoordenadas()){
+			coordenadasEstePoligono.add(coordenadaActual.getX());
+			coordenadasEstePoligono.add(coordenadaActual.getY());
+			coordenadasEstePoligono.add(coordenadaActual.getZ());
+		}
+		//se calcula el poligono GML
+		org.citygml4j.model.gml.geometry.primitives.Polygon polygonGML = geom.createLinearPolygon(coordenadasEstePoligono, 3);
+		
+		for (Poligono caraInternaActual : this.getCarasInternas()) {
+			
+			List<Double> coordenadasEstaCaraInterna = new ArrayList(); 
+			
+			for(Coordenada coordenadaActual : caraInternaActual.getCoordenadas()){
+				coordenadasEstaCaraInterna.add(coordenadaActual.getX());
+				coordenadasEstaCaraInterna.add(coordenadaActual.getY());
+				coordenadasEstaCaraInterna.add(coordenadaActual.getZ());
+			}
+			
+			org.citygml4j.model.gml.geometry.primitives.LinearRing anillo = geom.createLinearRing(coordenadasEstaCaraInterna, 3);
+			Interior interior = new InteriorImpl();
+			interior.setRing(anillo);
+			
+			//se agrega un hueco al poligono GML, tambien llamado "cara interna"
+			polygonGML.addInterior(interior);
+			
+		}
+		
+		setPoligonoGML(polygonGML);
+		
 	}
 }

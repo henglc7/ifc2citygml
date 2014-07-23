@@ -58,8 +58,8 @@ public class Muro  extends Solido {
 							
 							if(caraMuroActual.comparteBordeCon(caraVacioActual)){
 								
+								caraVacioActual.setVacioPadre(vacioActual);
 								carasTijera.add(caraVacioActual);
-								
 								caraVacioActual.setAdicional(false);
 								
 							}
@@ -98,9 +98,11 @@ public class Muro  extends Solido {
 			//}
 			
 			if(hay2NuevasCaras){
+				nuevaCara01.setCarasTijera(carasTijera);
 				carasNuevas.add(nuevaCara01);
 				carasNuevas.add(nuevaCara02);
 			}else{
+				siluetaMuroRecortada.setCarasTijera(carasTijera);
 				carasNuevas.add(siluetaMuroRecortada);
 			}			
 		}
@@ -118,6 +120,7 @@ public class Muro  extends Solido {
 						
 						if(caraMuroActual.compartePlanoCon(caraVacioActual)){
 							
+							caraVacioActual.setVacioPadre(vacioActual);
 							caraVacioActual.setInterno(true);
 							caraMuroActual.getCarasInternas().add(caraVacioActual);
 							caraVacioActual.setAdicional(false);
