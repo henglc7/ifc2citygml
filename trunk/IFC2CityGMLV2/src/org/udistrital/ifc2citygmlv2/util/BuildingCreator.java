@@ -181,6 +181,8 @@ public class BuildingCreator {
         	for(Plancha planchaActual : pisoActual.getPlanchas()){
         		for(Poligono poligonoActual : planchaActual.getCaras()){
         			
+        			poligonoActual.corregirOrientacion();
+        			
         			List<Double> coordenadasEstePoligono = new ArrayList(); 
         			
         			for(Coordenada coordenadaActual : poligonoActual.getCoordenadas()){
@@ -205,6 +207,8 @@ public class BuildingCreator {
 		for (Piso pisoActual : edificio.getPisos()) {
         	for(Muro muroActual : pisoActual.getMuros()){
         		for(Poligono poligonoActual : muroActual.getCaras()){
+        			
+        			poligonoActual.corregirOrientacion();
         			
         			List<Double> coordenadasEstePoligono = new ArrayList(); 
         			
@@ -328,6 +332,22 @@ public class BuildingCreator {
 	
 	
 	private AbstractBoundarySurface agregarCarasDeVentanaOPuerta(CityGMLClass type, AbstractBoundarySurface boundarySurface, List<Poligono> pCarasInternas, List<Poligono> pCarasTijera) {
+		
+		//primero es necesario invertir las caras, porque siempre van a estar en orden inverso al muro que las contiene
+		//ya que asi lo maneja GML
+		//si no se invierten en algunas aplicaciones no serán renderizadas
+		//esto se debe a que se estan usando las mismas caras de los vacios para generar las puertas y ventanas
+		//cuando se utilicen las caras propias de la representation de cada puerta y ventana esto ya no será necesario
+		
+		if(pCarasInternas!=null)
+		for (Poligono poligono : pCarasInternas) {
+			poligono.invertirOrientacion();
+		}
+		
+		if(pCarasTijera!=null)
+		for (Poligono poligono : pCarasTijera) {
+			poligono.invertirOrientacion();
+		}
 		
 		
 		//si hay caras internas dentro de esta cara, se deben agregar superficies bien sea de ventana o de puerta a la cara generada
