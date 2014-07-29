@@ -172,16 +172,36 @@ public class Poligono {
 		
 		while(contienePunto==false && t.hasNext()) {
 			
-			Line linea = new Line(i.next().toVector3D(), t.next().toVector3D());
+			Line linea = null;
+			Vector3D a = null;
+			Vector3D b = null;
 			
-			Iterator<Coordenada> s = poligonoEvaluado.coordenadas.iterator();
+			try {
 			
-			while(s.hasNext()){
+				a = i.next().toVector3D();
+				b = t.next().toVector3D();
 				
-				if(linea.contains(s.next().toVector3D())){
+				linea = new Line(a,b);
+				
+			} catch (Exception e) {
+				
+				//esto sucede normalmente cuando los 2 puntos son iguales (hay redundancia en el poligono)
+				System.err.println("ERROR AL CREAR LINEA desde " + a + " hasta " + b);
+
+			}
+			
+			if(linea!=null){
+				
+				Iterator<Coordenada> s = poligonoEvaluado.coordenadas.iterator();
+				
+				while(s.hasNext()){
 					
-					contienePunto = true;
-					break;
+					if(linea.contains(s.next().toVector3D())){
+						
+						contienePunto = true;
+						break;
+						
+					}
 					
 				}
 				
@@ -698,5 +718,53 @@ public class Poligono {
 		
 		setPoligonoGML(polygonGML);
 		
+	}
+	
+	public void corregirOrientacion(){
+
+//  http://stackoverflow.com/questions/1988100/how-to-determine-ordering-of-3d-vertices
+//	
+//		As others have noted, your question isn't entirely clear. Is the for something like a 3D backface culling test? 
+//		If so, you need a point to determine the winding direction relative to. Viewed from one side of the polygon the 
+//		vertices will appear to wind clockwise. From the other side they'll appear to wind counter clockwise.
+//
+//		But suppose your polygon is convex and properly planar. Take any three consecutive vertices A, B, and C. 
+//		Then you can find the surface normal vector using the cross product:
+//
+//		N = (B - A) x (C - A)
+//		Taking the dot product of the normal with a vector from the given view point, V, to one of the vertices 
+//		will give you a value whose sign indicates which way the vertices appear to wind when viewed from V:
+//
+//		w = N . (A - V)
+//	
+//		Whether this is positive for clockwise and negative for anticlockwise or the opposite will depend on 
+//		the handedness of your coordinate system.
+		
+		if(this.getCoordenadas().size()>=3){
+			
+			Vector3D A = this.getCoordenadas().get(0).toVector3D();
+			Vector3D B = this.getCoordenadas().get(1).toVector3D(); 
+			Vector3D C = this.getCoordenadas().get(2).toVector3D();
+			Vector3D B_A = B.subtract(A);
+			Vector3D C_A = C.subtract(A);
+			
+			Vector3D V = new Vector3D(0,0,0); //el punto de vista es el origen
+			Vector3D A_V = A.subtract(V);
+			
+			Vector3D N = B_A.crossProduct(C_A);
+			
+			//si sentido es negativo el poligono es antihorario, si no es horario
+			double sentido = N.dotProduct(A_V);
+			
+			if(sentido<0){
+				invertirOrientacion();
+			}
+			
+		}
+		
+	}
+	
+	public void invertirOrientacion(){
+		Collections.reverse(this.getCoordenadas());
 	}
 }
