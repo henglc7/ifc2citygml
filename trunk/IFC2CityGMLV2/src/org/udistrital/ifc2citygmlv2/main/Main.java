@@ -51,6 +51,9 @@ public class Main {
 
 	private static IfcModel ifcModel = null;
 	private static Edificio edificio;
+	
+	//Se genera el modelo LOD1
+    private static BuildingCreator creador  = null;
 
 	/**
 	 * @param args
@@ -233,6 +236,7 @@ public class Main {
         	}
 		}
         
+        //si se quiere un modelo LOD1 poco detallado, descomentar esto
         //unionTodasLasPlanchas = unionTodasLasPlanchas.getEnvelope();
         
         
@@ -253,7 +257,7 @@ public class Main {
 
         
         //Se genera el modelo LOD1
-        BuildingCreator creador = new BuildingCreator();
+        creador = new BuildingCreator();
         try {
 			creador.crearModeloLOD1(coordenadas,mayorElevacionEncontrada,args[1]);
 		} catch (Exception e) {
@@ -340,7 +344,7 @@ public class Main {
 			e.printStackTrace();
 		}
         
-        
+        /*
         //Se imprime el edificio para visualizar sus valores
         for (Piso pisoA : edificio.getPisos()) {
         	if(edificio.getPisos().indexOf(pisoA) >= pisoMinimo){
@@ -349,6 +353,7 @@ public class Main {
         		
         	}
 		}
+		*/
         
         //BEEP
         Toolkit.getDefaultToolkit().beep();
